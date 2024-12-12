@@ -17,4 +17,7 @@ MonoBehaviour:
   mass: 1
   linearDamping: 0
   angularDamping: 0.05
+  marbleSpeed: 3
+  marbleJumpForce: 10
+  marbleSmoothSpeed: 0.1
   marbleName: Default

@@ -13,6 +13,11 @@ public class PlayerMarble : ScriptableObject
     public float linearDamping;
     public float angularDamping = 0.05f;
 
+    [Header("Marble forces")]
+    public float marbleSpeed;
+    public float marbleJumpForce;
+    public float marbleSmoothSpeed;
+
     [Header("Marble identifier")]
     public string marbleName;
 }
