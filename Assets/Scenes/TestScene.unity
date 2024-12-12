@@ -559,7 +559,7 @@ GameObject:
   - component: {fileID: 548024145}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1334,6 +1334,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09a896abe514ff645b9c0f466d9dde98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveValue: {x: 0, y: 0}
+  jumpValue: 0
+  isPressed: 0
 --- !u!114 &861648321
 MonoBehaviour:
   m_ObjectHideFlags: 0
