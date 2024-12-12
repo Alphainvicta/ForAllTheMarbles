@@ -20,6 +20,11 @@ namespace Managers
         {
             GameMenu?.Invoke();
         }
+
+        public void PlayGame()
+        {
+            GameStart?.Invoke();
+        }
     }
 }
 

@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Managers
 {
@@ -10,19 +9,26 @@ namespace Managers
         public TextMeshProUGUI selectedMarble;
         private void OnEnable()
         {
-            GameManager.GameMenu += GameMenu;
+            GameManager.GameMenu += StartGameMenu;
+            GameManager.GameStart += EndGameMenu;
         }
 
         private void OnDisable()
         {
-            GameManager.GameMenu -= GameMenu;
+            GameManager.GameMenu -= StartGameMenu;
+            GameManager.GameStart -= EndGameMenu;
         }
 
-        public void GameMenu()
+        public void StartGameMenu()
         {
             gameObject.GetComponent<PlayerManager>().ModifyPlayerValues();
             SelectedMarble();
             gameMenu.SetActive(true);
+        }
+
+        public void EndGameMenu()
+        {
+            gameMenu.SetActive(false);
         }
 
         public void SelectedMarble()
@@ -79,11 +85,6 @@ namespace Managers
                     break;
                 }
             }
-        }
-
-        public void PlayGame()
-        {
-            Debug.Log("PEPEEEEEEEEEEEEEEEEEEEEEEEEE");
         }
     }
 }
