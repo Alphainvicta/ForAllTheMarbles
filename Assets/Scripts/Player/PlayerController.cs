@@ -1,27 +1,26 @@
 using UnityEngine;
-using GManager;
-using System;
+using Managers;
 
 public class PlayerController : MonoBehaviour
 {
     private void OnEnable()
     {
-        GameManager.GameStart += allowPlayerController;
-        GameManager.GamePaused += banPlayerController;
-        GameManager.GameEnd += banPlayerController;
+        GameManager.GameStart += AllowPlayerController;
+        GameManager.GamePaused += BanPlayerController;
+        GameManager.GameEnd += BanPlayerController;
     }
     private void OnDisable()
     {
-        GameManager.GameStart -= allowPlayerController;
-        GameManager.GamePaused -= banPlayerController;
-        GameManager.GameEnd -= banPlayerController;
+        GameManager.GameStart -= AllowPlayerController;
+        GameManager.GamePaused -= BanPlayerController;
+        GameManager.GameEnd -= BanPlayerController;
     }
-    private void allowPlayerController()
+    private void AllowPlayerController()
     {
-        throw new NotImplementedException();
+
     }
-    private void banPlayerController()
+    private void BanPlayerController()
     {
-        throw new NotImplementedException();
+
     }
 }
