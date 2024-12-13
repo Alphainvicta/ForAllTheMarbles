@@ -12,15 +12,14 @@ public class DefaultMarbleController : MonoBehaviour
     private float isPressed;
     private float jumpValue;
     public bool jumpAvailable = true;
-    public float marbleSpeed;
-    public float marbleJumpForce;
-    private Vector3 targetPosition;
+    private float marbleSpeed;
+    private float marbleJumpForce;
     private float marbleSmoothSpeed;
     private PlayerInput playerInput;
-    public InputAction playerMove;
-    public InputAction playerJump;
-    public InputAction playerPressed;
-
+    private InputAction playerMove;
+    private InputAction playerJump;
+    private InputAction playerPressed;
+    private float previousY;
     private float targetMarbleSpeed;
 
     private void Awake()
@@ -38,8 +37,8 @@ public class DefaultMarbleController : MonoBehaviour
         marbleJumpForce = GameObject.Find("GameManager").GetComponent<PlayerManager>().playerMarble.marbleJumpForce;
         marbleSmoothSpeed = GameObject.Find("GameManager").GetComponent<PlayerManager>().playerMarble.marbleSmoothSpeed;
         marbleSpeed = 1f;
-        targetPosition = transform.position;
         rigidbody = gameObject.GetComponent<Rigidbody>();
+        previousY = transform.position.y;
     }
 
     private void OnEnable()
@@ -76,23 +75,29 @@ public class DefaultMarbleController : MonoBehaviour
 
     private void MoveForward()
     {
-        targetPosition.z += marbleSpeed * Time.fixedDeltaTime;
+        Vector3 forwardForce = Vector3.forward * marbleSpeed;
+        rigidbody.AddForce(forwardForce, ForceMode.Acceleration);
     }
 
     private void SmoothMovement()
     {
         Vector3 smoothedPosition = Vector3.Lerp(
-            new Vector3(transform.position.x, 0, transform.position.z),
-            new Vector3(targetPosition.x, 0, targetPosition.z),
+            new Vector3(transform.position.x, 0f, transform.position.z),
+            new Vector3(rigidbody.position.x, 0f, rigidbody.position.z),
             marbleSmoothSpeed
         );
 
-        transform.position = new Vector3(smoothedPosition.x, transform.position.y, smoothedPosition.z);
+        rigidbody.position = new Vector3(smoothedPosition.x, transform.position.y, smoothedPosition.z);
     }
 
     private void CameraFollow()
     {
         cameraRig.transform.position = new Vector3(transform.position.x, cameraRig.transform.position.y, transform.position.z);
+    }
+
+    private void SetCameraVertical()
+    {
+        cameraRig.transform.position = new Vector3(cameraRig.transform.position.x, transform.position.y, cameraRig.transform.position.z);
     }
 
     private void PlayerMovement(InputAction.CallbackContext context)
@@ -106,11 +111,11 @@ public class DefaultMarbleController : MonoBehaviour
 
         if (moveValue.x > centerPivot.x)
         {
-            targetPosition.x += 3 * Time.fixedDeltaTime;
+            rigidbody.AddForce(Vector3.right * 3f, ForceMode.Acceleration);
         }
         else if (moveValue.x < centerPivot.x)
         {
-            targetPosition.x -= 3 * Time.fixedDeltaTime;
+            rigidbody.AddForce(Vector3.left * 3f, ForceMode.Acceleration);
         }
     }
 
@@ -137,13 +142,18 @@ public class DefaultMarbleController : MonoBehaviour
     {
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hit;
-        Debug.DrawRay(transform.position, Vector3.down * 0.5f, Color.red);
+        Debug.DrawRay(transform.position, Vector3.down * 0.6f, Color.red);
 
-        if (Physics.Raycast(ray, out hit, 0.5f))
+        if (Physics.Raycast(ray, out hit, 0.6f))
         {
             if (hit.collider.CompareTag("Ground"))
             {
                 jumpAvailable = true;
+                if (Mathf.Round(previousY) != Mathf.Round(transform.position.y))
+                {
+                    SetCameraVertical();
+                    previousY = Mathf.Round(transform.position.y);
+                }
             }
         }
         else
