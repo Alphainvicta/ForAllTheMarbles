@@ -6,6 +6,7 @@ namespace Managers
     {
         public PlayerMarble playerMarble;
         public GameObject currentMarble;
+        public float touchThreshold;
         public void ModifyPlayerValues()
         {
             string currentName = currentMarble.name;

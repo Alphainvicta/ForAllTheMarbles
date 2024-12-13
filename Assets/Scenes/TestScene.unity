@@ -982,6 +982,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMarble: {fileID: 11400000, guid: f1d0329680559224587350f6d4c1d527, type: 2}
   currentMarble: {fileID: 861648313}
+  threashold: 1
 --- !u!114 &705976461
 MonoBehaviour:
   m_ObjectHideFlags: 0

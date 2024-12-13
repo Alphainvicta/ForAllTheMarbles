@@ -21,6 +21,7 @@ public class DefaultMarbleController : MonoBehaviour
     private InputAction playerPressed;
     private float previousY;
     private float targetMarbleSpeed;
+    private float threshold;
 
     private void Awake()
     {
@@ -33,12 +34,14 @@ public class DefaultMarbleController : MonoBehaviour
     private void Start()
     {
         cameraRig = GameObject.Find("CameraRig");
-        targetMarbleSpeed = GameObject.Find("GameManager").GetComponent<PlayerManager>().playerMarble.marbleSpeed;
-        marbleJumpForce = GameObject.Find("GameManager").GetComponent<PlayerManager>().playerMarble.marbleJumpForce;
-        marbleSmoothSpeed = GameObject.Find("GameManager").GetComponent<PlayerManager>().playerMarble.marbleSmoothSpeed;
+        PlayerMarble playerMarble = GameObject.Find("GameManager").GetComponent<PlayerManager>().playerMarble;
+        targetMarbleSpeed = playerMarble.marbleSpeed;
+        marbleJumpForce = playerMarble.marbleJumpForce;
+        marbleSmoothSpeed = playerMarble.marbleSmoothSpeed;
         marbleSpeed = 1f;
         rigidbody = gameObject.GetComponent<Rigidbody>();
         previousY = transform.position.y;
+        threshold = GameObject.Find("GameManager").GetComponent<PlayerManager>().touchThreshold;
     }
 
     private void OnEnable()
@@ -109,13 +112,16 @@ public class DefaultMarbleController : MonoBehaviour
             pivotIsSet = true;
         }
 
-        if (moveValue.x > centerPivot.x)
+        if (Mathf.Abs(Mathf.Abs(centerPivot.x) - Mathf.Abs(moveValue.x)) > threshold)
         {
-            rigidbody.AddForce(Vector3.right * 3f, ForceMode.Acceleration);
-        }
-        else if (moveValue.x < centerPivot.x)
-        {
-            rigidbody.AddForce(Vector3.left * 3f, ForceMode.Acceleration);
+            if (moveValue.x > centerPivot.x)
+            {
+                rigidbody.AddForce(Vector3.right * 3f, ForceMode.Acceleration);
+            }
+            else if (moveValue.x < centerPivot.x)
+            {
+                rigidbody.AddForce(Vector3.left * 3f, ForceMode.Acceleration);
+            }
         }
     }
 
