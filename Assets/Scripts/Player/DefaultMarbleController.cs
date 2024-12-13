@@ -147,25 +147,40 @@ public class DefaultMarbleController : MonoBehaviour
 
     private void GroundCheck()
     {
-        Ray ray = new Ray(transform.position, Vector3.down);
-        RaycastHit hit;
-        Debug.DrawRay(transform.position, Vector3.down * 0.6f, Color.red);
-
-        if (Physics.Raycast(ray, out hit, 0.6f))
+        float raySpacing = 0.25f;
+        Vector3[] rayOffsets = new Vector3[]
         {
-            if (hit.collider.CompareTag("Ground"))
+        new Vector3(-raySpacing, 0f, -raySpacing),
+        new Vector3(-raySpacing, 0f,  raySpacing),
+        new Vector3( raySpacing, 0f, -raySpacing),
+        new Vector3( raySpacing, 0f,  raySpacing),
+        Vector3.zero
+        };
+
+        jumpAvailable = false;
+
+        foreach (var offset in rayOffsets)
+        {
+            Vector3 rayOrigin = transform.position + offset;
+            Ray ray = new Ray(rayOrigin, Vector3.down);
+            RaycastHit hit;
+
+            Debug.DrawRay(rayOrigin, Vector3.down * 0.6f, Color.red);
+
+            if (Physics.Raycast(ray, out hit, 0.6f))
             {
-                jumpAvailable = true;
-                if (Mathf.Round(previousY) != Mathf.Round(transform.position.y))
+                if (hit.collider.CompareTag("Ground"))
                 {
-                    targetCameraY = Mathf.Round(transform.position.y);
-                    previousY = Mathf.Round(transform.position.y);
+                    jumpAvailable = true;
+                    if (Mathf.Round(previousY) != Mathf.Round(transform.position.y))
+                    {
+                        targetCameraY = Mathf.Round(transform.position.y);
+                        previousY = Mathf.Round(transform.position.y);
+                    }
+
+                    break;
                 }
             }
-        }
-        else
-        {
-            jumpAvailable = false;
         }
     }
 }
