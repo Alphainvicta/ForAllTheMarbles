@@ -11,7 +11,7 @@ public class DefaultMarbleController : MonoBehaviour
     private Vector2 moveValue;
     private float isPressed;
     private float jumpValue;
-    public bool jumpAvailable = true;
+    private bool jumpAvailable = true;
     private float marbleSpeed;
     private float marbleJumpForce;
     private float marbleSmoothSpeed;
@@ -22,6 +22,7 @@ public class DefaultMarbleController : MonoBehaviour
     private float previousY;
     private float targetMarbleSpeed;
     private float threshold;
+    private float targetCameraY;
 
     private void Awake()
     {
@@ -41,6 +42,7 @@ public class DefaultMarbleController : MonoBehaviour
         marbleSpeed = 1f;
         rigidbody = gameObject.GetComponent<Rigidbody>();
         previousY = transform.position.y;
+        targetCameraY = cameraRig.transform.position.y;
         threshold = GameObject.Find("GameManager").GetComponent<PlayerManager>().touchThreshold;
     }
 
@@ -95,12 +97,11 @@ public class DefaultMarbleController : MonoBehaviour
 
     private void CameraFollow()
     {
-        cameraRig.transform.position = new Vector3(transform.position.x, cameraRig.transform.position.y, transform.position.z);
-    }
-
-    private void SetCameraVertical()
-    {
-        cameraRig.transform.position = new Vector3(cameraRig.transform.position.x, transform.position.y, cameraRig.transform.position.z);
+        cameraRig.transform.position = new Vector3(
+            transform.position.x,
+            Mathf.Lerp(cameraRig.transform.position.y, targetCameraY, marbleSmoothSpeed),
+            transform.position.z
+        );
     }
 
     private void PlayerMovement(InputAction.CallbackContext context)
@@ -157,7 +158,7 @@ public class DefaultMarbleController : MonoBehaviour
                 jumpAvailable = true;
                 if (Mathf.Round(previousY) != Mathf.Round(transform.position.y))
                 {
-                    SetCameraVertical();
+                    targetCameraY = Mathf.Round(transform.position.y);
                     previousY = Mathf.Round(transform.position.y);
                 }
             }
