@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 namespace Managers
@@ -7,6 +8,52 @@ namespace Managers
         public PlayerMarble playerMarble;
         public GameObject currentMarble;
         public float touchThreshold;
+
+        private void OnEnable()
+        {
+            GameManager.GameStart += HandleGameStart;
+            GameManager.GamePaused += HandleGamePaused;
+            GameManager.GameEnd += HandleGameEnd;
+            GameManager.GameMenu += HandleGameEnd;
+        }
+
+        private void OnDisable()
+        {
+            GameManager.GameStart -= HandleGameStart;
+            GameManager.GamePaused -= HandleGamePaused;
+            GameManager.GameEnd -= HandleGameEnd;
+            GameManager.GameMenu -= HandleGameEnd;
+        }
+
+        private void HandleGameStart() => ManagePlayerController(1);
+        private void HandleGamePaused() => ManagePlayerController(2);
+        private void HandleGameEnd() => ManagePlayerController(3);
+
+        private void ManagePlayerController(int option)
+        {
+            System.Type marbleScript = playerMarble.playerControllerScripts.GetClass();
+            var currentMarbleScript = currentMarble.GetComponent(marbleScript);
+
+            switch (option)
+            {
+                case 1:
+                    if (currentMarbleScript == null)
+                        currentMarble.AddComponent(marbleScript);
+                    break;
+                case 2:
+                    if (currentMarbleScript is MonoBehaviour monoBehaviourScript)
+                    {
+                        monoBehaviourScript.enabled = !monoBehaviourScript.enabled;
+                    }
+                    break;
+                case 3:
+                    if (currentMarbleScript != null)
+                        Destroy(currentMarbleScript);
+                    break;
+                default:
+                    break;
+            }
+        }
         public void ModifyPlayerValues()
         {
             string currentName = currentMarble.name;

@@ -18,12 +18,22 @@ namespace Managers
 
         private void Start()
         {
-            GameMenu?.Invoke();
+            Menu();
         }
 
         public void PlayGame()
         {
             GameStart?.Invoke();
+        }
+
+        public void PauseGame()
+        {
+            GamePaused?.Invoke();
+        }
+
+        public void Menu()
+        {
+            GameMenu?.Invoke();
         }
     }
 }

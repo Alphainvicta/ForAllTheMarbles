@@ -1,4 +1,4 @@
-using UnityEditor.EditorTools;
+using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PlayerMarble", menuName = "Scriptable Objects/PlayerMarble")]
@@ -20,4 +20,7 @@ public class PlayerMarble : ScriptableObject
 
     [Header("Marble identifier")]
     public string marbleName;
+
+    [Header("MarbleScript")]
+    public MonoScript playerControllerScripts;
 }
