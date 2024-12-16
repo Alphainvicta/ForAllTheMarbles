@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Managers;
 using UnityEngine.EventSystems;
+using System;
 
 public class DefaultMarbleController : MonoBehaviour
 {
@@ -14,9 +15,11 @@ public class DefaultMarbleController : MonoBehaviour
     private float jumpValue;
     private bool jumpIsTrigger = false;
     private bool jumpAvailable = true;
-    private float marbleSpeed;
+    public float marbleSpeed;
     private float marbleJumpForce;
     private float marbleSmoothSpeed;
+    private float marbleSmoothDuration = 0f;
+    private float cameraSmoothDuration = 0f;
     private PlayerInput playerInput;
     private InputAction playerMove;
     private InputAction playerJump;
@@ -43,8 +46,8 @@ public class DefaultMarbleController : MonoBehaviour
         marbleSmoothSpeed = playerMarble.marbleSmoothSpeed;
         marbleSpeed = 1f;
         rigidBody = gameObject.GetComponent<Rigidbody>();
-        previousY = transform.position.y;
-        targetCameraY = cameraRig.transform.position.y;
+        previousY = Mathf.Round(cameraRig.transform.position.y);
+        targetCameraY = Mathf.Round(transform.position.y);
         threshold = GameObject.Find("GameManager").GetComponent<PlayerManager>().touchThreshold;
     }
 
@@ -102,13 +105,15 @@ public class DefaultMarbleController : MonoBehaviour
 
     private void UpdateMarbleSpeed()
     {
-        marbleSpeed = Mathf.Lerp(marbleSpeed, targetMarbleSpeed, Time.fixedDeltaTime * 0.5f);
+        marbleSmoothDuration += Time.fixedDeltaTime;
+        float t = Mathf.Clamp01(marbleSmoothDuration / 3);
+        marbleSpeed = Mathf.Lerp(1f, targetMarbleSpeed, t);
     }
 
     private void MoveForward()
     {
         Vector3 forwardForce = Vector3.forward * marbleSpeed;
-        rigidBody.AddForce(forwardForce, ForceMode.Acceleration);
+        rigidBody.AddForce(forwardForce, ForceMode.Force);
     }
 
     private void SmoothMovement()
@@ -124,10 +129,16 @@ public class DefaultMarbleController : MonoBehaviour
 
     private void CameraFollow()
     {
+        float t = 1f;
+        if (cameraRig.transform.position.y != targetCameraY)
+        {
+            cameraSmoothDuration += Time.fixedDeltaTime;
+            t = Mathf.Clamp01(cameraSmoothDuration / 1f);
+        }
         if (transform.position.y > 0)
             cameraRig.transform.position = new Vector3(
                 transform.position.x,
-                Mathf.Lerp(cameraRig.transform.position.y, targetCameraY, marbleSmoothSpeed),
+                Mathf.Lerp(previousY, targetCameraY, t),
                 transform.position.z
             );
     }
@@ -146,11 +157,11 @@ public class DefaultMarbleController : MonoBehaviour
             {
                 if (moveValue.x > centerPivot.x)
                 {
-                    rigidBody.AddForce(Vector3.right * 6f, ForceMode.Acceleration);
+                    rigidBody.AddForce(Vector3.right * 0.5f, ForceMode.Impulse);
                 }
                 else if (moveValue.x < centerPivot.x)
                 {
-                    rigidBody.AddForce(Vector3.left * 6f, ForceMode.Acceleration);
+                    rigidBody.AddForce(Vector3.left * 0.5f, ForceMode.Impulse);
                 }
             }
         }
@@ -160,7 +171,7 @@ public class DefaultMarbleController : MonoBehaviour
     {
         if (jumpIsTrigger && jumpAvailable && !EventSystem.current.IsPointerOverGameObject())
         {
-            Vector3 upForce = new Vector3(0f, marbleJumpForce, 0f);
+            Vector3 upForce = new(0f, marbleJumpForce, 0f);
             rigidBody.AddForce(upForce, ForceMode.VelocityChange);
         }
         jumpIsTrigger = false;
@@ -179,10 +190,10 @@ public class DefaultMarbleController : MonoBehaviour
         float raySpacing = 0.25f;
         Vector3[] rayOffsets = new Vector3[]
         {
-        new Vector3(-raySpacing, 0f, -raySpacing),
-        new Vector3(-raySpacing, 0f,  raySpacing),
-        new Vector3( raySpacing, 0f, -raySpacing),
-        new Vector3( raySpacing, 0f,  raySpacing),
+        new(-raySpacing, 0f, -raySpacing),
+        new(-raySpacing, 0f,  raySpacing),
+        new( raySpacing, 0f, -raySpacing),
+        new( raySpacing, 0f,  raySpacing),
         Vector3.zero
         };
 
@@ -192,19 +203,19 @@ public class DefaultMarbleController : MonoBehaviour
         {
             Vector3 rayOrigin = transform.position + offset;
             Ray ray = new Ray(rayOrigin, Vector3.down);
-            RaycastHit hit;
 
             Debug.DrawRay(rayOrigin, Vector3.down * 0.6f, Color.red);
 
-            if (Physics.Raycast(ray, out hit, 0.6f))
+            if (Physics.Raycast(ray, out RaycastHit hit, 0.6f))
             {
                 if (hit.collider.CompareTag("Ground"))
                 {
                     jumpAvailable = true;
-                    if (Mathf.Round(previousY) != Mathf.Round(transform.position.y))
+                    if (Mathf.Round(targetCameraY) != Mathf.Round(transform.position.y))
                     {
                         targetCameraY = Mathf.Round(transform.position.y);
-                        previousY = Mathf.Round(transform.position.y);
+                        previousY = Mathf.Round(cameraRig.transform.position.y);
+                        cameraSmoothDuration = 0f;
                     }
 
                     break;
