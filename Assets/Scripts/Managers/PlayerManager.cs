@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Managers
 {
@@ -12,7 +13,6 @@ namespace Managers
         private void OnEnable()
         {
             GameManager.GameStart += HandleGameStart;
-            GameManager.GamePaused += HandleGamePaused;
             GameManager.GameEnd += HandleGameEnd;
             GameManager.GameMenu += HandleGameEnd;
         }
@@ -20,14 +20,12 @@ namespace Managers
         private void OnDisable()
         {
             GameManager.GameStart -= HandleGameStart;
-            GameManager.GamePaused -= HandleGamePaused;
             GameManager.GameEnd -= HandleGameEnd;
             GameManager.GameMenu -= HandleGameEnd;
         }
 
         private void HandleGameStart() => ManagePlayerController(1);
-        private void HandleGamePaused() => ManagePlayerController(2);
-        private void HandleGameEnd() => ManagePlayerController(3);
+        private void HandleGameEnd() => ManagePlayerController(2);
 
         private void ManagePlayerController(int option)
         {
@@ -41,12 +39,6 @@ namespace Managers
                         currentMarble.AddComponent(marbleScript);
                     break;
                 case 2:
-                    if (currentMarbleScript is MonoBehaviour monoBehaviourScript)
-                    {
-                        monoBehaviourScript.enabled = !monoBehaviourScript.enabled;
-                    }
-                    break;
-                case 3:
                     if (currentMarbleScript != null)
                         Destroy(currentMarbleScript);
                     break;

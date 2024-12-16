@@ -42,11 +42,13 @@ namespace Managers
                     menuPanel.SetActive(isPaused);
                     if (isPaused)
                     {
-                        iconButtonText.text = "X";
+                        iconButtonText.text = "x";
+                        Time.timeScale = 0f;
                     }
                     else
                     {
                         iconButtonText.text = "-\n-\n-";
+                        Time.timeScale = 1f;
                     }
                     break;
                 case 3:

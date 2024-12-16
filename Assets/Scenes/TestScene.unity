@@ -1770,6 +1770,7 @@ MonoBehaviour:
   playerMarbles:
   - {fileID: 11400000, guid: f1d0329680559224587350f6d4c1d527, type: 2}
   - {fileID: 11400000, guid: 8882e5a254526b94baaff8e875b23011, type: 2}
+  playerInput: {fileID: 861648321}
 --- !u!114 &705976460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2838,7 +2839,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 705976459}
         m_TargetAssemblyTypeName: Managers.GameManager, Assembly-CSharp
-        m_MethodName: Menu
+        m_MethodName: ReloadScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

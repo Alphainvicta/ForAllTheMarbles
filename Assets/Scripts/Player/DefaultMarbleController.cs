@@ -1,16 +1,18 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Managers;
+using UnityEngine.EventSystems;
 
 public class DefaultMarbleController : MonoBehaviour
 {
-    private Rigidbody rigidbody;
+    private Rigidbody rigidBody;
     private GameObject cameraRig;
     private Vector2 centerPivot;
     private bool pivotIsSet = false;
     private Vector2 moveValue;
     private float isPressed;
     private float jumpValue;
+    private bool jumpIsTrigger = false;
     private bool jumpAvailable = true;
     private float marbleSpeed;
     private float marbleJumpForce;
@@ -40,7 +42,7 @@ public class DefaultMarbleController : MonoBehaviour
         marbleJumpForce = playerMarble.marbleJumpForce;
         marbleSmoothSpeed = playerMarble.marbleSmoothSpeed;
         marbleSpeed = 1f;
-        rigidbody = gameObject.GetComponent<Rigidbody>();
+        rigidBody = gameObject.GetComponent<Rigidbody>();
         previousY = transform.position.y;
         targetCameraY = cameraRig.transform.position.y;
         threshold = GameObject.Find("GameManager").GetComponent<PlayerManager>().touchThreshold;
@@ -48,20 +50,37 @@ public class DefaultMarbleController : MonoBehaviour
 
     private void OnEnable()
     {
-        playerMove.performed += PlayerMovement;
-        playerJump.performed += PlayerJump;
-        playerJump.canceled += PlayerJump;
-        playerPressed.performed += PlayerPressed;
-        playerPressed.canceled += PlayerPressed;
+        playerMove.performed += PlayerMovementInput;
+        playerJump.performed += PlayerJumpInput;
+        playerJump.canceled += PlayerJumpInput;
+        playerPressed.performed += PlayerPressedInput;
+        playerPressed.canceled += PlayerPressedInput;
     }
 
     private void OnDisable()
     {
-        playerMove.performed -= PlayerMovement;
-        playerJump.performed -= PlayerJump;
-        playerJump.canceled -= PlayerJump;
-        playerPressed.performed -= PlayerPressed;
-        playerPressed.canceled -= PlayerPressed;
+        playerMove.performed -= PlayerMovementInput;
+        playerJump.performed -= PlayerJumpInput;
+        playerJump.canceled -= PlayerJumpInput;
+        playerPressed.performed -= PlayerPressedInput;
+        playerPressed.canceled -= PlayerPressedInput;
+    }
+
+    private void PlayerMovementInput(InputAction.CallbackContext context)
+    {
+        moveValue = context.ReadValue<Vector2>();
+    }
+
+    private void PlayerJumpInput(InputAction.CallbackContext context)
+    {
+        jumpValue = context.ReadValue<float>();
+        if (jumpValue > 0)
+            jumpIsTrigger = true;
+    }
+
+    private void PlayerPressedInput(InputAction.CallbackContext context)
+    {
+        isPressed = context.ReadValue<float>();
     }
 
     private void FixedUpdate()
@@ -71,6 +90,14 @@ public class DefaultMarbleController : MonoBehaviour
         SmoothMovement();
         CameraFollow();
         GroundCheck();
+
+        PlayerMovement();
+    }
+
+    private void Update()
+    {
+        PlayerJump();
+        PlayerPressed();
     }
 
     private void UpdateMarbleSpeed()
@@ -81,64 +108,66 @@ public class DefaultMarbleController : MonoBehaviour
     private void MoveForward()
     {
         Vector3 forwardForce = Vector3.forward * marbleSpeed;
-        rigidbody.AddForce(forwardForce, ForceMode.Acceleration);
+        rigidBody.AddForce(forwardForce, ForceMode.Acceleration);
     }
 
     private void SmoothMovement()
     {
         Vector3 smoothedPosition = Vector3.Lerp(
             new Vector3(transform.position.x, 0f, transform.position.z),
-            new Vector3(rigidbody.position.x, 0f, rigidbody.position.z),
+            new Vector3(rigidBody.position.x, 0f, rigidBody.position.z),
             marbleSmoothSpeed
         );
 
-        rigidbody.position = new Vector3(smoothedPosition.x, transform.position.y, smoothedPosition.z);
+        rigidBody.position = new Vector3(smoothedPosition.x, transform.position.y, smoothedPosition.z);
     }
 
     private void CameraFollow()
     {
-        cameraRig.transform.position = new Vector3(
-            transform.position.x,
-            Mathf.Lerp(cameraRig.transform.position.y, targetCameraY, marbleSmoothSpeed),
-            transform.position.z
-        );
+        if (transform.position.y > 0)
+            cameraRig.transform.position = new Vector3(
+                transform.position.x,
+                Mathf.Lerp(cameraRig.transform.position.y, targetCameraY, marbleSmoothSpeed),
+                transform.position.z
+            );
     }
 
-    private void PlayerMovement(InputAction.CallbackContext context)
+    private void PlayerMovement()
     {
-        moveValue = context.ReadValue<Vector2>();
-        if (!pivotIsSet)
+        if (isPressed == 1 && !EventSystem.current.IsPointerOverGameObject())
         {
-            centerPivot = moveValue;
-            pivotIsSet = true;
-        }
-
-        if (Mathf.Abs(Mathf.Abs(centerPivot.x) - Mathf.Abs(moveValue.x)) > threshold)
-        {
-            if (moveValue.x > centerPivot.x)
+            if (!pivotIsSet)
             {
-                rigidbody.AddForce(Vector3.right * 3f, ForceMode.Acceleration);
+                centerPivot = moveValue;
+                pivotIsSet = true;
             }
-            else if (moveValue.x < centerPivot.x)
+
+            if (Mathf.Abs(Mathf.Abs(centerPivot.x) - Mathf.Abs(moveValue.x)) > threshold)
             {
-                rigidbody.AddForce(Vector3.left * 3f, ForceMode.Acceleration);
+                if (moveValue.x > centerPivot.x)
+                {
+                    rigidBody.AddForce(Vector3.right * 6f, ForceMode.Acceleration);
+                }
+                else if (moveValue.x < centerPivot.x)
+                {
+                    rigidBody.AddForce(Vector3.left * 6f, ForceMode.Acceleration);
+                }
             }
         }
     }
 
-    private void PlayerJump(InputAction.CallbackContext context)
+    private void PlayerJump()
     {
-        jumpValue = context.ReadValue<float>();
-        if (jumpValue > 0 && jumpAvailable)
+        if (jumpIsTrigger && jumpAvailable && !EventSystem.current.IsPointerOverGameObject())
         {
             Vector3 upForce = new Vector3(0f, marbleJumpForce, 0f);
-            rigidbody.AddForce(upForce, ForceMode.VelocityChange);
+            rigidBody.AddForce(upForce, ForceMode.VelocityChange);
         }
+        jumpIsTrigger = false;
     }
 
-    private void PlayerPressed(InputAction.CallbackContext context)
+    private void PlayerPressed()
     {
-        isPressed = context.ReadValue<float>();
         if (isPressed == 0)
         {
             pivotIsSet = false;
