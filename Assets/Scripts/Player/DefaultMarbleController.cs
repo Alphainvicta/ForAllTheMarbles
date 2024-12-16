@@ -17,7 +17,6 @@ public class DefaultMarbleController : MonoBehaviour
     private bool jumpAvailable = true;
     public float marbleSpeed;
     private float marbleJumpForce;
-    private float marbleSmoothSpeed;
     private float marbleSmoothDuration = 0f;
     private float cameraSmoothDuration = 0f;
     private PlayerInput playerInput;
@@ -43,7 +42,6 @@ public class DefaultMarbleController : MonoBehaviour
         PlayerMarble playerMarble = GameObject.Find("GameManager").GetComponent<PlayerManager>().playerMarble;
         targetMarbleSpeed = playerMarble.marbleSpeed;
         marbleJumpForce = playerMarble.marbleJumpForce;
-        marbleSmoothSpeed = playerMarble.marbleSmoothSpeed;
         marbleSpeed = 1f;
         rigidBody = gameObject.GetComponent<Rigidbody>();
         previousY = Mathf.Round(cameraRig.transform.position.y);
@@ -90,7 +88,6 @@ public class DefaultMarbleController : MonoBehaviour
     {
         UpdateMarbleSpeed();
         MoveForward();
-        SmoothMovement();
         CameraFollow();
         GroundCheck();
 
@@ -114,17 +111,6 @@ public class DefaultMarbleController : MonoBehaviour
     {
         Vector3 forwardForce = Vector3.forward * marbleSpeed;
         rigidBody.AddForce(forwardForce, ForceMode.Force);
-    }
-
-    private void SmoothMovement()
-    {
-        Vector3 smoothedPosition = Vector3.Lerp(
-            new Vector3(transform.position.x, 0f, transform.position.z),
-            new Vector3(rigidBody.position.x, 0f, rigidBody.position.z),
-            marbleSmoothSpeed
-        );
-
-        rigidBody.position = new Vector3(smoothedPosition.x, transform.position.y, smoothedPosition.z);
     }
 
     private void CameraFollow()
@@ -157,11 +143,11 @@ public class DefaultMarbleController : MonoBehaviour
             {
                 if (moveValue.x > centerPivot.x)
                 {
-                    rigidBody.AddForce(Vector3.right * 0.5f, ForceMode.Impulse);
+                    rigidBody.AddForce(Vector3.right * 0.3f, ForceMode.Impulse);
                 }
                 else if (moveValue.x < centerPivot.x)
                 {
-                    rigidBody.AddForce(Vector3.left * 0.5f, ForceMode.Impulse);
+                    rigidBody.AddForce(Vector3.left * 0.3f, ForceMode.Impulse);
                 }
             }
         }

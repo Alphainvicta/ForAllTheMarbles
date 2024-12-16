@@ -16,7 +16,6 @@ public class PlayerMarble : ScriptableObject
     [Header("Marble forces")]
     public float marbleSpeed;
     public float marbleJumpForce;
-    public float marbleSmoothSpeed;
 
     [Header("Marble identifier")]
     public string marbleName;
