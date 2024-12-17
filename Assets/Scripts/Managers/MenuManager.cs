@@ -9,26 +9,33 @@ namespace Managers
         public TextMeshProUGUI selectedMarble;
         private void OnEnable()
         {
-            GameManager.GameMenu += StartGameMenu;
-            GameManager.GameStart += EndGameMenu;
+            GameManager.GameMenu += HandleGameMenu;
+            GameManager.GameStart += HandleGameStart;
         }
 
         private void OnDisable()
         {
-            GameManager.GameMenu -= StartGameMenu;
-            GameManager.GameStart -= EndGameMenu;
+            GameManager.GameMenu -= HandleGameMenu;
+            GameManager.GameStart -= HandleGameStart;
         }
 
-        public void StartGameMenu()
+        private void HandleGameMenu() => GameMenu(1);
+        private void HandleGameStart() => GameMenu(2);
+        public void GameMenu(int option)
         {
-            gameObject.GetComponent<PlayerManager>().ModifyPlayerValues();
-            SelectedMarble();
-            gameMenu.SetActive(true);
-        }
-
-        public void EndGameMenu()
-        {
-            gameMenu.SetActive(false);
+            switch (option)
+            {
+                case 1:
+                    gameObject.GetComponent<PlayerManager>().ModifyPlayerValues();
+                    SelectedMarble();
+                    gameMenu.SetActive(true);
+                    break;
+                case 2:
+                    gameMenu.SetActive(false);
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void SelectedMarble()

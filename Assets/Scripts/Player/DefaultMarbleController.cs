@@ -173,13 +173,13 @@ public class DefaultMarbleController : MonoBehaviour
 
     private void GroundCheck()
     {
-        float raySpacing = 0.25f;
+        float raySpacing = 0.5f;
         Vector3[] rayOffsets = new Vector3[]
         {
-        new(-raySpacing, 0f, -raySpacing),
-        new(-raySpacing, 0f,  raySpacing),
-        new( raySpacing, 0f, -raySpacing),
-        new( raySpacing, 0f,  raySpacing),
+        new(-raySpacing, 0f, 0f),
+        new(raySpacing, 0f,  0f),
+        new( 0f, 0f, -raySpacing),
+        new( 0f, 0f,  raySpacing),
         Vector3.zero
         };
 

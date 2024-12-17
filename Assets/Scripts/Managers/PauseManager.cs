@@ -26,11 +26,11 @@ namespace Managers
             GameManager.GameMenu -= HandleGameEnd;
         }
 
-        private void HandleGameStart() => PauseMenu(1);
-        private void HandleGamePaused() => PauseMenu(2);
-        private void HandleGameEnd() => PauseMenu(3);
+        private void HandleGameStart() => PauseGameMenu(1);
+        private void HandleGamePaused() => PauseGameMenu(2);
+        private void HandleGameEnd() => PauseGameMenu(3);
 
-        private void PauseMenu(int option)
+        private void PauseGameMenu(int option)
         {
             switch (option)
             {

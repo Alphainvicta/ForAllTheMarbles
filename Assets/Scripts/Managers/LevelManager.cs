@@ -1,16 +1,39 @@
+using System;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+namespace Managers
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class LevelManager : MonoBehaviour
     {
-        
-    }
+        public Level[] levelList;
+        private void OnEnable()
+        {
+            GameManager.GameStart += HandleGameStart;
+            GameManager.GameEnd += HandleGameEnd;
+            GameManager.GameMenu += HandleGameEnd;
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private void OnDisable()
+        {
+            GameManager.GameStart -= HandleGameStart;
+            GameManager.GameEnd -= HandleGameEnd;
+            GameManager.GameMenu -= HandleGameEnd;
+        }
+
+        private void HandleGameStart() => GameLevel(1);
+        private void HandleGameEnd() => GameLevel(2);
+
+        private void GameLevel(int option)
+        {
+            switch (option)
+            {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
