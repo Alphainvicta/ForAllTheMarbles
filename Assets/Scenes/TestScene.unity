@@ -1755,6 +1755,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2043478816abec949bf7ed76ccfa5921, type: 2}
   levelLocation: {fileID: 904641949}
   poolLevel: {fileID: 643934499}
+  cameraPosition: {fileID: 70353510}
 --- !u!1 &763662666
 GameObject:
   m_ObjectHideFlags: 0
@@ -3094,6 +3095,10 @@ PrefabInstance:
     - target: {fileID: 4748455518462517343, guid: 9134d3b2786c1c54c9375072bd798faf, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5132755092779553827, guid: 9134d3b2786c1c54c9375072bd798faf, type: 3}
+      propertyPath: m_UseGravity
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9085981129731828018, guid: 9134d3b2786c1c54c9375072bd798faf, type: 3}
       propertyPath: m_LocalPosition.x
