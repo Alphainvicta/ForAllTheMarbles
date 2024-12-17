@@ -110,6 +110,11 @@ public class DefaultMarbleController : MonoBehaviour
     {
         Vector3 forwardForce = Vector3.forward * marbleSpeed;
         rigidBody.AddForce(forwardForce, ForceMode.Force);
+
+        Vector3 currentVelocity = rigidBody.linearVelocity;
+        // float clampedX = Mathf.Clamp(currentVelocity.x, -maxSpeed, maxSpeed);
+        float clampedZ = Mathf.Clamp(currentVelocity.z, marbleSpeed, targetMarbleSpeed);
+        rigidBody.linearVelocity = new Vector3(currentVelocity.x, currentVelocity.y, clampedZ);
     }
 
     private void CameraFollow()
