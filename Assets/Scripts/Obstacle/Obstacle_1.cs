@@ -1,13 +1,11 @@
-using System.Linq;
 using UnityEngine;
 
 public class Obstacle_1 : MonoBehaviour
 {
     [SerializeField] private Transform[] platformList;
-    public Transform obstacleEndPosition;
     private void OnEnable()
     {
-        obstacleEndPosition = null;
+        gameObject.GetComponent<ObstacleEndPosition>().obstacleEndPosition = null;
         Transform lastPlatform = gameObject.transform;
         foreach (Transform platform in platformList)
         {
@@ -18,14 +16,15 @@ public class Obstacle_1 : MonoBehaviour
             //Set correct snap point for the platform
             float positionZ = lastPlatform.position.z + (lastPlatform.localScale.z / 2) + (platform.localScale.z / 2);
 
+            //Set the random side to set the next platform left or right
+            int randomSide = Random.Range(0, 2);
+
             //Set random arrange condition for more diversity
             int randomArrange = Random.Range(0, 2);
             switch (randomArrange)
             {
                 case 0:
                     {
-                        //Set the random side to set the next platform left or right
-                        int randomSide = Random.Range(0, 2);
                         float positionX;
                         if (randomSide > 0)
                         {
@@ -45,8 +44,6 @@ public class Obstacle_1 : MonoBehaviour
                     }
                 case 1:
                     {
-                        //Set the random side to set the next platform left or right
-                        int randomSide = Random.Range(0, 2);
                         float positionX;
                         if (randomSide > 0)
                         {
@@ -71,6 +68,6 @@ public class Obstacle_1 : MonoBehaviour
             }
             lastPlatform = platform.transform;
         }
-        obstacleEndPosition = lastPlatform;
+        gameObject.GetComponent<ObstacleEndPosition>().obstacleEndPosition = lastPlatform;
     }
 }

@@ -59,8 +59,8 @@ namespace Managers
                     GameObject randomObstacle = level.obstacleList[Random.Range(0, level.obstacleList.Length)];
 
                     GameObject currentObstacle = LevelPool(randomObstacle);
-                    yield return new WaitUntil(() => currentObstacle.GetComponent<Obstacle_1>().obstacleEndPosition != null);
-                    levelLocation = currentObstacle.GetComponent<Obstacle_1>().obstacleEndPosition;
+                    yield return new WaitUntil(() => currentObstacle.GetComponent<ObstacleEndPosition>().obstacleEndPosition != null);
+                    levelLocation = currentObstacle.GetComponent<ObstacleEndPosition>().obstacleEndPosition;
                 }
             }
             yield return null;
