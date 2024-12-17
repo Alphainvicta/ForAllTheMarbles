@@ -203,7 +203,6 @@ public class DefaultMarbleController : MonoBehaviour
                         previousY = Mathf.Round(cameraRig.transform.position.y);
                         cameraSmoothDuration = 0f;
                     }
-
                     break;
                 }
             }

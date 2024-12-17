@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a7a7bd24b574f04a8a704beab3cc278, type: 3}
   m_Name: Level_1
   m_EditorClassIdentifier: 
-  obstacleList: []
+  obstacleList:
+  - {fileID: 7318865583628718100, guid: 0e2635bea5a8ad2448346f07759944d1, type: 3}
   obstacleCount: 10
