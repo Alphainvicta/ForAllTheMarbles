@@ -24,32 +24,32 @@ namespace Managers
             Menu();
         }
 
-        public void Menu()
+        public static void Menu()
         {
             GameMenu?.Invoke();
         }
 
-        public void PlayGame()
+        public static void PlayGame()
         {
             GameStart?.Invoke();
         }
 
-        public void PauseGame()
+        public static void PauseGame()
         {
             GamePaused?.Invoke();
         }
 
-        public void EndGame()
+        public static void EndGame()
         {
             GameEnd?.Invoke();
         }
 
-        public void StoreGame()
+        public static void StoreGame()
         {
             GameStore.Invoke();
         }
 
-        public void ReloadScene()
+        public static void ReloadScene()
         {
             Time.timeScale = 1f;
             int currentScene = SceneManager.GetActiveScene().buildIndex;

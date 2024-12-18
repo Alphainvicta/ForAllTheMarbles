@@ -7,6 +7,7 @@ namespace Managers
     public class LevelManager : MonoBehaviour
     {
         public Level[] levelList;
+        public GameObject goal;
         public Transform levelLocation;
         public GameObject poolLevel;
         public Transform cameraPosition;
@@ -63,7 +64,9 @@ namespace Managers
                     levelLocation = currentObstacle.GetComponent<ObstacleEndPosition>().obstacleEndPosition;
                 }
             }
-            yield return null;
+
+            Vector3 goalPosition = new(levelLocation.position.x, levelLocation.position.y, levelLocation.position.z + (levelLocation.localScale.z / 2) + (goal.transform.localScale.z / 2) + 5);
+            Instantiate(goal, goalPosition, levelLocation.rotation);
         }
 
         private IEnumerator ObstacleManager()

@@ -125,12 +125,12 @@ public class DefaultMarbleController : MonoBehaviour
             cameraSmoothDuration += Time.fixedDeltaTime;
             t = Mathf.Clamp01(cameraSmoothDuration / 1f);
         }
-        if (transform.position.y > 0)
-            cameraRig.transform.position = new Vector3(
-                transform.position.x,
-                Mathf.Lerp(previousY, targetCameraY, t),
-                transform.position.z
-            );
+
+        cameraRig.transform.position = new Vector3(
+            transform.position.x,
+            Mathf.Lerp(previousY, targetCameraY, t),
+            transform.position.z
+        );
     }
 
     private void PlayerMovement()
