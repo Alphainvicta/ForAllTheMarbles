@@ -20,4 +20,4 @@ MonoBehaviour:
   marbleSpeed: 4
   marbleJumpForce: 8
   marbleName: Default
-  playerControllerScripts: {fileID: 11500000, guid: 19c0cedd774b48442bf5b0f5172efffd, type: 3}
+  playerControllerScripts: DefaultMarbleController

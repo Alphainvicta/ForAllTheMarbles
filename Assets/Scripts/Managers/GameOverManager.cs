@@ -38,7 +38,7 @@ namespace Managers
                 gameOverText.text = "Failure";
             }
             gameOverMenu.SetActive(true);
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(1f);
             isVictory = null;
             gameOverPanel.SetActive(true);
         }

@@ -19,7 +19,6 @@ public class PlayerMarble : ScriptableObject
 
     [Header("Marble identifier")]
     public string marbleName;
-
     [Header("MarbleScript")]
-    public MonoScript playerControllerScripts;
+    public string playerControllerScripts;
 }

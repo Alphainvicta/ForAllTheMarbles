@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 namespace Managers
 {
@@ -27,7 +28,7 @@ namespace Managers
 
         private void ManagePlayerController(int option)
         {
-            System.Type marbleScript = playerMarble.playerControllerScripts.GetClass();
+            Type marbleScript = Type.GetType(playerMarble.playerControllerScripts);
             var currentMarbleScript = currentMarble.GetComponent(marbleScript);
 
             switch (option)
