@@ -91,6 +91,7 @@ public class DefaultMarbleController : MonoBehaviour
         GroundCheck();
 
         PlayerMovement();
+        ClampedVelocity();
     }
 
     private void Update()
@@ -110,11 +111,14 @@ public class DefaultMarbleController : MonoBehaviour
     {
         Vector3 forwardForce = Vector3.forward * marbleSpeed;
         rigidBody.AddForce(forwardForce, ForceMode.Force);
+    }
 
+    private void ClampedVelocity()
+    {
         Vector3 currentVelocity = rigidBody.linearVelocity;
-        // float clampedX = Mathf.Clamp(currentVelocity.x, -maxSpeed, maxSpeed);
-        float clampedZ = Mathf.Clamp(currentVelocity.z, marbleSpeed, targetMarbleSpeed);
-        rigidBody.linearVelocity = new Vector3(currentVelocity.x, currentVelocity.y, clampedZ);
+        float clampedX = Mathf.Clamp(currentVelocity.x, -targetMarbleSpeed, targetMarbleSpeed);
+        float clampedZ = Mathf.Clamp(currentVelocity.z, 0f, targetMarbleSpeed);
+        rigidBody.linearVelocity = new Vector3(clampedX, currentVelocity.y, clampedZ);
     }
 
     private void CameraFollow()

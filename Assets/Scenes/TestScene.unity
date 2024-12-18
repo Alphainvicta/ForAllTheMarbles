@@ -1361,7 +1361,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &581021540
 Transform:
   m_ObjectHideFlags: 0
@@ -1462,7 +1462,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3860,6 +3860,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Loose
       objectReference: {fileID: 0}
+    - target: {fileID: 3885279294252315919, guid: 360d6626f6a3d024992695362aee581c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 7557549863241054086, guid: 360d6626f6a3d024992695362aee581c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -4024,6 +4028,10 @@ PrefabInstance:
     - target: {fileID: 3885279294252315919, guid: 360d6626f6a3d024992695362aee581c, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3885279294252315919, guid: 360d6626f6a3d024992695362aee581c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 7557549863241054086, guid: 360d6626f6a3d024992695362aee581c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
