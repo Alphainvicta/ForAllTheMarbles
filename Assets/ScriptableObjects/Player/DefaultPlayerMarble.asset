@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DefaultPlayerMarble
   m_EditorClassIdentifier: 
   mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
-  material: {fileID: 0}
+  material: {fileID: 2100000, guid: 4cb15b837b736404686b215a94cbb738, type: 2}
   mass: 1
   linearDamping: 0
   angularDamping: 0.05

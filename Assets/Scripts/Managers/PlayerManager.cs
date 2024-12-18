@@ -58,6 +58,7 @@ namespace Managers
                 marbleRigid.mass = playerMarble.mass;
                 marbleRigid.linearDamping = playerMarble.linearDamping;
                 marbleRigid.angularDamping = playerMarble.angularDamping;
+                currentMarble.GetComponent<MeshCollider>().sharedMesh = playerMarble.mesh;
             }
         }
     }
