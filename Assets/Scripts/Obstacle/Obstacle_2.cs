@@ -22,7 +22,7 @@ public class Obstacle_2 : MonoBehaviour
             if (positionPlatform == 0)
             {
                 positionZ = lastPlatform.position.z + (lastPlatform.localScale.z / 2) + (platform.localScale.z / 2);
-                positionZ += Random.Range(3, 6);
+                positionZ += Random.Range(2, 4);
             }
 
             switch (positionPlatform)

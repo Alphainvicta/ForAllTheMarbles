@@ -152,15 +152,21 @@ public class DefaultMarbleController : MonoBehaviour
             {
                 if (moveValue.x > centerPivot.x)
                 {
-                    rigidBody.AddForce(Vector3.right * 0.3f, ForceMode.Impulse);
+                    if (marbleBreakSmoothDuration > 0f)
+                        rigidBody.AddForce(Vector3.right * 0.1f, ForceMode.Impulse);
+                    else
+                        rigidBody.AddForce(Vector3.right * 0.3f, ForceMode.Impulse);
                 }
                 else if (moveValue.x < centerPivot.x)
                 {
-                    rigidBody.AddForce(Vector3.left * 0.3f, ForceMode.Impulse);
+                    if (marbleBreakSmoothDuration > 0f)
+                        rigidBody.AddForce(Vector3.left * 0.1f, ForceMode.Impulse);
+                    else
+                        rigidBody.AddForce(Vector3.left * 0.3f, ForceMode.Impulse);
                 }
             }
 
-            else if (Mathf.Abs(Mathf.Abs(centerPivot.y) - Mathf.Abs(moveValue.y)) > threshold)
+            if (Mathf.Abs(Mathf.Abs(centerPivot.y) - Mathf.Abs(moveValue.y)) > threshold)
             {
                 if (moveValue.y < centerPivot.y)
                 {
@@ -171,10 +177,10 @@ public class DefaultMarbleController : MonoBehaviour
                     velocity.z = Mathf.Lerp(velocity.z, 0, t);
                     rigidBody.linearVelocity = velocity;
                 }
-                else
-                {
-                    marbleBreakSmoothDuration = 0f;
-                }
+            }
+            else
+            {
+                marbleBreakSmoothDuration = 0f;
             }
         }
     }
