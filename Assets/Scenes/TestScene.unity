@@ -1119,7 +1119,7 @@ MonoBehaviour:
   m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 1
+  m_SoftShadowQuality: 3
 --- !u!1 &581021539
 GameObject:
   m_ObjectHideFlags: 0
@@ -3963,6 +3963,10 @@ PrefabInstance:
     - target: {fileID: 5132755092779553827, guid: 9134d3b2786c1c54c9375072bd798faf, type: 3}
       propertyPath: m_UseGravity
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5132755092779553827, guid: 9134d3b2786c1c54c9375072bd798faf, type: 3}
+      propertyPath: m_Constraints
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5132755092779553827, guid: 9134d3b2786c1c54c9375072bd798faf, type: 3}
       propertyPath: m_CollisionDetection

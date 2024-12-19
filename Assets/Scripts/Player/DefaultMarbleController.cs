@@ -93,11 +93,11 @@ public class DefaultMarbleController : MonoBehaviour
 
         PlayerMovement();
         ClampedVelocity();
+        PlayerJump();
     }
 
     private void Update()
     {
-        PlayerJump();
         PlayerPressed();
     }
 
@@ -148,32 +148,30 @@ public class DefaultMarbleController : MonoBehaviour
                 pivotIsSet = true;
             }
 
-            if (Mathf.Abs(Mathf.Abs(centerPivot.x) - Mathf.Abs(moveValue.x)) > threshold)
-            {
-                if (moveValue.x > centerPivot.x)
-                {
-                    if (marbleBreakSmoothDuration > 0f)
-                        rigidBody.AddForce(Vector3.right * 0.1f, ForceMode.Impulse);
-                    else
-                        rigidBody.AddForce(Vector3.right * 0.3f, ForceMode.Impulse);
-                }
-                else if (moveValue.x < centerPivot.x)
-                {
-                    if (marbleBreakSmoothDuration > 0f)
-                        rigidBody.AddForce(Vector3.left * 0.1f, ForceMode.Impulse);
-                    else
-                        rigidBody.AddForce(Vector3.left * 0.3f, ForceMode.Impulse);
-                }
-            }
+            Vector2 movementDirection = moveValue - centerPivot;
+            float angle = Vector2.SignedAngle(Vector2.right, movementDirection);
 
-            if (Mathf.Abs(Mathf.Abs(centerPivot.y) - Mathf.Abs(moveValue.y)) > threshold)
+            if (Vector2.Distance(centerPivot, moveValue) > threshold)
             {
-                if (moveValue.y < centerPivot.y)
+                if (angle >= -45f && angle < 45f) // Right
+                {
+                    rigidBody.AddForce(Vector3.right * 0.3f, ForceMode.Impulse);
+                }
+                else if (angle >= 45f && angle < 135f) // Up
+                {
+                    jumpIsTrigger = true;
+                }
+                else if (angle >= 135f && angle < 225f) // Left
+                {
+                    rigidBody.AddForce(Vector3.left * 0.3f, ForceMode.Impulse);
+                }
+                else // Down
                 {
                     marbleBreakSmoothDuration += Time.fixedDeltaTime;
                     float t = Mathf.Clamp01(marbleBreakSmoothDuration / 0.5f);
 
                     Vector3 velocity = rigidBody.linearVelocity;
+                    velocity.x = Mathf.Lerp(velocity.x, 0, t);
                     velocity.z = Mathf.Lerp(velocity.z, 0, t);
                     rigidBody.linearVelocity = velocity;
                 }
