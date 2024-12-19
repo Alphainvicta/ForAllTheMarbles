@@ -9,7 +9,12 @@ namespace Managers
         public GameObject gameOverMenu;
         public TextMeshProUGUI gameOverText;
         public GameObject gameOverPanel;
-        public static bool? isVictory = null;
+        public static bool? isVictory;
+
+        private void Start()
+        {
+            isVictory = null;
+        }
         private void OnEnable()
         {
             GameManager.GameEnd += GameOverMenu;
@@ -38,7 +43,6 @@ namespace Managers
             }
             gameOverMenu.SetActive(true);
             yield return new WaitForSeconds(1f);
-            isVictory = null;
             gameOverPanel.SetActive(true);
         }
     }
