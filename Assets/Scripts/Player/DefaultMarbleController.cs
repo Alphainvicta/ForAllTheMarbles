@@ -16,8 +16,9 @@ public class DefaultMarbleController : MonoBehaviour
     private bool jumpAvailable = true;
     public float marbleSpeed;
     private float marbleJumpForce;
-    private float marbleSmoothDuration = 0f;
+    private float marbleSpeedSmoothDuration = 0f;
     private float cameraSmoothDuration = 0f;
+    private float marbleBreakSmoothDuration = 0f;
     private PlayerInput playerInput;
     private InputAction playerMove;
     private InputAction playerJump;
@@ -102,8 +103,8 @@ public class DefaultMarbleController : MonoBehaviour
 
     private void UpdateMarbleSpeed()
     {
-        marbleSmoothDuration += Time.fixedDeltaTime;
-        float t = Mathf.Clamp01(marbleSmoothDuration / 3);
+        marbleSpeedSmoothDuration += Time.fixedDeltaTime;
+        float t = Mathf.Clamp01(marbleSpeedSmoothDuration / 3);
         marbleSpeed = Mathf.Lerp(1f, targetMarbleSpeed, t);
     }
 
@@ -156,6 +157,23 @@ public class DefaultMarbleController : MonoBehaviour
                 else if (moveValue.x < centerPivot.x)
                 {
                     rigidBody.AddForce(Vector3.left * 0.3f, ForceMode.Impulse);
+                }
+            }
+
+            else if (Mathf.Abs(Mathf.Abs(centerPivot.y) - Mathf.Abs(moveValue.y)) > threshold)
+            {
+                if (moveValue.y < centerPivot.y)
+                {
+                    marbleBreakSmoothDuration += Time.fixedDeltaTime;
+                    float t = Mathf.Clamp01(marbleBreakSmoothDuration / 0.5f);
+
+                    Vector3 velocity = rigidBody.linearVelocity;
+                    velocity.z = Mathf.Lerp(velocity.z, 0, t);
+                    rigidBody.linearVelocity = velocity;
+                }
+                else
+                {
+                    marbleBreakSmoothDuration = 0f;
                 }
             }
         }
