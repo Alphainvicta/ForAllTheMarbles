@@ -27,6 +27,8 @@ public class DefaultMarbleController : MonoBehaviour
     private float targetMarbleSpeed;
     private float threshold;
     private float targetCameraY;
+    private GameObject pointerContainer;
+    private GameObject pointer;
 
     private void Awake()
     {
@@ -47,6 +49,9 @@ public class DefaultMarbleController : MonoBehaviour
         previousY = Mathf.Round(cameraRig.transform.position.y);
         targetCameraY = Mathf.Round(transform.position.y);
         threshold = GameObject.Find("GameManager").GetComponent<PlayerManager>().touchThreshold;
+        pointerContainer = GameObject.Find("PointerContainer");
+        pointer = GameObject.Find("Pointer");
+        pointerContainer.SetActive(false);
     }
 
     private void OnEnable()
@@ -146,34 +151,36 @@ public class DefaultMarbleController : MonoBehaviour
             {
                 centerPivot = moveValue;
                 pivotIsSet = true;
+                pointerContainer.SetActive(true);
+                pointerContainer.transform.position = centerPivot;
             }
 
             Vector2 movementDirection = moveValue - centerPivot;
             float angle = Vector2.SignedAngle(Vector2.right, movementDirection);
+            pointer.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+            pointer.transform.localScale = new Vector3(Mathf.Clamp(Vector2.Distance(centerPivot, moveValue), 1f, Vector2.Distance(centerPivot, moveValue) / 10), 1f, 1f);
 
             if (Vector2.Distance(centerPivot, moveValue) > threshold)
             {
                 if (angle >= -45f && angle < 45f) // Right
                 {
                     rigidBody.AddForce(Vector3.right * 0.3f, ForceMode.Impulse);
+                    Debug.Log("Right");
                 }
                 else if (angle >= 45f && angle < 135f) // Up
                 {
                     jumpIsTrigger = true;
+                    Debug.Log("Up");
                 }
-                else if (angle >= 135f && angle < 225f) // Left
+                else if (angle >= 135f || angle < -135f) // Left
                 {
                     rigidBody.AddForce(Vector3.left * 0.3f, ForceMode.Impulse);
+                    Debug.Log("Left");
                 }
-                else // Down
+                else if (angle >= -135f && angle < -45f) // Down
                 {
-                    marbleBreakSmoothDuration += Time.fixedDeltaTime;
-                    float t = Mathf.Clamp01(marbleBreakSmoothDuration / 0.5f);
-
-                    Vector3 velocity = rigidBody.linearVelocity;
-                    velocity.x = Mathf.Lerp(velocity.x, 0, t);
-                    velocity.z = Mathf.Lerp(velocity.z, 0, t);
-                    rigidBody.linearVelocity = velocity;
+                    rigidBody.AddForce(Vector3.down * 0.3f, ForceMode.Impulse);
+                    Debug.Log("Down");
                 }
             }
             else
@@ -198,6 +205,7 @@ public class DefaultMarbleController : MonoBehaviour
         if (isPressed == 0)
         {
             pivotIsSet = false;
+            pointerContainer.SetActive(false);
         }
     }
 

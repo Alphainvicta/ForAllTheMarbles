@@ -7,6 +7,7 @@ namespace Managers
     {
         public PlayerMarble playerMarble;
         public GameObject currentMarble;
+        public GameObject PlayerPointer;
         public float touchThreshold;
 
         private void OnEnable()
@@ -36,10 +37,12 @@ namespace Managers
                 case 1:
                     if (currentMarbleScript == null)
                         currentMarble.AddComponent(marbleScript);
+                    PlayerPointer.SetActive(true);
                     break;
                 case 2:
                     if (currentMarbleScript != null)
                         Destroy(currentMarbleScript);
+                    PlayerPointer.SetActive(false);
                     break;
                 default:
                     break;
