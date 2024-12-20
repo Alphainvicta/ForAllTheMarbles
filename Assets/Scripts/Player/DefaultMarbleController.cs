@@ -165,22 +165,24 @@ public class DefaultMarbleController : MonoBehaviour
                 if (angle >= -45f && angle < 45f) // Right
                 {
                     rigidBody.AddForce(Vector3.right * 0.3f, ForceMode.Impulse);
-                    Debug.Log("Right");
                 }
                 else if (angle >= 45f && angle < 135f) // Up
                 {
                     jumpIsTrigger = true;
-                    Debug.Log("Up");
                 }
                 else if (angle >= 135f || angle < -135f) // Left
                 {
                     rigidBody.AddForce(Vector3.left * 0.3f, ForceMode.Impulse);
-                    Debug.Log("Left");
                 }
                 else if (angle >= -135f && angle < -45f) // Down
                 {
-                    rigidBody.AddForce(Vector3.down * 0.3f, ForceMode.Impulse);
-                    Debug.Log("Down");
+                    marbleBreakSmoothDuration += Time.fixedDeltaTime;
+                    float t = Mathf.Clamp01(marbleBreakSmoothDuration / 0.5f);
+
+                    Vector3 velocity = rigidBody.linearVelocity;
+                    velocity.x = Mathf.Lerp(velocity.x, 0, t);
+                    velocity.z = Mathf.Lerp(velocity.z, 0, t);
+                    rigidBody.linearVelocity = velocity;
                 }
             }
             else
