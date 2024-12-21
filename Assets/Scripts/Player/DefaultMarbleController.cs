@@ -164,7 +164,9 @@ public class DefaultMarbleController : MonoBehaviour
             {
                 if (angle >= -45f && angle < 45f) // Right
                 {
-                    rigidBody.AddForce(Vector3.right * 0.3f, ForceMode.Impulse);
+                    float clampedforce = Mathf.Clamp01(Vector2.Distance(centerPivot, moveValue) / 250);
+                    Vector3 rightForce = new(Mathf.Lerp(0f, 0.3f, clampedforce), 0f, 0f);
+                    rigidBody.AddForce(rightForce, ForceMode.Impulse);
                 }
                 else if (angle >= 45f && angle < 135f) // Up
                 {
@@ -172,7 +174,9 @@ public class DefaultMarbleController : MonoBehaviour
                 }
                 else if (angle >= 135f || angle < -135f) // Left
                 {
-                    rigidBody.AddForce(Vector3.left * 0.3f, ForceMode.Impulse);
+                    float clampedforce = Mathf.Clamp01(Vector2.Distance(centerPivot, moveValue) / 250);
+                    Vector3 leftForce = new(Mathf.Lerp(0f, 0.3f, clampedforce), 0f, 0f);
+                    rigidBody.AddForce(-leftForce, ForceMode.Impulse);
                 }
                 else if (angle >= -135f && angle < -45f) // Down
                 {
