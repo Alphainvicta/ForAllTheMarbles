@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Managers;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class DefaultMarbleController : MonoBehaviour
 {
@@ -96,14 +97,10 @@ public class DefaultMarbleController : MonoBehaviour
         CameraFollow();
         GroundCheck();
 
+        PlayerPressed();
         PlayerMovement();
         ClampedVelocity();
         PlayerJump();
-    }
-
-    private void Update()
-    {
-        PlayerPressed();
     }
 
     private void UpdateMarbleSpeed()
@@ -158,7 +155,8 @@ public class DefaultMarbleController : MonoBehaviour
             Vector2 movementDirection = moveValue - centerPivot;
             float angle = Vector2.SignedAngle(Vector2.right, movementDirection);
             pointer.transform.rotation = Quaternion.Euler(0f, 0f, angle);
-            pointer.transform.localScale = new Vector3(Mathf.Clamp(Vector2.Distance(centerPivot, moveValue), 1f, Vector2.Distance(centerPivot, moveValue) / 10), 1f, 1f);
+            pointer.transform.localScale = new Vector3(Mathf.Clamp(Vector2.Distance(centerPivot, moveValue) / 10f, 1f, Vector2.Distance(centerPivot, moveValue) / 10f), 1f, 1f);
+            pointer.GetComponentInChildren<Image>().color = Color.Lerp(Color.green, Color.red, Mathf.Clamp01(Vector2.Distance(centerPivot, moveValue) / 250));
 
             if (Vector2.Distance(centerPivot, moveValue) > threshold)
             {
