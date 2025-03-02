@@ -1,6 +1,5 @@
-using System;
 using System.Collections;
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Managers
@@ -22,6 +21,7 @@ namespace Managers
         private GameObject levelPositionInstance;
         private bool looped = false;
         private bool gameflag;
+        private List<Coroutine> activeCoroutines = new();
 
         private void Start()
         {
@@ -39,6 +39,7 @@ namespace Managers
                 ObstacleGenerator(levelList[0].obstacles[0], levelList[0].levelFloor);
             }
         }
+
         private void OnEnable()
         {
             GameManager.MenuGame += OnMenuGame;
@@ -61,19 +62,28 @@ namespace Managers
 
         private void OnMenuGame()
         {
+            StopAllActiveCoroutines();
             gameflag = false;
+            levelPositionInstance.transform.position = levelOrigin.transform.position;
+
+            List<Transform> children = new List<Transform>();
             foreach (Transform child in levelPoolInstance.transform)
             {
-                if (child.name != "LevelStart")
-                {
-                    child.SetParent(disablePool.transform);
-                    child.gameObject.SetActive(false);
-                }
+                children.Add(child);
             }
+
+            foreach (Transform child in children)
+            {
+                child.SetParent(disablePool.transform);
+                child.gameObject.SetActive(false);
+            }
+
+            CallFromPool(levelList[0].obstacles[0]);
         }
 
         private void OnGameStart()
         {
+            StopAllActiveCoroutines();
             StartCoroutine(StartLevelAfterDelay());
         }
 
@@ -100,12 +110,12 @@ namespace Managers
 
         private void OnGameEnd()
         {
-            Debug.Log("LevelManager: Game End");
+            StopAllActiveCoroutines();
         }
 
         private void OnStoreGame()
         {
-            Debug.Log("LevelManager: Store Game");
+            StopAllActiveCoroutines();
         }
 
         private int SetRandomPlacement(Obstacle.ObstacleWidth obstacleWidth, Obstacle.ObstaclePosition obstaclePosition)
@@ -115,13 +125,13 @@ namespace Managers
                 case Obstacle.ObstacleWidth.Small:
                     return obstaclePosition switch
                     {
-                        Obstacle.ObstaclePosition.Edges => UnityEngine.Random.Range(0, 2) * 2,
+                        Obstacle.ObstaclePosition.Edges => Random.Range(0, 2) * 2,
                         Obstacle.ObstaclePosition.Center => 1,
-                        _ => UnityEngine.Random.Range(0, 3),
+                        _ => Random.Range(0, 3),
                     };
 
                 case Obstacle.ObstacleWidth.Medium:
-                    return UnityEngine.Random.Range(0, 2);
+                    return Random.Range(0, 2);
 
                 default:
                     return 0;
@@ -312,6 +322,23 @@ namespace Managers
                     canPlace = true;
                 yield return null;
             }
+        }
+        private void StopAllActiveCoroutines()
+        {
+            foreach (var coroutine in activeCoroutines)
+            {
+                if (coroutine != null)
+                {
+                    StopCoroutine(coroutine);
+                }
+            }
+            activeCoroutines.Clear();
+        }
+        private new Coroutine StartCoroutine(IEnumerator routine)
+        {
+            Coroutine coroutine = base.StartCoroutine(routine);
+            activeCoroutines.Add(coroutine);
+            return coroutine;
         }
     }
 }

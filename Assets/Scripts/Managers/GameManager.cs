@@ -63,11 +63,13 @@ namespace Managers
         public static void Menu()
         {
             MenuGame?.Invoke();
+            isPaused = false;
         }
 
         public static void PlayGame()
         {
             GameStart?.Invoke();
+            isPaused = false;
         }
 
         public static void PauseGame()
@@ -85,11 +87,13 @@ namespace Managers
         public static void EndGame()
         {
             GameEnd?.Invoke();
+            isPaused = false;
         }
 
         public static void Store()
         {
             StoreGame.Invoke();
+            isPaused = false;
         }
 
         public static void ReloadScene()

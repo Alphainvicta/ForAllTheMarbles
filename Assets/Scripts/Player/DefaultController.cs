@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Managers;
+using System;
 
 public class DefaultController : BaseInputAction
 {
@@ -14,6 +15,7 @@ public class DefaultController : BaseInputAction
     private bool jumpAvailable = false;
     private int marblePosition = 0;
     private Rigidbody playerRigidbody;
+    public static Coroutine playerTransitionCoroutine;
     CameraManager cameraManager;
 
     private void Awake()
@@ -26,11 +28,28 @@ public class DefaultController : BaseInputAction
     private void OnEnable()
     {
         Enable();
+        GameManager.MenuGame += StopCoroutines;
+        GameManager.GameStart += SetMarblePosition;
+        GameManager.GameEnd += StopCoroutines;
     }
 
     private void OnDisable()
     {
         Disable();
+        GameManager.GameStart -= SetMarblePosition;
+        GameManager.MenuGame -= StopCoroutines;
+        GameManager.GameEnd -= StopCoroutines;
+    }
+
+    private void SetMarblePosition()
+    {
+        marblePosition = 0;
+    }
+
+    private void StopCoroutines()
+    {
+        if (playerTransitionCoroutine != null)
+            StopCoroutine(playerTransitionCoroutine);
     }
 
     private void Update()
@@ -77,8 +96,20 @@ public class DefaultController : BaseInputAction
                 if (marblePosition < 1)
                 {
                     marblePosition++;
-                    StartCoroutine(MarbleTransition(new Vector3(transform.position.x + 2f, 0f, 0f), 0.1f));
-                    StartCoroutine(cameraManager.CameraTransition(
+
+                    if (CameraManager.cameraTransitionCoroutine != null)
+                    {
+                        StopCoroutine(CameraManager.cameraTransitionCoroutine);
+                    }
+
+                    if (playerTransitionCoroutine != null)
+                    {
+                        StopCoroutine(playerTransitionCoroutine);
+                    }
+
+                    playerTransitionCoroutine = StartCoroutine(MarbleTransition(new Vector3(transform.position.x + 2f, 0f, 0f), 0.1f));
+
+                    CameraManager.cameraTransitionCoroutine = StartCoroutine(cameraManager.CameraTransition(
                         CameraManager.mainCameraInstance.transform.position + new Vector3(0.5f, 0f, 0f),
                         CameraManager.mainCameraInstance.transform.rotation,
                         0.1f));
@@ -98,8 +129,20 @@ public class DefaultController : BaseInputAction
                 if (marblePosition > -1)
                 {
                     marblePosition--;
-                    StartCoroutine(MarbleTransition(new Vector3(transform.position.x - 2f, 0f, 0f), 0.1f));
-                    StartCoroutine(cameraManager.CameraTransition(
+
+                    if (CameraManager.cameraTransitionCoroutine != null)
+                    {
+                        StopCoroutine(CameraManager.cameraTransitionCoroutine);
+                    }
+
+                    if (playerTransitionCoroutine != null)
+                    {
+                        StopCoroutine(playerTransitionCoroutine);
+                    }
+
+                    playerTransitionCoroutine = StartCoroutine(MarbleTransition(new Vector3(transform.position.x - 2f, 0f, 0f), 0.1f));
+
+                    CameraManager.cameraTransitionCoroutine = StartCoroutine(cameraManager.CameraTransition(
                         CameraManager.mainCameraInstance.transform.position + new Vector3(-0.5f, 0f, 0f),
                         CameraManager.mainCameraInstance.transform.rotation,
                         0.1f));
@@ -129,6 +172,7 @@ public class DefaultController : BaseInputAction
         float timeElapsed = 0f;
         while (timeElapsed < duration)
         {
+            yield return new WaitUntil(() => !GameManager.isPaused);
             float t = timeElapsed / duration;
             float newX = Mathf.Lerp(currentPosition.x, goalPosition.x, t);
             gameObject.transform.position = new Vector3(newX, currentPosition.y, currentPosition.z);

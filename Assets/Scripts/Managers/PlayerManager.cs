@@ -44,6 +44,8 @@ namespace Managers
         private void OnMenuGame()
         {
             playerInstance.GetComponent<PlayerInput>().enabled = false;
+
+            RestoreMarbleValues();
         }
 
         private void OnGameStart()
@@ -83,6 +85,8 @@ namespace Managers
         private void OnStoreGame()
         {
             playerInstance.GetComponent<PlayerInput>().enabled = false;
+
+            RestoreMarbleValues();
         }
 
         public void NextPlayerMarble(bool right)
@@ -139,6 +143,15 @@ namespace Managers
                     renderer.material.color = Color.white;
                 }
             }
+        }
+
+        private void RestoreMarbleValues()
+        {
+            playerInstance.GetComponent<Rigidbody>().isKinematic = false;
+            playerInstance.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+            playerInstance.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+
+            playerInstance.transform.position = Vector3.zero;
         }
     }
 }

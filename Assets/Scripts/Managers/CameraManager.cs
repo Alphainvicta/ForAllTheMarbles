@@ -9,7 +9,7 @@ namespace Managers
         [SerializeField] private AnimationCurve cameraTransitionCurve;
         public static GameObject mainCameraInstance;
         public static readonly float cameraGameStartTransitionDuration = 1.5f;
-        private Coroutine cameraTransitionCoroutine;
+        public static Coroutine cameraTransitionCoroutine;
         public static bool OnGoingCameraTransition;
 
         private void Start()
@@ -46,7 +46,7 @@ namespace Managers
             {
                 StopCoroutine(cameraTransitionCoroutine);
             }
-            cameraTransitionCoroutine = StartCoroutine(CameraTransition(new Vector3(3.5f, 1f, 0f), Quaternion.Euler(0f, -90f, 0f), 3f));
+            cameraTransitionCoroutine = StartCoroutine(CameraTransition(new Vector3(3.5f, 1f, 0f), Quaternion.Euler(0f, -90f, 0f), 0f));
         }
 
         private void OnGameStart()

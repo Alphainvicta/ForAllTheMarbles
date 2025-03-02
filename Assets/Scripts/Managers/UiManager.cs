@@ -24,8 +24,11 @@ namespace Managers
         private Button menuPlayButton;
         private Button gamePauseButton;
         private Button pauseUnpauseButton;
+        private Button pauseMenuButton;
         private Transform levelCountDownText;
         public static bool LevelCountDownTransition;
+
+        private Coroutine beginLevelCountDownCoroutine;
         PlayerManager playerManager;
 
         private void Start()
@@ -87,6 +90,11 @@ namespace Managers
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(false);
             uiStoreInstance.SetActive(false);
+
+            if (beginLevelCountDownCoroutine != null)
+            {
+                StopCoroutine(beginLevelCountDownCoroutine);
+            }
         }
 
         private void OnGameStart()
@@ -97,7 +105,12 @@ namespace Managers
             uiEndInstance.SetActive(false);
             uiStoreInstance.SetActive(false);
 
-            StartCoroutine(BeginLevelCountDown());
+            if (beginLevelCountDownCoroutine != null)
+            {
+                StopCoroutine(beginLevelCountDownCoroutine);
+            }
+
+            beginLevelCountDownCoroutine = StartCoroutine(BeginLevelCountDown());
         }
 
         private void OnGamePaused()
@@ -107,6 +120,11 @@ namespace Managers
             uiPausedInstance.SetActive(true);
             uiEndInstance.SetActive(false);
             uiStoreInstance.SetActive(false);
+
+            if (beginLevelCountDownCoroutine != null)
+            {
+                StopCoroutine(beginLevelCountDownCoroutine);
+            }
         }
 
         private void OnGameUnpaused()
@@ -116,6 +134,11 @@ namespace Managers
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(false);
             uiStoreInstance.SetActive(false);
+
+            if (beginLevelCountDownCoroutine != null)
+            {
+                StopCoroutine(beginLevelCountDownCoroutine);
+            }
         }
 
         private void OnGameEnd()
@@ -125,6 +148,11 @@ namespace Managers
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(true);
             uiStoreInstance.SetActive(false);
+
+            if (beginLevelCountDownCoroutine != null)
+            {
+                StopCoroutine(beginLevelCountDownCoroutine);
+            }
         }
 
         private void OnStoreGame()
@@ -134,6 +162,11 @@ namespace Managers
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(false);
             uiStoreInstance.SetActive(true);
+
+            if (beginLevelCountDownCoroutine != null)
+            {
+                StopCoroutine(beginLevelCountDownCoroutine);
+            }
         }
 
         private void AssignMenuButtons()
@@ -205,6 +238,7 @@ namespace Managers
             if (canvasChildren != null)
             {
                 pauseUnpauseButton = canvasChildren.Find("UnpauseButton")?.GetComponent<Button>();
+                pauseMenuButton = canvasChildren.Find("MenuButton")?.GetComponent<Button>();
 
                 if (pauseUnpauseButton != null)
                 {
@@ -213,6 +247,15 @@ namespace Managers
                 else
                 {
                     Debug.LogError("UnpauseButton not found in canvasChildren!");
+                }
+
+                if (pauseMenuButton != null)
+                {
+                    pauseMenuButton.onClick.AddListener(() => GameManager.Menu());
+                }
+                else
+                {
+                    Debug.LogError("MenuButton not found in canvasChildren!");
                 }
             }
             else
