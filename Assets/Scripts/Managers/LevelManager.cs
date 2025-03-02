@@ -16,13 +16,12 @@ namespace Managers
         private float generatePosition = 50f;
         private float directorChance;
         private bool canPlace = true;
-
         private bool readyToPlace = false;
         private GameObject levelPoolInstance;
         private static GameObject disablePool;
         private GameObject levelPositionInstance;
-        private bool isPaused = true;
         private bool looped = false;
+        private bool gameflag;
 
         private void Start()
         {
@@ -62,6 +61,7 @@ namespace Managers
 
         private void OnMenuGame()
         {
+            gameflag = false;
             foreach (Transform child in levelPoolInstance.transform)
             {
                 if (child.name != "LevelStart")
@@ -83,29 +83,29 @@ namespace Managers
             StartCoroutine(TransformObstacle(levelStart));
             StartCoroutine(TransformLevelPosition(levelPositionInstance.transform));
             StartCoroutine(LevelDirector());
-            yield return new WaitForSeconds(CameraManager.cameraGameStartTransitionDuration + 3f);
-            isPaused = false;
 
+            yield return new WaitUntil(() => !UiManager.LevelCountDownTransition);
+            gameflag = true;
         }
 
         private void OnGamePaused()
         {
-            isPaused = true;
+            Debug.Log("LevelManager: Game Paused");
         }
 
         private void OnGameUnpaused()
         {
-            isPaused = false;
+            Debug.Log("LevelManager: Game Unpaused");
         }
 
         private void OnGameEnd()
         {
-            isPaused = true;
+            Debug.Log("LevelManager: Game End");
         }
 
         private void OnStoreGame()
         {
-            isPaused = false;
+            Debug.Log("LevelManager: Store Game");
         }
 
         private int SetRandomPlacement(Obstacle.ObstacleWidth obstacleWidth, Obstacle.ObstaclePosition obstaclePosition)
@@ -130,8 +130,9 @@ namespace Managers
 
         private Transform ObstacleGenerator(Obstacle obstacle, GameObject levelFloor)
         {
+            levelPositionInstance.transform.parent = null;
             int randomPlacement = SetRandomPlacement(obstacle.obstacleWidth, obstacle.obstaclePosition);
-            GameObject newFloor;
+            GameObject newFloor = null;
 
             GameObject obstacleParent = new(obstacle.name);
             obstacleParent.transform.SetParent(levelPoolInstance.transform);
@@ -141,6 +142,8 @@ namespace Managers
                 obstacleParent.transform.position + new Vector3(randomPlacement * 2f, 0f, 0f) + obstacle.obstaclePrefab.transform.localPosition,
                 Quaternion.identity, obstacleParent.transform);
             newObstacle.name = obstacle.obstaclePrefab.name;
+
+            levelPositionInstance.transform.SetParent(obstacleParent.transform);
 
             for (int i = 0; i < obstacle.ObstacleLength; i++)
             {
@@ -162,6 +165,7 @@ namespace Managers
 
         private bool CallFromPool(Obstacle wantedObstacle)
         {
+            levelPositionInstance.transform.parent = null;
             Transform[] poolObstacleList = disablePool.GetComponentsInChildren<Transform>(true);
             if (poolObstacleList.Length > 0)
             {
@@ -181,6 +185,7 @@ namespace Managers
                         }
 
                         levelPositionInstance.transform.position += new Vector3(0f, 0f, 2f * wantedObstacle.ObstacleLength);
+                        levelPositionInstance.transform.SetParent(obstacleParent.transform);
                         StartCoroutine(TransformObstacle(obstacleParent.transform));
                         return true;
                     }
@@ -290,8 +295,8 @@ namespace Managers
         {
             while (obstacle.position.z > disablePosition)
             {
-                if (!isPaused)
-                    obstacle.position += Vector3.back * levelSpeed * Time.deltaTime;
+                yield return new WaitUntil(() => !GameManager.isPaused && gameflag);
+                obstacle.position += Vector3.back * levelSpeed * Time.deltaTime;
                 yield return null;
             }
             obstacle.SetParent(disablePool.transform);
@@ -305,11 +310,6 @@ namespace Managers
             {
                 if (levelPositionInstance.position.z < generatePosition)
                     canPlace = true;
-                if (!isPaused)
-                {
-                    levelPositionInstance.position += Vector3.back * levelSpeed * Time.deltaTime;
-                }
-
                 yield return null;
             }
         }

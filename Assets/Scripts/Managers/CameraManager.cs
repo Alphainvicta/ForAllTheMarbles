@@ -10,6 +10,7 @@ namespace Managers
         public static GameObject mainCameraInstance;
         public static readonly float cameraGameStartTransitionDuration = 1.5f;
         private Coroutine cameraTransitionCoroutine;
+        public static bool OnGoingCameraTransition;
 
         private void Start()
         {
@@ -79,16 +80,19 @@ namespace Managers
 
         public IEnumerator CameraTransition(Vector3 goalPosition, Quaternion goalRotation, float duration)
         {
+            OnGoingCameraTransition = true;
             mainCameraInstance.transform.GetPositionAndRotation(out Vector3 currentPosition, out Quaternion currentRotation);
             float timeElapsed = 0f;
             while (timeElapsed < duration)
             {
+                yield return new WaitUntil(() => !GameManager.isPaused);
                 float t = cameraTransitionCurve.Evaluate(timeElapsed / duration);
                 mainCameraInstance.transform.SetPositionAndRotation(Vector3.Lerp(currentPosition, goalPosition, t), Quaternion.Lerp(currentRotation, goalRotation, t));
                 timeElapsed += Time.deltaTime;
                 yield return null;
             }
             mainCameraInstance.transform.SetPositionAndRotation(goalPosition, goalRotation);
+            OnGoingCameraTransition = false;
             yield return null;
         }
     }

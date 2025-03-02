@@ -22,9 +22,10 @@ namespace Managers
         private Button menuRightButton;
         private Button menuLeftButton;
         private Button menuPlayButton;
-
+        private Button gamePauseButton;
+        private Button pauseUnpauseButton;
         private Transform levelCountDownText;
-
+        public static bool LevelCountDownTransition;
         PlayerManager playerManager;
 
         private void Start()
@@ -41,10 +42,14 @@ namespace Managers
             if (uiGameInstance == null)
             {
                 uiGameInstance = Instantiate(uiGamePrefab, Vector3.zero, Quaternion.identity);
+
+                AssignGameButtons();
             }
             if (uiPausedInstance == null)
             {
                 uiPausedInstance = Instantiate(uiPausedPrefab, Vector3.zero, Quaternion.identity);
+
+                AssignPauseButtons();
             }
             if (uiEndInstance == null)
             {
@@ -172,22 +177,68 @@ namespace Managers
             }
         }
 
-        private IEnumerator BeginLevelCountDown()
+        private void AssignGameButtons()
         {
             Transform canvasChildren = uiGameInstance.transform.Find("GameCanvas");
             if (canvasChildren != null)
-                yield return new WaitForSeconds(CameraManager.cameraGameStartTransitionDuration);
+            {
+                gamePauseButton = canvasChildren.Find("PauseButton")?.GetComponent<Button>();
+
+                if (gamePauseButton != null)
+                {
+                    gamePauseButton.onClick.AddListener(() => GameManager.PauseGame());
+                }
+                else
+                {
+                    Debug.LogError("PauseButton not found in canvasChildren!");
+                }
+            }
+            else
+            {
+                Debug.LogError("canvasChildren not found in uiGameInstance!");
+            }
+        }
+
+        private void AssignPauseButtons()
+        {
+            Transform canvasChildren = uiPausedInstance.transform.Find("PauseCanvas");
+            if (canvasChildren != null)
+            {
+                pauseUnpauseButton = canvasChildren.Find("UnpauseButton")?.GetComponent<Button>();
+
+                if (pauseUnpauseButton != null)
+                {
+                    pauseUnpauseButton.onClick.AddListener(() => GameManager.UnpauseGame());
+                }
+                else
+                {
+                    Debug.LogError("UnpauseButton not found in canvasChildren!");
+                }
+            }
+            else
+            {
+                Debug.LogError("canvasChildren not found in uiPauseInstance!");
+            }
+        }
+
+        private IEnumerator BeginLevelCountDown()
+        {
+            LevelCountDownTransition = true;
+            yield return new WaitUntil(() => !CameraManager.OnGoingCameraTransition);
+            Transform canvasChildren = uiGameInstance.transform.Find("GameCanvas");
             levelCountDownText = canvasChildren.Find("CountDown");
             levelCountDownText.gameObject.SetActive(true);
             float countDown = 3f;
+            float timeElapsed = 0f;
 
-            while (countDown > 0)
+            while (timeElapsed < countDown)
             {
-                levelCountDownText.GetComponent<TextMeshProUGUI>().text = countDown.ToString();
-                yield return new WaitForSeconds(1f);
-                countDown--;
+                yield return new WaitUntil(() => !GameManager.isPaused);
+                levelCountDownText.GetComponent<TextMeshProUGUI>().text = Mathf.Ceil(countDown - timeElapsed).ToString();
+                timeElapsed += Time.deltaTime;
             }
             levelCountDownText.gameObject.SetActive(false);
+            LevelCountDownTransition = false;
             yield return null;
         }
     }

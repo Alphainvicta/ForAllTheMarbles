@@ -9,6 +9,8 @@ namespace Managers
         public PlayerMarbles playerMarbles;
         public static GameObject playerInstance;
         private int marbleIndex;
+        private Vector3 savedVelocity;
+        private Vector3 savedAngularVelocity;
 
         private void Start()
         {
@@ -58,11 +60,19 @@ namespace Managers
         private void OnGamePaused()
         {
             playerInstance.GetComponent<PlayerInput>().enabled = false;
+
+            savedVelocity = playerInstance.GetComponent<Rigidbody>().linearVelocity;
+            savedAngularVelocity = playerInstance.GetComponent<Rigidbody>().angularVelocity;
+            playerInstance.GetComponent<Rigidbody>().isKinematic = true;
         }
 
         private void OnGameUnpaused()
         {
             playerInstance.GetComponent<PlayerInput>().enabled = true;
+
+            playerInstance.GetComponent<Rigidbody>().isKinematic = false;
+            playerInstance.GetComponent<Rigidbody>().linearVelocity = savedVelocity;
+            playerInstance.GetComponent<Rigidbody>().angularVelocity = savedAngularVelocity;
         }
 
         private void OnGameEnd()

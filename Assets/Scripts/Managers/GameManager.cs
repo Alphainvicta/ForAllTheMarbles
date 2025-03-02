@@ -15,13 +15,14 @@ namespace Managers
         public static event Action GameEnd;
         public static event Action StoreGame;
 
+        public static bool isPaused;
+
         [Header("Frame Settings")]
         public static float TargetFrameRate = 60.0f;
         private void Awake()
         {
             if (Instance == null)
                 Instance = this;
-
             else
                 Destroy(gameObject);
 
@@ -29,6 +30,8 @@ namespace Managers
 
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = (int)TargetFrameRate;
+
+            isPaused = false;
 
             string filePath = Application.persistentDataPath + "/Save.json";
             if (!System.IO.File.Exists(filePath))
@@ -70,11 +73,13 @@ namespace Managers
         public static void PauseGame()
         {
             GamePaused?.Invoke();
+            isPaused = true;
         }
 
         public static void UnpauseGame()
         {
             GameUnpaused?.Invoke();
+            isPaused = false;
         }
 
         public static void EndGame()
