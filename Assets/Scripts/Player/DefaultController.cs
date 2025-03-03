@@ -14,6 +14,8 @@ public class DefaultController : BaseInputAction
     private bool isTransitioning = false;
     private bool jumpAvailable = false;
     private int marblePosition = 0;
+    private int currentPosition;
+    private float Xposition;
     private Rigidbody playerRigidbody;
     public static Coroutine playerTransitionCoroutine;
     CameraManager cameraManager;
@@ -44,6 +46,7 @@ public class DefaultController : BaseInputAction
     private void SetMarblePosition()
     {
         marblePosition = 0;
+        currentPosition = marblePosition;
     }
 
     private void StopCoroutines()
@@ -107,7 +110,7 @@ public class DefaultController : BaseInputAction
                         StopCoroutine(playerTransitionCoroutine);
                     }
 
-                    playerTransitionCoroutine = StartCoroutine(MarbleTransition(new Vector3(transform.position.x + 2f, 0f, 0f), 0.1f));
+                    playerTransitionCoroutine = StartCoroutine(MarbleTransition(+2f, 0.1f));
 
                     CameraManager.cameraTransitionCoroutine = StartCoroutine(cameraManager.CameraTransition(
                         CameraManager.mainCameraInstance.transform.position + new Vector3(0.5f, 0f, 0f),
@@ -140,7 +143,7 @@ public class DefaultController : BaseInputAction
                         StopCoroutine(playerTransitionCoroutine);
                     }
 
-                    playerTransitionCoroutine = StartCoroutine(MarbleTransition(new Vector3(transform.position.x - 2f, 0f, 0f), 0.1f));
+                    playerTransitionCoroutine = StartCoroutine(MarbleTransition(-2f, 0.1f));
 
                     CameraManager.cameraTransitionCoroutine = StartCoroutine(cameraManager.CameraTransition(
                         CameraManager.mainCameraInstance.transform.position + new Vector3(-0.5f, 0f, 0f),
@@ -151,9 +154,12 @@ public class DefaultController : BaseInputAction
             }
             else if (angle >= -135f && angle < -45f) // Down
             {
-                playerRigidbody.linearVelocity = Vector3.zero;
-                playerRigidbody.AddForce(Vector3.down * jumpHeight * 2, ForceMode.Impulse);
-                canMove = false;
+                if (!jumpAvailable)
+                {
+                    playerRigidbody.linearVelocity = Vector3.zero;
+                    playerRigidbody.AddForce(Vector3.down * jumpHeight * 2, ForceMode.Impulse);
+                    canMove = false;
+                }
             }
         }
     }
@@ -163,24 +169,23 @@ public class DefaultController : BaseInputAction
         return;
     }
 
-    private IEnumerator MarbleTransition(Vector3 goalPosition, float duration)
+    private IEnumerator MarbleTransition(float goalPosition, float duration)
     {
         isTransitioning = true;
 
-        Vector3 currentPosition = gameObject.transform.position;
-
         float timeElapsed = 0f;
+        Vector3 currentPosition = transform.position;
         while (timeElapsed < duration)
         {
             yield return new WaitUntil(() => !GameManager.isPaused);
             float t = timeElapsed / duration;
-            float newX = Mathf.Lerp(currentPosition.x, goalPosition.x, t);
-            gameObject.transform.position = new Vector3(newX, currentPosition.y, currentPosition.z);
+            float newX = Mathf.Lerp(currentPosition.x, currentPosition.x + goalPosition, t);
+            playerRigidbody.MovePosition(new Vector3(newX, transform.position.y, transform.position.z));
             timeElapsed += Time.deltaTime;
-            yield return null;
+            // yield return new WaitForFixedUpdate();
         }
 
-        gameObject.transform.position = new Vector3(goalPosition.x, currentPosition.y, currentPosition.z);
+        playerRigidbody.MovePosition(new(currentPosition.x + goalPosition, transform.position.y, transform.position.z));
 
         isTransitioning = false;
         yield return null;

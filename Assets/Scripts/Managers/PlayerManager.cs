@@ -55,7 +55,7 @@ namespace Managers
 
         private IEnumerator EnablePlayerInputAfterDelay()
         {
-            yield return new WaitForSeconds(CameraManager.cameraGameStartTransitionDuration);
+            yield return new WaitUntil(() => !UiManager.LevelCountDownTransition);
             playerInstance.GetComponent<PlayerInput>().enabled = true;
         }
 
