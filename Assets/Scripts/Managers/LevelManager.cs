@@ -22,6 +22,7 @@ namespace Managers
         private bool looped = false;
         private bool gameflag;
         private List<Coroutine> activeCoroutines = new();
+        private Dictionary<string, List<Transform>> obstaclePool = new();
 
         private void Start()
         {
@@ -76,6 +77,7 @@ namespace Managers
             {
                 child.SetParent(disablePool.transform);
                 child.gameObject.SetActive(false);
+                obstaclePool[child.name].Add(child);
             }
 
             CallFromPool(levelList[0].obstacles[0]);
@@ -170,36 +172,40 @@ namespace Managers
                 }
                 levelPositionInstance.transform.position += new Vector3(0f, 0f, 2f);
             }
+
+            if (!obstaclePool.ContainsKey(obstacle.name))
+            {
+                obstaclePool[obstacle.name] = new List<Transform>();
+            }
+
             return obstacleParent.transform;
         }
 
         private bool CallFromPool(Obstacle wantedObstacle)
         {
             levelPositionInstance.transform.parent = null;
-            Transform[] poolObstacleList = disablePool.GetComponentsInChildren<Transform>(true);
-            if (poolObstacleList.Length > 0)
+            if (obstaclePool.ContainsKey(wantedObstacle.name) && obstaclePool[wantedObstacle.name].Count > 0)
             {
-                foreach (Transform obstacleParent in poolObstacleList)
+                List<Transform> obstacleTransformList = obstaclePool[wantedObstacle.name];
+                Transform obstacleParent = obstacleTransformList[0];
+                obstacleParent.gameObject.SetActive(true);
+                obstacleParent.SetParent(levelPoolInstance.transform);
+                obstacleParent.position = levelPositionInstance.transform.position;
+
+                if (wantedObstacle.needFloor)
                 {
-                    if (obstacleParent.name.Contains(wantedObstacle.name) && !obstacleParent.gameObject.activeSelf)
-                    {
-                        obstacleParent.gameObject.SetActive(true);
-                        obstacleParent.SetParent(levelPoolInstance.transform);
-                        obstacleParent.position = levelPositionInstance.transform.position;
-
-                        if (wantedObstacle.needFloor)
-                        {
-                            int randomPosition = SetRandomPlacement(wantedObstacle.obstacleWidth, wantedObstacle.obstaclePosition);
-                            Transform obstacle = obstacleParent.transform.Find(wantedObstacle.obstaclePrefab.name);
-                            obstacle.localPosition = new Vector3(randomPosition * 2f, 0f, 0f) + wantedObstacle.obstaclePrefab.transform.localPosition;
-                        }
-
-                        levelPositionInstance.transform.position += new Vector3(0f, 0f, 2f * wantedObstacle.ObstacleLength);
-                        levelPositionInstance.transform.SetParent(obstacleParent.transform);
-                        StartCoroutine(TransformObstacle(obstacleParent.transform));
-                        return true;
-                    }
+                    int randomPosition = SetRandomPlacement(wantedObstacle.obstacleWidth, wantedObstacle.obstaclePosition);
+                    Transform obstacle = obstacleParent.transform.Find(wantedObstacle.obstaclePrefab.name);
+                    obstacle.localPosition = new Vector3(randomPosition * 2f, 0f, 0f) + wantedObstacle.obstaclePrefab.transform.localPosition;
                 }
+
+                levelPositionInstance.transform.position += new Vector3(0f, 0f, 2f * wantedObstacle.ObstacleLength);
+                levelPositionInstance.transform.SetParent(obstacleParent.transform);
+                StartCoroutine(TransformObstacle(obstacleParent.transform));
+
+                obstacleTransformList.RemoveAt(0);
+                obstaclePool[wantedObstacle.name] = obstacleTransformList;
+                return true;
             }
             return false;
         }
@@ -311,6 +317,8 @@ namespace Managers
             }
             obstacle.SetParent(disablePool.transform);
             obstacle.gameObject.SetActive(false);
+            obstaclePool[obstacle.name].Add(obstacle);
+
             yield return null;
         }
 
