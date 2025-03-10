@@ -11,6 +11,7 @@ namespace Managers
         private int marbleIndex;
         private Vector3 savedVelocity;
         private Vector3 savedAngularVelocity;
+        public static bool isObstacleHitted;
 
         private void Start()
         {
@@ -43,19 +44,25 @@ namespace Managers
 
         private void OnMenuGame()
         {
+            isObstacleHitted = false;
             playerInstance.GetComponent<PlayerInput>().enabled = false;
+            playerInstance.GetComponent<Collider>().enabled = true;
+            playerInstance.GetComponent<Rigidbody>().isKinematic = false;
 
             RestoreMarbleValues();
         }
 
         private void OnGameStart()
         {
+            isObstacleHitted = false;
+            playerInstance.GetComponent<Collider>().enabled = true;
+            playerInstance.GetComponent<Rigidbody>().isKinematic = false;
             StartCoroutine(EnablePlayerInputAfterDelay());
         }
 
         private IEnumerator EnablePlayerInputAfterDelay()
         {
-            yield return new WaitUntil(() => !UiManager.LevelCountDownTransition);
+            yield return new WaitUntil(() => !UiManager.uiTransition);
             playerInstance.GetComponent<PlayerInput>().enabled = true;
         }
 
@@ -63,6 +70,7 @@ namespace Managers
         {
             playerInstance.GetComponent<PlayerInput>().enabled = false;
 
+            playerInstance.GetComponent<Collider>().enabled = false;
             savedVelocity = playerInstance.GetComponent<Rigidbody>().linearVelocity;
             savedAngularVelocity = playerInstance.GetComponent<Rigidbody>().angularVelocity;
             playerInstance.GetComponent<Rigidbody>().isKinematic = true;
@@ -72,6 +80,7 @@ namespace Managers
         {
             playerInstance.GetComponent<PlayerInput>().enabled = true;
 
+            playerInstance.GetComponent<Collider>().enabled = true;
             playerInstance.GetComponent<Rigidbody>().isKinematic = false;
             playerInstance.GetComponent<Rigidbody>().linearVelocity = savedVelocity;
             playerInstance.GetComponent<Rigidbody>().angularVelocity = savedAngularVelocity;
@@ -79,12 +88,18 @@ namespace Managers
 
         private void OnGameEnd()
         {
+            isObstacleHitted = true;
             playerInstance.GetComponent<PlayerInput>().enabled = false;
+            playerInstance.GetComponent<Collider>().enabled = false;
+            playerInstance.GetComponent<Rigidbody>().isKinematic = true;
+
         }
 
         private void OnStoreGame()
         {
+            isObstacleHitted = false;
             playerInstance.GetComponent<PlayerInput>().enabled = false;
+            playerInstance.GetComponent<Collider>().enabled = true;
 
             RestoreMarbleValues();
         }
