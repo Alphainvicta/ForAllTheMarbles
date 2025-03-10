@@ -26,7 +26,7 @@ namespace Managers
         private Button pauseUnpauseButton;
         private Button pauseMenuButton;
         private Transform levelCountDownText;
-        public static bool LevelCountDownTransition;
+        public static bool uiTransition;
 
         private Coroutine beginLevelCountDownCoroutine;
         PlayerManager playerManager;
@@ -266,7 +266,7 @@ namespace Managers
 
         private IEnumerator BeginLevelCountDown()
         {
-            LevelCountDownTransition = true;
+            uiTransition = true;
             yield return new WaitUntil(() => !CameraManager.OnGoingCameraTransition);
             Transform canvasChildren = uiGameInstance.transform.Find("GameCanvas");
             levelCountDownText = canvasChildren.Find("CountDown");
@@ -281,7 +281,7 @@ namespace Managers
                 timeElapsed += Time.deltaTime;
             }
             levelCountDownText.gameObject.SetActive(false);
-            LevelCountDownTransition = false;
+            uiTransition = false;
             yield return null;
         }
     }

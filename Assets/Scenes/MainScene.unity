@@ -155,7 +155,7 @@ MonoBehaviour:
   uiMenuPrefab: {fileID: 7779539431570411673, guid: c861317f7ea35ab46ba15e7b437417d8, type: 3}
   uiGamePrefab: {fileID: 7993514963127085252, guid: ba6cadd7c4ddf4141852f145834c40ac, type: 3}
   uiPausedPrefab: {fileID: 7993514963127085252, guid: ea5b4724fcdaf98439a507a5070cc158, type: 3}
-  uiEndPrefab: {fileID: 7779539431570411673, guid: c861317f7ea35ab46ba15e7b437417d8, type: 3}
+  uiEndPrefab: {fileID: 7993514963127085252, guid: be1cc565877a35a49ae615542bb819b6, type: 3}
   uiStorePrefab: {fileID: 7779539431570411673, guid: c861317f7ea35ab46ba15e7b437417d8, type: 3}
 --- !u!114 &348282108
 MonoBehaviour:

@@ -21,6 +21,7 @@ namespace Managers
         private GameObject levelPositionInstance;
         private bool looped = false;
         private bool gameflag;
+        public static bool levelEnding;
         private List<Coroutine> activeCoroutines = new();
         private Dictionary<string, List<Transform>> obstaclePool = new();
 
@@ -65,6 +66,7 @@ namespace Managers
         {
             StopAllActiveCoroutines();
             gameflag = false;
+            levelEnding = false;
             levelPositionInstance.transform.position = levelOrigin.transform.position;
 
             List<Transform> children = new List<Transform>();
@@ -75,9 +77,7 @@ namespace Managers
 
             foreach (Transform child in children)
             {
-                child.SetParent(disablePool.transform);
-                child.gameObject.SetActive(false);
-                obstaclePool[child.name].Add(child);
+                ReturnToDisablePool(child);
             }
 
             CallFromPool(levelList[0].obstacles[0]);
@@ -85,6 +85,8 @@ namespace Managers
 
         private void OnGameStart()
         {
+            levelEnding = false;
+
             StopAllActiveCoroutines();
             StartCoroutine(StartLevelAfterDelay());
         }
@@ -96,7 +98,7 @@ namespace Managers
             StartCoroutine(TransformLevelPosition(levelPositionInstance.transform));
             StartCoroutine(LevelDirector());
 
-            yield return new WaitUntil(() => !UiManager.LevelCountDownTransition);
+            yield return new WaitUntil(() => !UiManager.uiTransition);
             gameflag = true;
         }
 
@@ -113,10 +115,12 @@ namespace Managers
         private void OnGameEnd()
         {
             StopAllActiveCoroutines();
+            StartCoroutine(GameEnd());
         }
 
         private void OnStoreGame()
         {
+            levelEnding = false;
             StopAllActiveCoroutines();
         }
 
@@ -181,13 +185,16 @@ namespace Managers
             return obstacleParent.transform;
         }
 
-        private bool CallFromPool(Obstacle wantedObstacle)
+        private Transform CallFromPool(Obstacle wantedObstacle)
         {
             levelPositionInstance.transform.parent = null;
             if (obstaclePool.ContainsKey(wantedObstacle.name) && obstaclePool[wantedObstacle.name].Count > 0)
             {
                 List<Transform> obstacleTransformList = obstaclePool[wantedObstacle.name];
+
                 Transform obstacleParent = obstacleTransformList[0];
+                obstacleTransformList.RemoveAt(0);
+
                 obstacleParent.gameObject.SetActive(true);
                 obstacleParent.SetParent(levelPoolInstance.transform);
                 obstacleParent.position = levelPositionInstance.transform.position;
@@ -201,13 +208,13 @@ namespace Managers
 
                 levelPositionInstance.transform.position += new Vector3(0f, 0f, 2f * wantedObstacle.ObstacleLength);
                 levelPositionInstance.transform.SetParent(obstacleParent.transform);
-                StartCoroutine(TransformObstacle(obstacleParent.transform));
 
-                obstacleTransformList.RemoveAt(0);
                 obstaclePool[wantedObstacle.name] = obstacleTransformList;
-                return true;
+
+                return obstacleParent.transform;
             }
-            return false;
+
+            return null;
         }
 
         private IEnumerator LevelDirector()
@@ -230,25 +237,33 @@ namespace Managers
                             if (readyToPlace)
                             {
                                 readyToPlace = false;
-                                int randomObstacle = UnityEngine.Random.Range(0, levelList[i].obstacles.Length);
-                                if (CallFromPool(levelList[i].obstacles[randomObstacle]))
-                                    continue;
-                                StartCoroutine(
-                                    TransformObstacle(
-                                    ObstacleGenerator(levelList[i].obstacles[randomObstacle], levelList[i].levelFloor)
-                                    )
-                                    );
+                                int randomObstacle = Random.Range(0, levelList[i].obstacles.Length);
+
+                                Transform pooledObstacle = CallFromPool(levelList[i].obstacles[randomObstacle]);
+                                if (pooledObstacle != null)
+                                    StartCoroutine(
+                                    TransformObstacle(pooledObstacle));
+                                else
+                                    StartCoroutine(
+                                        TransformObstacle(
+                                        ObstacleGenerator(levelList[i].obstacles[randomObstacle], levelList[i].levelFloor)
+                                        )
+                                        );
                             }
                             else
                             {
                                 j--;
-                                if (CallFromPool(levelList[0].obstacles[1]))
-                                    continue;
-                                StartCoroutine(
-                                    TransformObstacle(
-                                    ObstacleGenerator(levelList[0].obstacles[1], levelList[i].levelFloor)
-                                    )
-                                    );
+
+                                Transform pooledGround = CallFromPool(levelList[0].obstacles[1]);
+                                if (pooledGround != null)
+                                    StartCoroutine(
+                                    TransformObstacle(pooledGround));
+                                else
+                                    StartCoroutine(
+                                        TransformObstacle(
+                                        ObstacleGenerator(levelList[0].obstacles[1], levelList[i].levelFloor)
+                                        )
+                                        );
                             }
                         }
                     }
@@ -263,26 +278,33 @@ namespace Managers
 
                     if (readyToPlace)
                     {
-                        int randomLevel = UnityEngine.Random.Range(1, levelList.Length);
-                        int randomObstacle = UnityEngine.Random.Range(0, levelList[randomLevel].obstacles.Length);
-                        if (CallFromPool(levelList[randomLevel].obstacles[randomObstacle]))
-                            continue;
-                        StartCoroutine(
-                            TransformObstacle(
-                            ObstacleGenerator(levelList[randomLevel].obstacles[randomObstacle], levelList[randomLevel].levelFloor)
-                            )
-                            );
+                        int randomLevel = Random.Range(1, levelList.Length);
+                        int randomObstacle = Random.Range(0, levelList[randomLevel].obstacles.Length);
+
+                        Transform pooledObstacle = CallFromPool(levelList[randomLevel].obstacles[randomObstacle]);
+                        if (pooledObstacle != null)
+                            StartCoroutine(
+                            TransformObstacle(pooledObstacle));
+                        else
+                            StartCoroutine(
+                                TransformObstacle(
+                                ObstacleGenerator(levelList[randomLevel].obstacles[randomObstacle], levelList[randomLevel].levelFloor)
+                                )
+                                );
                     }
                     else
                     {
-                        int randomLevel = UnityEngine.Random.Range(1, levelList.Length);
-                        if (CallFromPool(levelList[0].obstacles[1]))
-                            continue;
-                        StartCoroutine(
-                            TransformObstacle(
-                            ObstacleGenerator(levelList[0].obstacles[1], levelList[randomLevel].levelFloor)
-                            )
-                            );
+                        int randomLevel = Random.Range(1, levelList.Length);
+                        Transform pooledGround = CallFromPool(levelList[0].obstacles[1]);
+                        if (pooledGround != null)
+                            StartCoroutine(
+                            TransformObstacle(pooledGround));
+                        else
+                            StartCoroutine(
+                                TransformObstacle(
+                                ObstacleGenerator(levelList[0].obstacles[1], levelList[randomLevel].levelFloor)
+                                )
+                                );
                     }
                 }
 
@@ -292,7 +314,7 @@ namespace Managers
 
         private void rollChances()
         {
-            if (directorChance >= UnityEngine.Random.Range(1, 101))
+            if (directorChance >= Random.Range(1, 101))
                 readyToPlace = true;
             else
                 readyToPlace = false;
@@ -315,9 +337,7 @@ namespace Managers
                 obstacle.position += Vector3.back * levelSpeed * Time.deltaTime;
                 yield return null;
             }
-            obstacle.SetParent(disablePool.transform);
-            obstacle.gameObject.SetActive(false);
-            obstaclePool[obstacle.name].Add(obstacle);
+            ReturnToDisablePool(obstacle);
 
             yield return null;
         }
@@ -330,6 +350,20 @@ namespace Managers
                     canPlace = true;
                 yield return null;
             }
+        }
+
+        private IEnumerator TransformEndGameObstacles(Transform levelPosition)
+        {
+            readyToPlace = true;
+            while (levelPosition.position.z < levelOrigin.transform.position.z)
+            {
+                yield return new WaitUntil(() => !GameManager.isPaused && gameflag);
+                levelPosition.position += Vector3.forward * 30 * Time.deltaTime;
+                yield return null;
+            }
+            levelPosition.position = levelOrigin.transform.position;
+            readyToPlace = false;
+            yield return null;
         }
         private void StopAllActiveCoroutines()
         {
@@ -347,6 +381,47 @@ namespace Managers
             Coroutine coroutine = base.StartCoroutine(routine);
             activeCoroutines.Add(coroutine);
             return coroutine;
+        }
+
+        private void ReturnToDisablePool(Transform obstacle)
+        {
+            obstacle.SetParent(disablePool.transform);
+            obstacle.gameObject.SetActive(false);
+            obstaclePool[obstacle.name].Add(obstacle);
+        }
+
+        private IEnumerator GameEnd()
+        {
+            levelEnding = true;
+            yield return new WaitForSeconds(1f);
+
+            levelPositionInstance.transform.position = levelPoolInstance.transform.GetChild(0).position - new Vector3(0f, 0f, 2f * levelList[0].obstacles[0].ObstacleLength);
+            if (CallFromPool(levelList[0].obstacles[0]) == null)
+            {
+                levelPositionInstance.transform.position = levelPoolInstance.transform.GetChild(0).position;
+            }
+            else
+            {
+                levelPositionInstance.transform.parent = null;
+                levelPositionInstance.transform.position -= new Vector3(0f, 0f, 2f * levelList[0].obstacles[0].ObstacleLength);
+            }
+
+            MoveToNewParent(levelPoolInstance.transform, levelPositionInstance.transform);
+            StartCoroutine(TransformEndGameObstacles(levelPositionInstance.transform));
+            yield return new WaitUntil(() => !readyToPlace);
+            MoveToNewParent(levelPositionInstance.transform, levelPoolInstance.transform);
+
+            levelEnding = false;
+            yield return null;
+        }
+
+        private void MoveToNewParent(Transform oldParent, Transform newParent)
+        {
+            while (oldParent.childCount > 0)
+            {
+                Transform child = oldParent.GetChild(0);
+                child.SetParent(newParent);
+            }
         }
     }
 }

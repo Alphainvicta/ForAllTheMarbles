@@ -14,7 +14,6 @@ namespace Managers
         public static event Action GameUnpaused;
         public static event Action GameEnd;
         public static event Action StoreGame;
-
         public static bool isPaused;
 
         [Header("Frame Settings")]
