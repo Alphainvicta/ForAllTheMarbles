@@ -8,9 +8,10 @@ namespace Managers
     {
         public PlayerMarbles playerMarbles;
         public static GameObject playerInstance;
-        private int marbleIndex;
+        public int marbleIndex;
         private Vector3 savedVelocity;
         private Vector3 savedAngularVelocity;
+        public static bool isUnlocked;
         public static bool isObstacleHitted;
 
         private void Start()
@@ -19,6 +20,7 @@ namespace Managers
             if (playerInstance == null)
             {
                 playerInstance = Instantiate(playerMarbles.marbles[marbleIndex].marblePrefab, Vector3.zero, Quaternion.identity);
+                isUnlocked = playerMarbles.marbles[marbleIndex].isUnlocked;
                 UpdateMarbleMaterial();
             }
         }
@@ -133,6 +135,7 @@ namespace Managers
             {
                 Destroy(playerInstance);
                 playerInstance = Instantiate(playerMarbles.marbles[marbleIndex].marblePrefab, Vector3.zero, Quaternion.identity);
+                isUnlocked = playerMarbles.marbles[marbleIndex].isUnlocked;
                 UpdateMarbleMaterial();
             }
 
@@ -142,7 +145,7 @@ namespace Managers
 
         private void UpdateMarbleMaterial()
         {
-            if (!playerMarbles.marbles[marbleIndex].isUnlocked)
+            if (!isUnlocked)
             {
                 Renderer renderer = playerInstance.GetComponent<Renderer>();
                 if (renderer != null)

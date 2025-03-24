@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6b039de192e77a408e7c5fcd8d92454, type: 3}
-  m_Name: Level1
+  m_Name: Level1 2
   m_EditorClassIdentifier: 
   obstacles:
   - {fileID: 11400000, guid: 9c91d39f5541c41468a8edc6b781977b, type: 2}
@@ -19,4 +19,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b98e9eb7072d94d48ba8211b44059a8c, type: 2}
   - {fileID: 11400000, guid: 0b1a0a6c0ac7b4f419fb65187aa59d1a, type: 2}
   baseLevelLength: 2
-  levelFloor: {fileID: 8788611324321882272, guid: 56f93dc6da7f11147bbf0da1f98909d6, type: 3}
+  levelFloor: {fileID: 8788611324321882272, guid: 6852602d1a4d422419d6c915daf768c6, type: 3}

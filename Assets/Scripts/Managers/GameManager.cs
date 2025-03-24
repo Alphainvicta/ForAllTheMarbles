@@ -68,8 +68,11 @@ namespace Managers
 
         public static void PlayGame()
         {
-            GameStart?.Invoke();
-            isPaused = false;
+            if (PlayerManager.isUnlocked)
+            {
+                GameStart?.Invoke();
+                isPaused = false;
+            }
         }
 
         public static void PauseGame()
