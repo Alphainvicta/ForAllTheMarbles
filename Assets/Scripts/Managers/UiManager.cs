@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -27,7 +26,7 @@ namespace Managers
         private Button pauseMenuButton;
         private Transform levelCountDownText;
         public static bool uiTransition;
-
+        public static TextMeshProUGUI scoreText;
         private Coroutine beginLevelCountDownCoroutine;
         PlayerManager playerManager;
 
@@ -120,11 +119,6 @@ namespace Managers
             uiPausedInstance.SetActive(true);
             uiEndInstance.SetActive(false);
             uiStoreInstance.SetActive(false);
-
-            if (beginLevelCountDownCoroutine != null)
-            {
-                StopCoroutine(beginLevelCountDownCoroutine);
-            }
         }
 
         private void OnGameUnpaused()
@@ -134,11 +128,6 @@ namespace Managers
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(false);
             uiStoreInstance.SetActive(false);
-
-            if (beginLevelCountDownCoroutine != null)
-            {
-                StopCoroutine(beginLevelCountDownCoroutine);
-            }
         }
 
         private void OnGameEnd()
@@ -225,6 +214,9 @@ namespace Managers
                 {
                     Debug.LogError("PauseButton not found in canvasChildren!");
                 }
+
+                scoreText = canvasChildren.Find("Score")?.GetComponent<TextMeshProUGUI>();
+                scoreText.gameObject.SetActive(false);
             }
             else
             {
@@ -271,6 +263,7 @@ namespace Managers
             Transform canvasChildren = uiGameInstance.transform.Find("GameCanvas");
             levelCountDownText = canvasChildren.Find("CountDown");
             levelCountDownText.gameObject.SetActive(true);
+            scoreText.gameObject.SetActive(false);
             float countDown = 3f;
             float timeElapsed = 0f;
 
@@ -281,6 +274,8 @@ namespace Managers
                 timeElapsed += Time.deltaTime;
             }
             levelCountDownText.gameObject.SetActive(false);
+            scoreText.gameObject.SetActive(true);
+            levelCountDownText.GetComponent<TextMeshProUGUI>().text = countDown.ToString();
             uiTransition = false;
             yield return null;
         }

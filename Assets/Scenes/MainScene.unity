@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 348282109}
   - component: {fileID: 348282108}
   - component: {fileID: 348282107}
+  - component: {fileID: 348282113}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -186,7 +187,7 @@ MonoBehaviour:
   levelList:
   - {fileID: 11400000, guid: 621ca362d25fe794a93ed2e9a4c126ad, type: 2}
   - {fileID: 11400000, guid: 297cbc5e7bb7b0b4db680715d7a04083, type: 2}
-  levelSpeed: 10
+  levelSpeed: 20
   levelOrigin: {fileID: 4703266735615505597, guid: fc9d27b0ef28156489057b79b5414e57, type: 3}
   levelPosition: {fileID: 4703266735615505597, guid: 79c4dabd872af764789581658a0551a7, type: 3}
 --- !u!114 &348282110
@@ -262,6 +263,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &348282113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 348282106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccf38ee3d03b41e42a04aa40017f6eb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

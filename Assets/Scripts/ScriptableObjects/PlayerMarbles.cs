@@ -36,7 +36,6 @@ public class PlayerMarbles : ScriptableObject
 
         string updatedJson = JsonUtility.ToJson(saveData, true);
         System.IO.File.WriteAllText(filePath, updatedJson);
-        Debug.Log("Data saved to: " + filePath);
     }
 
     public int LoadPlayerMarbles()
@@ -54,7 +53,6 @@ public class PlayerMarbles : ScriptableObject
                 marbles[i].isUnlocked = saveData.unlockedStatuses[i];
             }
 
-            Debug.Log("Data loaded from: " + filePath);
             return selectedIndex;
         }
         else

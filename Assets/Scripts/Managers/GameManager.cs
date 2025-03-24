@@ -45,7 +45,8 @@ namespace Managers
                 SaveData saveData = new()
                 {
                     selectedMarbleIndex = 0,
-                    unlockedStatuses = unlockedStatuses
+                    unlockedStatuses = unlockedStatuses,
+                    highScore = 0
                 };
 
                 string json = JsonUtility.ToJson(saveData, true);
@@ -108,5 +109,6 @@ public class SaveData
 {
     public int selectedMarbleIndex;
     public List<bool> unlockedStatuses;
+    public int highScore;
 }
 

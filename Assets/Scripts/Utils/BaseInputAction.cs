@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Managers;
 using System.Collections;
+using UnityEngine.SocialPlatforms.Impl;
 
 public abstract class BaseInputAction : MonoBehaviour
 {
@@ -42,8 +43,8 @@ public abstract class BaseInputAction : MonoBehaviour
     private void FixedUpdate()
     {
         GroundCheck();
-        if (!PlayerManager.isObstacleHitted)
-            ObstacleCheck();
+        // if (!PlayerManager.isObstacleHitted)
+        //     ObstacleCheck();
     }
 
     private void PlayerMovementInput(InputAction.CallbackContext context)
@@ -119,6 +120,24 @@ public abstract class BaseInputAction : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!PlayerManager.isObstacleHitted)
+        {
+            if (collision.gameObject.CompareTag("Obstacle"))
+            {
+                GameManager.EndGame();
+            }
+        }
+
+        if (collision.gameObject.CompareTag("Coin"))
+        {
+            collision.gameObject.SetActive(false);
+            ScoreManager.score += 10000;
+        }
+
     }
 
     public IEnumerator MarbleXTransition(float goalPosition, float duration)
