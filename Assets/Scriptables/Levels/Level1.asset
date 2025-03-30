@@ -18,5 +18,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 01f99b75db3771e4895a9d0be61b13ab, type: 2}
   - {fileID: 11400000, guid: b98e9eb7072d94d48ba8211b44059a8c, type: 2}
   - {fileID: 11400000, guid: 0b1a0a6c0ac7b4f419fb65187aa59d1a, type: 2}
+  - {fileID: 11400000, guid: b50106356c3c9c440ac5bc253f819064, type: 2}
+  - {fileID: 11400000, guid: d307120d609d29048b49f48dc45e11b6, type: 2}
+  - {fileID: 11400000, guid: 45d019837a2074e4bb4e5ecd9e75a86e, type: 2}
   baseLevelLength: 2
   levelFloor: {fileID: 8788611324321882272, guid: 56f93dc6da7f11147bbf0da1f98909d6, type: 3}
