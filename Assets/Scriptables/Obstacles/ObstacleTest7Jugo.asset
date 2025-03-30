@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ObstacleTest7Jugo
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 1376465622453790592, guid: b534cac7369ebe84eac7ce7213f30c95, type: 3}
-  obstacleWidth: 2
-  ObstacleLength: 0
+  obstacleWidth: 1
+  ObstacleLength: 1
   obstaclePosition: 1
   needFloor: 1

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 737a2923d9dc7f24a85c1c19db1db956, type: 3}
-  m_Name: ObstacleTest7Leche
+  m_Name: ObstacleTest12Pizza
   m_EditorClassIdentifier: 
-  obstaclePrefab: {fileID: 1376465622453790592, guid: 8af040a76dbae7e45ab9122c8cc26caa, type: 3}
+  obstaclePrefab: {fileID: 1376465622453790592, guid: 84e89ad089474644e9526765ca5b493f, type: 3}
   obstacleWidth: 1
-  ObstacleLength: 2
+  ObstacleLength: 1
   obstaclePosition: 1
   needFloor: 1
