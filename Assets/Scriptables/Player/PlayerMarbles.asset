@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: PlayerMarbles
   m_EditorClassIdentifier: 
   marbles:
+  - marblePrefab: {fileID: 1111276287503260205, guid: d3e65c3f1d22e734682ea13d68e45e5e, type: 3}
+    isUnlocked: 1
+  - marblePrefab: {fileID: 1111276287503260205, guid: f1c3a7f93dba9b549af8740434867eed, type: 3}
+    isUnlocked: 1
   - marblePrefab: {fileID: 6070790412006551918, guid: 159cf15e62ff82e4f964f20204f1071b, type: 3}
     isUnlocked: 1
-  - marblePrefab: {fileID: 1111276287503260205, guid: d3e65c3f1d22e734682ea13d68e45e5e, type: 3}
-    isUnlocked: 0
-  - marblePrefab: {fileID: 6070790412006551918, guid: 159cf15e62ff82e4f964f20204f1071b, type: 3}
-    isUnlocked: 0

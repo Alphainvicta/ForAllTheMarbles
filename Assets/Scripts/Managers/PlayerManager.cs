@@ -131,16 +131,7 @@ namespace Managers
                 }
             }
 
-            if (playerInstance != null)
-            {
-                Destroy(playerInstance);
-                playerInstance = Instantiate(playerMarbles.marbles[marbleIndex].marblePrefab, Vector3.zero, Quaternion.identity);
-                isUnlocked = playerMarbles.marbles[marbleIndex].isUnlocked;
-                UpdateMarbleMaterial();
-            }
-
-            playerMarbles.SavePlayerMarbles(marbleIndex);
-            playerInstance.GetComponent<PlayerInput>().enabled = false;
+            SetNewPlayer();
         }
 
         private void UpdateMarbleMaterial()
@@ -170,6 +161,20 @@ namespace Managers
             playerInstance.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 
             playerInstance.transform.position = Vector3.zero;
+        }
+
+        public void SetNewPlayer()
+        {
+            if (playerInstance != null)
+            {
+                Destroy(playerInstance);
+                playerInstance = Instantiate(playerMarbles.marbles[marbleIndex].marblePrefab, Vector3.zero, Quaternion.identity);
+                isUnlocked = playerMarbles.marbles[marbleIndex].isUnlocked;
+                UpdateMarbleMaterial();
+            }
+
+            playerMarbles.SavePlayerMarbles(marbleIndex);
+            playerInstance.GetComponent<PlayerInput>().enabled = false;
         }
     }
 }

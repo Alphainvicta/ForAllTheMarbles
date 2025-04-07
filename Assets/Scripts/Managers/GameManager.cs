@@ -73,6 +73,15 @@ namespace Managers
                 GameStart?.Invoke();
                 isPaused = false;
             }
+            else
+            {
+                PlayerManager playerManager = FindFirstObjectByType<PlayerManager>();
+                playerManager.marbleIndex = playerManager.playerMarbles.LoadPlayerMarbles();
+                playerManager.SetNewPlayer();
+
+                GameStart?.Invoke();
+                isPaused = false;
+            }
         }
 
         public static void PauseGame()

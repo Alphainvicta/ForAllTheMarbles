@@ -25,6 +25,7 @@ namespace Managers
         private Button pauseUnpauseButton;
         private Button pauseMenuButton;
         private Transform levelCountDownText;
+        private Transform unlockText;
         public static bool uiTransition;
         public static TextMeshProUGUI scoreText;
         private Coroutine beginLevelCountDownCoroutine;
@@ -277,6 +278,16 @@ namespace Managers
             scoreText.gameObject.SetActive(true);
             levelCountDownText.GetComponent<TextMeshProUGUI>().text = countDown.ToString();
             uiTransition = false;
+            yield return null;
+        }
+
+        public IEnumerator SkinUnlocked()
+        {
+            Transform canvasChildren = uiGameInstance.transform.Find("GameCanvas");
+            unlockText = canvasChildren.Find("Unlock");
+            unlockText.gameObject.SetActive(true);
+            yield return new WaitForSeconds(1f);
+            unlockText.gameObject.SetActive(false);
             yield return null;
         }
     }
