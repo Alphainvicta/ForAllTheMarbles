@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ObstacleTest14Plato
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 1376465622453790592, guid: 8aadff85649050c4e95562d4c48d9af7, type: 3}
-  obstacleWidth: 1
-  ObstacleLength: 1
+  obstacleWidth: 2
+  ObstacleLength: 5
   obstaclePosition: 1
   needFloor: 1
