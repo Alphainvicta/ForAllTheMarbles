@@ -119,6 +119,97 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &19879238
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 19879240}
+  - component: {fileID: 19879239}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &19879239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19879238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca80272ba6b3cbc41b499a7d595a4408, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  masterMixer: {fileID: 24100000, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+  musicGroup: {fileID: -6064931773419471787, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+  sfxGroup: {fileID: 7039340525619287243, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+  uiGroup: {fileID: -4941750939365844674, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+  sounds:
+  - name: MenuMusic
+    clip: {fileID: 8300000, guid: cdd3e532f59464142bf0eb2526105c27, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    mixerGroup: {fileID: 24300002, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+    source: {fileID: 0}
+  - name: GameMusic
+    clip: {fileID: 8300000, guid: 7f114084d2ad6d94994cd7aa28fae65a, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    mixerGroup: {fileID: -6064931773419471787, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+    source: {fileID: 0}
+  - name: StartGame
+    clip: {fileID: 8300000, guid: 4dc81c2352d665f42b6756c4c97e992a, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    mixerGroup: {fileID: -6064931773419471787, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+    source: {fileID: 0}
+  - name: Pause
+    clip: {fileID: 8300000, guid: 8124a4654a3408549be26a731bc3c6a2, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    mixerGroup: {fileID: -6064931773419471787, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+    source: {fileID: 0}
+  - name: Unpause
+    clip: {fileID: 8300000, guid: 8124a4654a3408549be26a731bc3c6a2, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    mixerGroup: {fileID: -6064931773419471787, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+    source: {fileID: 0}
+  - name: GameOver
+    clip: {fileID: 8300000, guid: f0a25c07568a5b5459f344502386c6e3, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    mixerGroup: {fileID: -6064931773419471787, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+    source: {fileID: 0}
+--- !u!4 &19879240
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19879238}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -17.416565, y: 6.219965, z: -1.9417617}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &348282106
 GameObject:
   m_ObjectHideFlags: 0
@@ -535,3 +626,4 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 544342391}
   - {fileID: 348282112}
+  - {fileID: 19879240}

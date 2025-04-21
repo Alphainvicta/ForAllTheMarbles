@@ -58,12 +58,16 @@ namespace Managers
         private void Start()
         {
             MenuGame();
+            AudioManager.Instance.Play("MenuMusic");
         }
 
         public static void Menu()
         {
             MenuGame?.Invoke();
             isPaused = false;
+            AudioManager.Instance.Play("MenuMusic");
+            AudioManager.Instance.Stop("GameMusic");
+
         }
 
         public static void PlayGame()
@@ -72,6 +76,10 @@ namespace Managers
             {
                 GameStart?.Invoke();
                 isPaused = false;
+                AudioManager.Instance.Play("GameMusic");
+                AudioManager.Instance.Stop("MenuMusic");
+                AudioManager.Instance.Play("StartGame");
+
             }
             else
             {
@@ -81,6 +89,10 @@ namespace Managers
 
                 GameStart?.Invoke();
                 isPaused = false;
+                AudioManager.Instance.Play("GameMusic");
+                AudioManager.Instance.Stop("MenuMusic");
+                AudioManager.Instance.Play("StartGame");
+
             }
         }
 
@@ -88,24 +100,35 @@ namespace Managers
         {
             GamePaused?.Invoke();
             isPaused = true;
+            AudioManager.Instance.Play("Pause");
+            AudioManager.Instance.Stop("GameMusic");
+
         }
 
         public static void UnpauseGame()
         {
             GameUnpaused?.Invoke();
             isPaused = false;
+            AudioManager.Instance.Play("Unpause");
+            AudioManager.Instance.Play("GameMusic");
+
         }
 
         public static void EndGame()
         {
             GameEnd?.Invoke();
             isPaused = false;
+            AudioManager.Instance.Play("GameOver");
+            AudioManager.Instance.Stop("GameMusic");
+
         }
 
         public static void Store()
         {
             StoreGame.Invoke();
             isPaused = false;
+            AudioManager.Instance.Play("StoreOpen");
+
         }
 
         public static void ReloadScene()
