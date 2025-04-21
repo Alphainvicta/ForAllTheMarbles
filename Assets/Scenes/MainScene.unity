@@ -195,6 +195,13 @@ MonoBehaviour:
     loop: 0
     mixerGroup: {fileID: -6064931773419471787, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
     source: {fileID: 0}
+  - name: Jump
+    clip: {fileID: 8300000, guid: c24c8c0f3615f5a4a992d411263c33d7, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    mixerGroup: {fileID: -6064931773419471787, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+    source: {fileID: 0}
 --- !u!4 &19879240
 Transform:
   m_ObjectHideFlags: 0

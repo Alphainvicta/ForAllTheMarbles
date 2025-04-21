@@ -47,13 +47,15 @@ namespace Managers
                     s.source.loop = s.loop;
                     s.source.outputAudioMixerGroup = s.mixerGroup;
                 }
+                
+                LoadAudioSettings();
             }
             else
             {
                 Destroy(gameObject);
             }
         }
-        
+
         public void Play(string soundName)
         {
             Sound s = sounds.Find(sound => sound.name == soundName);
@@ -76,87 +78,80 @@ namespace Managers
             }
         }
         
-        // Métodos para controlar el volumen
+        // Control de volumen
         public void SetMasterVolume(float volume)
         {
             masterMixer.SetFloat("MasterVolume", LinearToDecibel(volume));
+            PlayerPrefs.SetFloat("MasterVolume", volume);
         }
         
         public void SetMusicVolume(float volume)
         {
             masterMixer.SetFloat("MusicVolume", LinearToDecibel(volume));
+            PlayerPrefs.SetFloat("MusicVolume", volume);
         }
         
         public void SetSFXVolume(float volume)
         {
             masterMixer.SetFloat("SFXVolume", LinearToDecibel(volume));
+            PlayerPrefs.SetFloat("SFXVolume", volume);
         }
         
         public void SetUIVolume(float volume)
         {
             masterMixer.SetFloat("UIVolume", LinearToDecibel(volume));
+            PlayerPrefs.SetFloat("UIVolume", volume);
         }
         
         private float LinearToDecibel(float linear)
         {
-            // Convierte valor lineal (0-1) a decibeles (-80 a 0)
             return linear != 0 ? 20f * Mathf.Log10(linear) : -80f;
         }
-    
-    // En AudioManager
-private void Start()
-{
-    // Cargar configuraciones guardadas
-    LoadAudioSettings();
+        
+        private void LoadAudioSettings()
+        {
+            SetMasterVolume(PlayerPrefs.GetFloat("MasterVolume", 1f));
+            SetMusicVolume(PlayerPrefs.GetFloat("MusicVolume", 1f));
+            SetSFXVolume(PlayerPrefs.GetFloat("SFXVolume", 1f));
+            SetUIVolume(PlayerPrefs.GetFloat("UIVolume", 1f));
+        }
+        
+        public void SaveAudioSettings()
+        {
+            PlayerPrefs.Save();
+        }
+        
+        public float GetMasterVolume()
+        {
+            float volume;
+            masterMixer.GetFloat("MasterVolume", out volume);
+            return DecibelToLinear(volume);
+        }
+        
+        public float GetMusicVolume()
+        {
+            float volume;
+            masterMixer.GetFloat("MusicVolume", out volume);
+            return DecibelToLinear(volume);
+        }
+        
+        public float GetSFXVolume()
+        {
+            float volume;
+            masterMixer.GetFloat("SFXVolume", out volume);
+            return DecibelToLinear(volume);
+        }
+        
+        public float GetUIVolume()
+        {
+            float volume;
+            masterMixer.GetFloat("UIVolume", out volume);
+            return DecibelToLinear(volume);
+        }
+        
+        private float DecibelToLinear(float dB)
+        {
+            return Mathf.Pow(10f, dB / 20f);
+        }
+    }
 }
-
-public void SaveAudioSettings()
-{
-    PlayerPrefs.SetFloat("MasterVolume", GetMasterVolume());
-    PlayerPrefs.SetFloat("MusicVolume", GetMusicVolume());
-    PlayerPrefs.SetFloat("SFXVolume", GetSFXVolume());
-    PlayerPrefs.SetFloat("UIVolume", GetUIVolume());
-    PlayerPrefs.Save();
-}
-
-private void LoadAudioSettings()
-{
-    SetMasterVolume(PlayerPrefs.GetFloat("MasterVolume", 1f));
-    SetMusicVolume(PlayerPrefs.GetFloat("MusicVolume", 1f));
-    SetSFXVolume(PlayerPrefs.GetFloat("SFXVolume", 1f));
-    SetUIVolume(PlayerPrefs.GetFloat("UIVolume", 1f));
-}
-
-public float GetMasterVolume()
-{
-    float volume;
-    masterMixer.GetFloat("MasterVolume", out volume);
-    return DecibelToLinear(volume);
-}
-
-public float GetMusicVolume()
-{
-    float volume;
-    masterMixer.GetFloat("MusicVolume", out volume);
-    return DecibelToLinear(volume);
-}
-
-public float GetSFXVolume()
-{
-    float volume;
-    masterMixer.GetFloat("SFXVolume", out volume);
-    return DecibelToLinear(volume);
-}
-
-public float GetUIVolume()
-{
-    float volume;
-    masterMixer.GetFloat("UIVolume", out volume);
-    return DecibelToLinear(volume);
-}
-
-private float DecibelToLinear(float dB)
-{
-    return Mathf.Pow(10f, dB / 20f);
-}
-}}

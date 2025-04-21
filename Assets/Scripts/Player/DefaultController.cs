@@ -97,7 +97,7 @@ public class DefaultController : BaseInputAction
 
         if (Vector2.Distance(centerPivot, moveValue) > threshold)
         {
-            if (angle >= -45f && angle < 45f) // Right
+            if (angle >= -45f && angle < 45f) 
             {
                 if (marbleXPosition < 1)
                 {
@@ -122,15 +122,21 @@ public class DefaultController : BaseInputAction
                     canMove = false;
                 }
             }
-            else if (angle >= 45f && angle < 135f) // Up
+            else if (angle >= 45f && angle < 135f) 
             {
                 if (jumpAvailable)
                 {
                     playerRigidbody.AddForce(Vector3.up * jumpHeight, ForceMode.Impulse);
+                    
+                    if (AudioManager.Instance != null)
+                    {
+                        AudioManager.Instance.Play("Jump");
+                    }
+                    
                     canMove = false;
                 }
             }
-            else if (angle >= 135f || angle < -135f) // Left
+            else if (angle >= 135f || angle < -135f) 
             {
                 if (marbleXPosition > -1)
                 {
