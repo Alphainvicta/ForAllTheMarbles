@@ -6,22 +6,27 @@ namespace Managers
 {
     public class PlayerManager : MonoBehaviour
     {
-        public PlayerMarbles playerMarbles;
+        public PlayerMarbles playerMarblesScriptableObject;
+        public static PlayerMarbles playerMarbles;
         public static GameObject playerInstance;
-        public int marbleIndex;
+        public static int marbleIndex;
         private Vector3 savedVelocity;
         private Vector3 savedAngularVelocity;
         public static bool isUnlocked;
         public static bool isObstacleHitted;
 
+        [SerializeField] private Sprite marbleLockedSprite;
+
         private void Start()
         {
+            playerMarbles = playerMarblesScriptableObject;
             marbleIndex = playerMarbles.LoadPlayerMarbles();
             if (playerInstance == null)
             {
                 playerInstance = Instantiate(playerMarbles.marbles[marbleIndex].marblePrefab, Vector3.zero, Quaternion.identity);
+                UiManager.uiMenuScript.marbleNameText.text = playerMarbles.marbles[marbleIndex].marblePrefab.name;
+                UiManager.uiMenuScript.marbleImage.sprite = playerMarbles.marbles[marbleIndex].marbleImage;
                 isUnlocked = playerMarbles.marbles[marbleIndex].isUnlocked;
-                UpdateMarbleMaterial();
             }
         }
 
@@ -131,27 +136,8 @@ namespace Managers
                 }
             }
 
-            SetNewPlayer();
-        }
-
-        private void UpdateMarbleMaterial()
-        {
-            if (!isUnlocked)
-            {
-                Renderer renderer = playerInstance.GetComponent<Renderer>();
-                if (renderer != null)
-                {
-                    renderer.material.color = Color.black;
-                }
-            }
-            else
-            {
-                Renderer renderer = playerInstance.GetComponent<Renderer>();
-                if (renderer != null)
-                {
-                    renderer.material.color = Color.white;
-                }
-            }
+            UiManager.uiMenuScript.marbleNameText.text = playerMarbles.marbles[marbleIndex].isUnlocked ? playerMarbles.marbles[marbleIndex].marblePrefab.name : "Locked";
+            UiManager.uiMenuScript.marbleImage.sprite = playerMarbles.marbles[marbleIndex].isUnlocked ? playerMarbles.marbles[marbleIndex].marbleImage : marbleLockedSprite;
         }
 
         private void RestoreMarbleValues()
@@ -163,18 +149,23 @@ namespace Managers
             playerInstance.transform.position = Vector3.zero;
         }
 
-        public void SetNewPlayer()
+        public static void SetNewPlayer()
         {
             if (playerInstance != null)
             {
                 Destroy(playerInstance);
                 playerInstance = Instantiate(playerMarbles.marbles[marbleIndex].marblePrefab, Vector3.zero, Quaternion.identity);
                 isUnlocked = playerMarbles.marbles[marbleIndex].isUnlocked;
-                UpdateMarbleMaterial();
             }
 
             playerMarbles.SavePlayerMarbles(marbleIndex);
             playerInstance.GetComponent<PlayerInput>().enabled = false;
+        }
+
+        public static void DeletedData()
+        {
+            marbleIndex = playerMarbles.LoadPlayerMarbles();
+            SetNewPlayer();
         }
     }
 }

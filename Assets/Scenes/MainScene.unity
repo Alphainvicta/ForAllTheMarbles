@@ -255,7 +255,7 @@ MonoBehaviour:
   uiGamePrefab: {fileID: 7993514963127085252, guid: ba6cadd7c4ddf4141852f145834c40ac, type: 3}
   uiPausedPrefab: {fileID: 7993514963127085252, guid: ea5b4724fcdaf98439a507a5070cc158, type: 3}
   uiEndPrefab: {fileID: 7993514963127085252, guid: be1cc565877a35a49ae615542bb819b6, type: 3}
-  uiStorePrefab: {fileID: 7779539431570411673, guid: c861317f7ea35ab46ba15e7b437417d8, type: 3}
+  uiConfigPrefab: {fileID: 7779539431570411673, guid: 995cf57d4fd2b7a4abb0516a3bc97a44, type: 3}
 --- !u!114 &348282108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,8 +268,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51c4e13174d57984b9780a6af97a7286, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerMarbles: {fileID: 11400000, guid: 09b3e72fbdd967b40a58ca8926787927, type: 2}
-  marbleIndex: 0
+  playerMarblesScriptableObject: {fileID: 11400000, guid: 09b3e72fbdd967b40a58ca8926787927, type: 2}
+  marbleLockedSprite: {fileID: 992612688, guid: 12994e8c53ac17b469a0fb9d823b4ff9, type: 3}
 --- !u!114 &348282109
 MonoBehaviour:
   m_ObjectHideFlags: 0

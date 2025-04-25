@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Managers;
 using System.Collections;
-using UnityEngine.SocialPlatforms.Impl;
 
 public abstract class BaseInputAction : MonoBehaviour
 {
@@ -92,35 +91,35 @@ public abstract class BaseInputAction : MonoBehaviour
         }
     }
 
-    private void ObstacleCheck()
-    {
-        float raySpacing = 0.5f;
-        Vector3[] rayOffsets = new Vector3[]
-        {
-        Vector3.zero,
-        new(-raySpacing, 0f, 0f),
-        new(raySpacing, 0f,  0f),
-        new( 0f, -raySpacing, 0f),
-        new( 0f, raySpacing, 0f)
-        };
+    // private void ObstacleCheck()
+    // {
+    //     float raySpacing = 0.5f;
+    //     Vector3[] rayOffsets = new Vector3[]
+    //     {
+    //     Vector3.zero,
+    //     new(-raySpacing, 0f, 0f),
+    //     new(raySpacing, 0f,  0f),
+    //     new( 0f, -raySpacing, 0f),
+    //     new( 0f, raySpacing, 0f)
+    //     };
 
-        foreach (var offset in rayOffsets)
-        {
-            Vector3 rayOrigin = transform.position + offset;
-            Ray ray = new(rayOrigin, Vector3.forward);
+    //     foreach (var offset in rayOffsets)
+    //     {
+    //         Vector3 rayOrigin = transform.position + offset;
+    //         Ray ray = new(rayOrigin, Vector3.forward);
 
-            Debug.DrawRay(rayOrigin, Vector3.forward, Color.blue);
+    //         Debug.DrawRay(rayOrigin, Vector3.forward, Color.blue);
 
-            if (Physics.Raycast(ray, out RaycastHit hit, 1f))
-            {
-                if (hit.collider.CompareTag("Obstacle"))
-                {
-                    GameManager.EndGame();
-                    break;
-                }
-            }
-        }
-    }
+    //         if (Physics.Raycast(ray, out RaycastHit hit, 1f))
+    //         {
+    //             if (hit.collider.CompareTag("Obstacle"))
+    //             {
+    //                 GameManager.EndGame();
+    //                 break;
+    //             }
+    //         }
+    //     }
+    // }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -128,6 +127,8 @@ public abstract class BaseInputAction : MonoBehaviour
         {
             if (collision.gameObject.CompareTag("Obstacle"))
             {
+                StopAllCoroutines();
+                isTransitioning = false;
                 GameManager.EndGame();
             }
         }
@@ -148,11 +149,12 @@ public abstract class BaseInputAction : MonoBehaviour
         Vector3 currentPosition = transform.position;
         while (timeElapsed < duration)
         {
-            yield return new WaitUntil(() => !GameManager.isPaused);
+            yield return new WaitUntil(() => !GameManager.isPaused && !PlayerManager.isObstacleHitted);
             float t = timeElapsed / duration;
             float newX = Mathf.Lerp(currentPosition.x, currentPosition.x + goalPosition, t);
             playerRigidbody.MovePosition(new Vector3(newX, transform.position.y, transform.position.z));
             timeElapsed += Time.deltaTime;
+            yield return null;
         }
 
         playerRigidbody.MovePosition(new(currentPosition.x + goalPosition, transform.position.y, transform.position.z));

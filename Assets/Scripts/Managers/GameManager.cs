@@ -35,23 +35,7 @@ namespace Managers
             string filePath = Application.persistentDataPath + "/Save.json";
             if (!System.IO.File.Exists(filePath))
             {
-                List<bool> unlockedStatuses = new();
-                PlayerManager playerManager = FindFirstObjectByType<PlayerManager>();
-                for (int i = 0; i < playerManager.playerMarbles.marbles.Count; i++)
-                {
-                    unlockedStatuses.Add(playerManager.playerMarbles.marbles[i].isUnlocked);
-                }
-
-                SaveData saveData = new()
-                {
-                    selectedMarbleIndex = 0,
-                    unlockedStatuses = unlockedStatuses,
-                    highScore = 0
-                };
-
-                string json = JsonUtility.ToJson(saveData, true);
-                System.IO.File.WriteAllText(filePath, json);
-                Debug.Log("Data saved to: " + filePath);
+                SaveNewData();
             }
         }
 
@@ -83,9 +67,7 @@ namespace Managers
             }
             else
             {
-                PlayerManager playerManager = FindFirstObjectByType<PlayerManager>();
-                playerManager.marbleIndex = playerManager.playerMarbles.LoadPlayerMarbles();
-                playerManager.SetNewPlayer();
+                PlayerManager.DeletedData();
 
                 GameStart?.Invoke();
                 isPaused = false;
@@ -136,6 +118,30 @@ namespace Managers
             int currentScene = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadScene(currentScene);
         }
+
+        public static void SaveNewData()
+        {
+            string filePath = Application.persistentDataPath + "/Save.json";
+            List<bool> unlockedStatuses = new();
+            for (int i = 0; i < PlayerManager.playerMarbles.marbles.Count; i++)
+            {
+                unlockedStatuses.Add(false);
+            }
+
+            unlockedStatuses[0] = true;
+
+            SaveData saveData = new()
+            {
+                selectedMarbleIndex = 0,
+                unlockedStatuses = unlockedStatuses,
+                highScore = 0,
+                tutorialCompleted = false,
+            };
+
+            string json = JsonUtility.ToJson(saveData, true);
+            System.IO.File.WriteAllText(filePath, json);
+            Debug.Log("Data saved to: " + filePath);
+        }
     }
 }
 
@@ -145,5 +151,6 @@ public class SaveData
     public int selectedMarbleIndex;
     public List<bool> unlockedStatuses;
     public int highScore;
+    public bool tutorialCompleted;
 }
 

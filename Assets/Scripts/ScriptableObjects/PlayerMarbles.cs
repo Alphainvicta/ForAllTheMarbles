@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PlayerMarbles", menuName = "ScriptableObjects/PlayerMarbles", order = 1)]
@@ -68,4 +69,5 @@ public class MarbleData
 {
     public GameObject marblePrefab;
     public bool isUnlocked;
+    public Sprite marbleImage;
 }

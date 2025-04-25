@@ -14,7 +14,6 @@ namespace Managers
         private float disablePosition = -20f;
         private float generatePosition = 50f;
         private bool canPlace = true;
-        private bool readyToPlace = false;
         private GameObject levelPoolInstance;
         private static GameObject disablePool;
         private GameObject levelPositionInstance;
@@ -121,7 +120,6 @@ namespace Managers
         private void OnGameEnd()
         {
             StopAllActiveCoroutines();
-            StartCoroutine(GameEnd());
         }
 
         private void OnStoreGame()
@@ -228,7 +226,6 @@ namespace Managers
 
         private IEnumerator LevelDirector()
         {
-            PlayerManager playerManager = FindFirstObjectByType<PlayerManager>();
             looped = false;
             while (true)
             {
@@ -247,7 +244,7 @@ namespace Managers
                             if (pooledObstacle != null)
                             {
                                 if (j == levelList[i].baseLevelLength - 1)
-                                    StartCoroutine(TransformObstacle(pooledObstacle, i, true, playerManager));
+                                    StartCoroutine(TransformObstacle(pooledObstacle, i, true));
 
                                 else
                                     StartCoroutine(TransformObstacle(pooledObstacle, i));
@@ -258,7 +255,7 @@ namespace Managers
                                 if (j == levelList[i].baseLevelLength - 1)
                                     StartCoroutine(
                                         TransformObstacle(
-                                        ObstacleGenerator(levelList[i].obstacles[randomObstacle], levelList[i].levelFloor), i, true, playerManager
+                                        ObstacleGenerator(levelList[i].obstacles[randomObstacle], levelList[i].levelFloor), i, true
                                         )
                                         );
                                 else
@@ -298,7 +295,7 @@ namespace Managers
             }
         }
 
-        private IEnumerator TransformObstacle(Transform obstacle, int i, bool isUnlockable = false, PlayerManager playerManager = null)
+        private IEnumerator TransformObstacle(Transform obstacle, int i, bool isUnlockable = false)
         {
             while (obstacle.position.z > disablePosition)
             {
@@ -309,14 +306,14 @@ namespace Managers
                 {
                     if (obstacle.position.z <= 0f)
                     {
-                        if (i < playerManager.playerMarbles.marbles.Count)
+                        if (i < PlayerManager.playerMarbles.marbles.Count)
                         {
-                            if (!playerManager.playerMarbles.marbles[i].isUnlocked)
+                            if (!PlayerManager.playerMarbles.marbles[i].isUnlocked)
                             {
                                 UiManager uiManager = FindFirstObjectByType<UiManager>();
                                 StartCoroutine(uiManager.SkinUnlocked());
-                                playerManager.playerMarbles.marbles[i].isUnlocked = true;
-                                playerManager.playerMarbles.SavePlayerMarbles(playerManager.marbleIndex);
+                                PlayerManager.playerMarbles.marbles[i].isUnlocked = true;
+                                PlayerManager.playerMarbles.SavePlayerMarbles(PlayerManager.marbleIndex);
                             }
                         }
                         isUnlockable = false;
@@ -339,19 +336,6 @@ namespace Managers
             }
         }
 
-        private IEnumerator TransformEndGameObstacles(Transform levelPosition)
-        {
-            readyToPlace = true;
-            while (levelPosition.position.z < levelOrigin.transform.position.z)
-            {
-                yield return new WaitUntil(() => !GameManager.isPaused && gameflag);
-                levelPosition.position += Vector3.forward * 30 * Time.deltaTime;
-                yield return null;
-            }
-            levelPosition.position = levelOrigin.transform.position;
-            readyToPlace = false;
-            yield return null;
-        }
         private void StopAllActiveCoroutines()
         {
             foreach (var coroutine in activeCoroutines)
@@ -378,32 +362,6 @@ namespace Managers
             obstacle.gameObject.SetActive(false);
             obstaclePool[obstacleKey].Add(obstacle);
         }
-
-        private IEnumerator GameEnd()
-        {
-            levelEnding = true;
-            yield return new WaitForSeconds(1f);
-
-            levelPositionInstance.transform.position = levelPoolInstance.transform.GetChild(0).position - new Vector3(0f, 0f, 2f * levelList[0].obstacles[0].ObstacleLength);
-            if (CallFromPool(levelList[0].obstacles[0], levelList[0].levelFloor) == null)
-            {
-                levelPositionInstance.transform.position = levelPoolInstance.transform.GetChild(0).position;
-            }
-            else
-            {
-                levelPositionInstance.transform.parent = null;
-                levelPositionInstance.transform.position -= new Vector3(0f, 0f, 2f * levelList[0].obstacles[0].ObstacleLength);
-            }
-
-            MoveToNewParent(levelPoolInstance.transform, levelPositionInstance.transform);
-            StartCoroutine(TransformEndGameObstacles(levelPositionInstance.transform));
-            yield return new WaitUntil(() => !readyToPlace);
-            MoveToNewParent(levelPositionInstance.transform, levelPoolInstance.transform);
-
-            levelEnding = false;
-            yield return null;
-        }
-
         private void MoveToNewParent(Transform oldParent, Transform newParent)
         {
             while (oldParent.childCount > 0)

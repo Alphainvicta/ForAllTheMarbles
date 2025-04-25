@@ -1,8 +1,6 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Managers;
-using System;
 
 public class DefaultController : BaseInputAction
 {
@@ -26,7 +24,7 @@ public class DefaultController : BaseInputAction
         Enable();
         GameManager.MenuGame += StopCoroutines;
         GameManager.GameStart += SetMarblePosition;
-        GameManager.GameEnd += EndGame;
+        GameManager.GameEnd += StopCoroutines;
     }
 
     private void OnDisable()
@@ -34,25 +32,13 @@ public class DefaultController : BaseInputAction
         Disable();
         GameManager.GameStart -= SetMarblePosition;
         GameManager.MenuGame -= StopCoroutines;
-        GameManager.GameEnd -= EndGame;
-    }
-
-    private void EndGame()
-    {
-        StopCoroutines();
-
-        if (marbleXPosition != 0)
-        {
-            if (marbleXPosition == -1)
-                playerTransitionCoroutine = StartCoroutine(MarbleXTransition(+2f, 1f));
-            else
-                playerTransitionCoroutine = StartCoroutine(MarbleXTransition(-2f, 1f));
-        }
+        GameManager.GameEnd -= StopCoroutines;
     }
 
     private void SetMarblePosition()
     {
         marbleXPosition = 0;
+
     }
 
     private void StopCoroutines()
@@ -97,7 +83,7 @@ public class DefaultController : BaseInputAction
 
         if (Vector2.Distance(centerPivot, moveValue) > threshold)
         {
-            if (angle >= -45f && angle < 45f) 
+            if (angle >= -45f && angle < 45f) // Right
             {
                 if (marbleXPosition < 1)
                 {
@@ -122,21 +108,21 @@ public class DefaultController : BaseInputAction
                     canMove = false;
                 }
             }
-            else if (angle >= 45f && angle < 135f) 
+            else if (angle >= 45f && angle < 135f) // Up
             {
                 if (jumpAvailable)
                 {
                     playerRigidbody.AddForce(Vector3.up * jumpHeight, ForceMode.Impulse);
-                    
+
                     if (AudioManager.Instance != null)
                     {
                         AudioManager.Instance.Play("Jump");
                     }
-                    
+
                     canMove = false;
                 }
             }
-            else if (angle >= 135f || angle < -135f) 
+            else if (angle >= 135f || angle < -135f) // Left
             {
                 if (marbleXPosition > -1)
                 {

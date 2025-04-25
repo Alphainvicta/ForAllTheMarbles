@@ -71,20 +71,10 @@ namespace Managers
 
         private void OnGameEnd()
         {
-            StartCoroutine(GameEnd());
-        }
-
-        private IEnumerator GameEnd()
-        {
             if (cameraTransitionCoroutine != null)
             {
                 StopCoroutine(cameraTransitionCoroutine);
             }
-            yield return new WaitUntil(() => !LevelManager.levelEnding);
-            cameraTransitionCoroutine = StartCoroutine(CameraTransition(new Vector3(3.5f, 1f, 0f), Quaternion.Euler(0f, -90f, 0f), 1f));
-            yield return new WaitUntil(() => !OnGoingCameraTransition);
-            GameManager.Menu();
-            yield return null;
         }
 
         private void OnStoreGame()

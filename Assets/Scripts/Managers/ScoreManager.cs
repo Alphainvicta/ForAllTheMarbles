@@ -74,6 +74,8 @@ namespace Managers
                 StopCoroutine(scoreCoroutine);
             }
 
+            UiManager.uiEndGameScript.finalScoreText.text = score.ToString();
+
             if (score > highScore)
             {
                 SaveHighScore();
@@ -96,7 +98,7 @@ namespace Managers
             {
                 yield return new WaitUntil(() => !GameManager.isPaused && !UiManager.uiTransition);
                 score += 1;
-                UiManager.scoreText.text = score.ToString().PadLeft(7, '0');
+                UiManager.uiGameScript.scoreText.text = score.ToString().PadLeft(7, '0');
                 yield return new WaitForSeconds(scoreUpdateInterval);
             }
         }

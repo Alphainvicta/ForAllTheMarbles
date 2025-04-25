@@ -11,23 +11,20 @@ namespace Managers
         [SerializeField] private GameObject uiGamePrefab;
         [SerializeField] private GameObject uiPausedPrefab;
         [SerializeField] private GameObject uiEndPrefab;
-        [SerializeField] private GameObject uiStorePrefab;
-        private GameObject uiMenuInstance;
-        private GameObject uiGameInstance;
-        private GameObject uiPausedInstance;
-        private GameObject uiEndInstance;
-        private GameObject uiStoreInstance;
+        [SerializeField] private GameObject uiConfigPrefab;
 
-        private Button menuRightButton;
-        private Button menuLeftButton;
-        private Button menuPlayButton;
-        private Button gamePauseButton;
-        private Button pauseUnpauseButton;
-        private Button pauseMenuButton;
-        private Transform levelCountDownText;
-        private Transform unlockText;
+        private GameObject uiMenuInstance;
+        static public UIMenu uiMenuScript;
+        private GameObject uiGameInstance;
+        static public UIGame uiGameScript;
+        private GameObject uiPausedInstance;
+        static public UIPause uiPauseScript;
+        private GameObject uiEndInstance;
+        static public UIEndGame uiEndGameScript;
+        private GameObject uiConfigInstance;
+        static public UIConfig uiConfigScript;
+
         public static bool uiTransition;
-        public static TextMeshProUGUI scoreText;
         private Coroutine beginLevelCountDownCoroutine;
         PlayerManager playerManager;
 
@@ -36,6 +33,7 @@ namespace Managers
             if (uiMenuInstance == null)
             {
                 uiMenuInstance = Instantiate(uiMenuPrefab, Vector3.zero, Quaternion.identity);
+                uiMenuScript = uiMenuInstance.GetComponent<UIMenu>();
 
                 playerManager = FindFirstObjectByType<PlayerManager>();
 
@@ -45,22 +43,30 @@ namespace Managers
             if (uiGameInstance == null)
             {
                 uiGameInstance = Instantiate(uiGamePrefab, Vector3.zero, Quaternion.identity);
+                uiGameScript = uiGameInstance.GetComponent<UIGame>();
 
                 AssignGameButtons();
             }
             if (uiPausedInstance == null)
             {
                 uiPausedInstance = Instantiate(uiPausedPrefab, Vector3.zero, Quaternion.identity);
+                uiPauseScript = uiPausedInstance.GetComponent<UIPause>();
 
                 AssignPauseButtons();
             }
             if (uiEndInstance == null)
             {
                 uiEndInstance = Instantiate(uiEndPrefab, Vector3.zero, Quaternion.identity);
+                uiEndGameScript = uiEndInstance.GetComponent<UIEndGame>();
+
+                AssignEndButtons();
             }
-            if (uiStoreInstance == null)
+            if (uiConfigInstance == null)
             {
-                uiStoreInstance = Instantiate(uiStorePrefab, Vector3.zero, Quaternion.identity);
+                uiConfigInstance = Instantiate(uiConfigPrefab, Vector3.zero, Quaternion.identity);
+                uiConfigScript = uiConfigInstance.GetComponent<UIConfig>();
+
+                AssignConfigMenuButtons();
             }
         }
 
@@ -89,7 +95,7 @@ namespace Managers
             uiGameInstance.SetActive(false);
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(false);
-            uiStoreInstance.SetActive(false);
+            uiConfigInstance.SetActive(false);
 
             if (beginLevelCountDownCoroutine != null)
             {
@@ -103,7 +109,7 @@ namespace Managers
             uiGameInstance.SetActive(true);
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(false);
-            uiStoreInstance.SetActive(false);
+            uiConfigInstance.SetActive(false);
 
             if (beginLevelCountDownCoroutine != null)
             {
@@ -119,7 +125,7 @@ namespace Managers
             uiGameInstance.SetActive(false);
             uiPausedInstance.SetActive(true);
             uiEndInstance.SetActive(false);
-            uiStoreInstance.SetActive(false);
+            uiConfigInstance.SetActive(false);
         }
 
         private void OnGameUnpaused()
@@ -128,7 +134,7 @@ namespace Managers
             uiGameInstance.SetActive(true);
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(false);
-            uiStoreInstance.SetActive(false);
+            uiConfigInstance.SetActive(false);
         }
 
         private void OnGameEnd()
@@ -137,7 +143,7 @@ namespace Managers
             uiGameInstance.SetActive(false);
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(true);
-            uiStoreInstance.SetActive(false);
+            uiConfigInstance.SetActive(false);
 
             if (beginLevelCountDownCoroutine != null)
             {
@@ -151,7 +157,7 @@ namespace Managers
             uiGameInstance.SetActive(false);
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(false);
-            uiStoreInstance.SetActive(true);
+            uiConfigInstance.SetActive(true);
 
             if (beginLevelCountDownCoroutine != null)
             {
@@ -161,133 +167,205 @@ namespace Managers
 
         private void AssignMenuButtons()
         {
-            Transform canvasChildren = uiMenuInstance.transform.Find("MenuCanvas");
-            if (canvasChildren != null)
-            {
-                menuRightButton = canvasChildren.Find("RightButton")?.GetComponent<Button>();
-                menuLeftButton = canvasChildren.Find("LeftButton")?.GetComponent<Button>();
-                menuPlayButton = canvasChildren.Find("PlayButton")?.GetComponent<Button>();
+            uiMenuScript.playButton.onClick.AddListener(() => GameManager.PlayGame());
+            uiMenuScript.skinsButton.onClick.AddListener(() => EnableSkinMenu());
+            uiMenuScript.configButton.onClick.AddListener(() => EnableConfigMenu());
 
-                if (menuRightButton != null)
-                {
-                    menuRightButton.onClick.AddListener(() => playerManager.NextPlayerMarble(true));
-                }
-                else
-                {
-                    Debug.LogError("RightButton not found in canvasChildren!");
-                }
-
-                if (menuLeftButton != null)
-                {
-                    menuLeftButton.onClick.AddListener(() => playerManager.NextPlayerMarble(false));
-                }
-                else
-                {
-                    Debug.LogError("LeftButton not found in canvasChildren!");
-                }
-                if (menuPlayButton != null)
-                {
-                    menuPlayButton.onClick.AddListener(() => GameManager.PlayGame());
-                }
-                else
-                {
-                    Debug.LogError("PlayButton not found in canvasChildren!");
-                }
-            }
-            else
-            {
-                Debug.LogError("canvasChildren not found in uiMenuInstance!");
-            }
+            uiMenuScript.rightButton.onClick.AddListener(() => playerManager.NextPlayerMarble(true));
+            uiMenuScript.leftButton.onClick.AddListener(() => playerManager.NextPlayerMarble(false));
+            uiMenuScript.menuButton.onClick.AddListener(() => CloseSkinMenu());
         }
 
         private void AssignGameButtons()
         {
-            Transform canvasChildren = uiGameInstance.transform.Find("GameCanvas");
-            if (canvasChildren != null)
-            {
-                gamePauseButton = canvasChildren.Find("PauseButton")?.GetComponent<Button>();
-
-                if (gamePauseButton != null)
-                {
-                    gamePauseButton.onClick.AddListener(() => GameManager.PauseGame());
-                }
-                else
-                {
-                    Debug.LogError("PauseButton not found in canvasChildren!");
-                }
-
-                scoreText = canvasChildren.Find("Score")?.GetComponent<TextMeshProUGUI>();
-                scoreText.gameObject.SetActive(false);
-            }
-            else
-            {
-                Debug.LogError("canvasChildren not found in uiGameInstance!");
-            }
+            uiGameScript.pauseButton.onClick.AddListener(() => GameManager.PauseGame());
+            uiGameScript.scoreText.gameObject.SetActive(false);
         }
 
         private void AssignPauseButtons()
         {
-            Transform canvasChildren = uiPausedInstance.transform.Find("PauseCanvas");
-            if (canvasChildren != null)
+            uiPauseScript.unpauseButton.onClick.AddListener(() => GameManager.UnpauseGame());
+            uiPauseScript.replayButton.onClick.AddListener(() => EnablePauseRestartPanel());
+            uiPauseScript.playButton.onClick.AddListener(() => GameManager.UnpauseGame());
+            uiPauseScript.menuButton.onClick.AddListener(() => EnablePauseMenuPanel());
+            uiPauseScript.configButton.onClick.AddListener(() => EnableConfigPause());
+
+            uiPauseScript.confirmRestartButton.onClick.AddListener(() => RestartGame());
+            uiPauseScript.cancelRestartButton.onClick.AddListener(() => EnablePauseMenuPanel());
+
+            uiPauseScript.confirmMenuButton.onClick.AddListener(() => BackToMenu());
+            uiPauseScript.cancelMenuButton.onClick.AddListener(() => EnablePauseMenuPanel());
+
+        }
+
+        private void AssignConfigMenuButtons()
+        {
+            uiConfigScript.menuButton.onClick.AddListener(() => EnableConfigMenu());
+            uiConfigScript.deleteButton.onClick.AddListener(() => EnableConfigConfirmMenu());
+
+            uiConfigScript.cancelButton.onClick.AddListener(() => EnableConfigConfirmMenu());
+            uiConfigScript.confirmButton.onClick.AddListener(() => DeleteData());
+
+            uiConfigScript.deleteButton.gameObject.SetActive(true);
+        }
+
+        private void AssignEndButtons()
+        {
+            uiEndGameScript.replayButton.onClick.AddListener(() => ReplayGame());
+            uiEndGameScript.menuButton.onClick.AddListener(() => GameManager.Menu());
+        }
+
+        private void EnableSkinMenu()
+        {
+            if (uiMenuScript.skinsPanel.activeSelf)
             {
-                pauseUnpauseButton = canvasChildren.Find("UnpauseButton")?.GetComponent<Button>();
-                pauseMenuButton = canvasChildren.Find("MenuButton")?.GetComponent<Button>();
-
-                if (pauseUnpauseButton != null)
-                {
-                    pauseUnpauseButton.onClick.AddListener(() => GameManager.UnpauseGame());
-                }
-                else
-                {
-                    Debug.LogError("UnpauseButton not found in canvasChildren!");
-                }
-
-                if (pauseMenuButton != null)
-                {
-                    pauseMenuButton.onClick.AddListener(() => GameManager.Menu());
-                }
-                else
-                {
-                    Debug.LogError("MenuButton not found in canvasChildren!");
-                }
+                uiMenuScript.menuPanel.SetActive(true);
+                uiMenuScript.skinsPanel.SetActive(false);
             }
             else
             {
-                Debug.LogError("canvasChildren not found in uiPauseInstance!");
+                uiMenuScript.menuPanel.SetActive(false);
+                uiMenuScript.skinsPanel.SetActive(true);
             }
         }
 
+        private void EnableConfigMenu()
+        {
+            if (uiConfigInstance.activeSelf)
+            {
+                uiMenuScript.menuPanel.SetActive(true);
+                uiConfigInstance.SetActive(false);
+            }
+            else
+            {
+                uiConfigScript.menuButton.onClick.RemoveAllListeners();
+                uiConfigScript.menuButton.onClick.AddListener(() => EnableConfigMenu());
+                uiConfigScript.deleteButton.gameObject.SetActive(true);
+
+                uiMenuScript.menuPanel.SetActive(false);
+                uiConfigInstance.SetActive(true);
+            }
+        }
+
+        private void EnableConfigConfirmMenu()
+        {
+            if (uiConfigScript.confirmPanel.activeSelf)
+            {
+                uiConfigScript.configPanel.SetActive(true);
+                uiConfigScript.confirmPanel.SetActive(false);
+            }
+            else
+            {
+                uiConfigScript.configPanel.SetActive(false);
+                uiConfigScript.confirmPanel.SetActive(true);
+            }
+        }
+
+        private void EnablePauseMenuPanel()
+        {
+            if (uiPauseScript.backToMenuPanel.activeSelf)
+            {
+                uiPauseScript.pausePanel.SetActive(true);
+                uiPauseScript.backToMenuPanel.SetActive(false);
+            }
+            else
+            {
+                uiPauseScript.pausePanel.SetActive(false);
+                uiPauseScript.backToMenuPanel.SetActive(true);
+            }
+        }
+
+        private void EnablePauseRestartPanel()
+        {
+            if (uiPauseScript.restartPanel.activeSelf)
+            {
+                uiPauseScript.pausePanel.SetActive(true);
+                uiPauseScript.restartPanel.SetActive(false);
+            }
+            else
+            {
+                uiPauseScript.pausePanel.SetActive(false);
+                uiPauseScript.restartPanel.SetActive(true);
+            }
+        }
+
+        private void EnableConfigPause()
+        {
+            if (uiConfigInstance.activeSelf)
+            {
+                uiPauseScript.pausePanel.SetActive(true);
+                uiConfigInstance.SetActive(false);
+            }
+            else
+            {
+                uiConfigScript.menuButton.onClick.RemoveAllListeners();
+                uiConfigScript.menuButton.onClick.AddListener(() => EnableConfigPause());
+                uiConfigScript.deleteButton.gameObject.SetActive(false);
+
+                uiPauseScript.pausePanel.SetActive(false);
+                uiConfigInstance.SetActive(true);
+            }
+        }
+
+        private void CloseSkinMenu()
+        {
+            EnableSkinMenu();
+            PlayerManager.DeletedData();
+        }
+
+        private void BackToMenu()
+        {
+            EnablePauseMenuPanel();
+            GameManager.Menu();
+        }
+
+        private void RestartGame()
+        {
+            EnablePauseRestartPanel();
+            GameManager.Menu();
+            GameManager.PlayGame();
+        }
+
+        private void ReplayGame()
+        {
+            GameManager.Menu();
+            GameManager.PlayGame();
+        }
+
+        private void DeleteData()
+        {
+            GameManager.SaveNewData();
+            EnableConfigConfirmMenu();
+            EnableConfigMenu();
+            PlayerManager.DeletedData();
+        }
         private IEnumerator BeginLevelCountDown()
         {
             uiTransition = true;
             yield return new WaitUntil(() => !CameraManager.OnGoingCameraTransition);
-            Transform canvasChildren = uiGameInstance.transform.Find("GameCanvas");
-            levelCountDownText = canvasChildren.Find("CountDown");
-            levelCountDownText.gameObject.SetActive(true);
-            scoreText.gameObject.SetActive(false);
+            uiGameScript.countDownText.gameObject.SetActive(true);
+            uiGameScript.scoreText.gameObject.SetActive(false);
             float countDown = 3f;
             float timeElapsed = 0f;
 
             while (timeElapsed < countDown)
             {
                 yield return new WaitUntil(() => !GameManager.isPaused);
-                levelCountDownText.GetComponent<TextMeshProUGUI>().text = Mathf.Ceil(countDown - timeElapsed).ToString();
+                uiGameScript.countDownText.text = Mathf.Ceil(countDown - timeElapsed).ToString();
                 timeElapsed += Time.deltaTime;
             }
-            levelCountDownText.gameObject.SetActive(false);
-            scoreText.gameObject.SetActive(true);
-            levelCountDownText.GetComponent<TextMeshProUGUI>().text = countDown.ToString();
+            uiGameScript.countDownText.gameObject.SetActive(false);
+            uiGameScript.scoreText.gameObject.SetActive(true);
+            uiGameScript.countDownText.text = countDown.ToString();
             uiTransition = false;
             yield return null;
         }
 
         public IEnumerator SkinUnlocked()
         {
-            Transform canvasChildren = uiGameInstance.transform.Find("GameCanvas");
-            unlockText = canvasChildren.Find("Unlock");
-            unlockText.gameObject.SetActive(true);
+            uiGameScript.unlockText.gameObject.SetActive(true);
             yield return new WaitForSeconds(1f);
-            unlockText.gameObject.SetActive(false);
+            uiGameScript.unlockText.gameObject.SetActive(false);
             yield return null;
         }
     }
