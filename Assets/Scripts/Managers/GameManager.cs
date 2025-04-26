@@ -141,6 +141,8 @@ namespace Managers
             string json = JsonUtility.ToJson(saveData, true);
             System.IO.File.WriteAllText(filePath, json);
             Debug.Log("Data saved to: " + filePath);
+
+            ScoreManager.highScore = 0;
         }
     }
 }

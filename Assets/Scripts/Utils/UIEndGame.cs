@@ -7,4 +7,5 @@ public class UIEndGame : MonoBehaviour
     public Button replayButton;
     public Button menuButton;
     public TextMeshProUGUI finalScoreText;
+    public TextMeshProUGUI highScoreText;
 }

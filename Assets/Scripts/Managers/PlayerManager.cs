@@ -14,12 +14,13 @@ namespace Managers
         private Vector3 savedAngularVelocity;
         public static bool isUnlocked;
         public static bool isObstacleHitted;
-
+        public static Sprite marbleLockedSpriteStatic;
         [SerializeField] private Sprite marbleLockedSprite;
 
         private void Start()
         {
             playerMarbles = playerMarblesScriptableObject;
+            marbleLockedSpriteStatic = marbleLockedSprite;
             marbleIndex = playerMarbles.LoadPlayerMarbles();
             if (playerInstance == null)
             {

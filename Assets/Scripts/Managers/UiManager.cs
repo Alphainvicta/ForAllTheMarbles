@@ -221,11 +221,15 @@ namespace Managers
             {
                 uiMenuScript.menuPanel.SetActive(true);
                 uiMenuScript.skinsPanel.SetActive(false);
+
+                PlayerManager.playerMarbles.SavePlayerMarbles(PlayerManager.marbleIndex);
             }
             else
             {
                 uiMenuScript.menuPanel.SetActive(false);
                 uiMenuScript.skinsPanel.SetActive(true);
+                uiMenuScript.marbleNameText.text = PlayerManager.playerMarbles.marbles[PlayerManager.marbleIndex].isUnlocked ? PlayerManager.playerMarbles.marbles[PlayerManager.marbleIndex].marblePrefab.name : "Locked";
+                uiMenuScript.marbleImage.sprite = PlayerManager.playerMarbles.marbles[PlayerManager.marbleIndex].isUnlocked ? PlayerManager.playerMarbles.marbles[PlayerManager.marbleIndex].marbleImage : PlayerManager.marbleLockedSpriteStatic;
             }
         }
 

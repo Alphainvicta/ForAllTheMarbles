@@ -75,9 +75,11 @@ namespace Managers
             }
 
             UiManager.uiEndGameScript.finalScoreText.text = score.ToString();
+            UiManager.uiEndGameScript.highScoreText.text = highScore.ToString();
 
             if (score > highScore)
             {
+                UiManager.uiEndGameScript.highScoreText.text = score.ToString();
                 SaveHighScore();
             }
         }
