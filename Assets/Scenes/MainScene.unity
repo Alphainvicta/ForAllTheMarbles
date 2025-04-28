@@ -158,7 +158,7 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     loop: 0
-    mixerGroup: {fileID: 24300002, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+    mixerGroup: {fileID: -6064931773419471787, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
     source: {fileID: 0}
   - name: GameMusic
     clip: {fileID: 8300000, guid: 7f114084d2ad6d94994cd7aa28fae65a, type: 3}
@@ -179,28 +179,28 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     loop: 0
-    mixerGroup: {fileID: -6064931773419471787, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+    mixerGroup: {fileID: -4941750939365844674, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
     source: {fileID: 0}
   - name: Unpause
     clip: {fileID: 8300000, guid: 8124a4654a3408549be26a731bc3c6a2, type: 3}
     volume: 1
     pitch: 1
     loop: 0
-    mixerGroup: {fileID: -6064931773419471787, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+    mixerGroup: {fileID: -4941750939365844674, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
     source: {fileID: 0}
   - name: GameOver
     clip: {fileID: 8300000, guid: f0a25c07568a5b5459f344502386c6e3, type: 3}
     volume: 1
     pitch: 1
     loop: 0
-    mixerGroup: {fileID: -6064931773419471787, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+    mixerGroup: {fileID: 7039340525619287243, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
     source: {fileID: 0}
   - name: Jump
     clip: {fileID: 8300000, guid: c24c8c0f3615f5a4a992d411263c33d7, type: 3}
     volume: 1
     pitch: 1
     loop: 0
-    mixerGroup: {fileID: -6064931773419471787, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
+    mixerGroup: {fileID: 7039340525619287243, guid: 0a3f05f8537b1ff41930b762bf0ff41b, type: 2}
     source: {fileID: 0}
 --- !u!4 &19879240
 Transform:
@@ -212,6 +212,50 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -17.416565, y: 6.219965, z: -1.9417617}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &342601083
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 342601085}
+  - component: {fileID: 342601084}
+  m_Layer: 0
+  m_Name: ParticleManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &342601084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342601083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2be34f447f052746b2b098c800a91ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &342601085
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342601083}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -634,3 +678,4 @@ SceneRoots:
   - {fileID: 544342391}
   - {fileID: 348282112}
   - {fileID: 19879240}
+  - {fileID: 342601085}

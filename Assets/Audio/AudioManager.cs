@@ -68,7 +68,30 @@ namespace Managers
                 Debug.LogWarning("Sound: " + soundName + " not found!");
             }
         }
-        
+        // En tu AudioManager.cs
+public void Pause(string soundName)
+{
+    Sound s = sounds.Find(sound => sound.name == soundName);
+    if (s != null)
+    {
+        s.source.Pause();
+    }
+}
+
+public void Unpause(string soundName)
+{
+    Sound s = sounds.Find(sound => sound.name == soundName);
+    if (s != null)
+    {
+        s.source.UnPause();
+    }
+}
+
+public bool IsPlaying(string soundName)
+{
+    Sound s = sounds.Find(sound => sound.name == soundName);
+    return s != null && s.source.isPlaying;
+}
         public void Stop(string soundName)
         {
             Sound s = sounds.Find(sound => sound.name == soundName);
