@@ -54,75 +54,75 @@ namespace Managers
 
         }
 
-public static void PlayGame()
-{
-    if (PlayerManager.isUnlocked)
-    {
-        GameStart?.Invoke();
-        isPaused = false;
-        AudioManager.Instance.Play("GameMusic"); 
-        AudioManager.Instance.Stop("MenuMusic");
-        AudioManager.Instance.Play("StartGame");
-    }
-    else
-    {
-        PlayerManager.DeletedData();
-        GameStart?.Invoke();
-        isPaused = false;
-        AudioManager.Instance.Play("GameMusic");
-        AudioManager.Instance.Stop("MenuMusic");
-        AudioManager.Instance.Play("StartGame");
-    }
-}
-
-public static void PauseGame()
-{
-    GamePaused?.Invoke();
-    isPaused = true;
-    Time.timeScale = 0;
-    
-    // Manejo de audio
-    AudioManager.Instance.Play("Pause");
-    AudioManager.Instance.Pause("GameMusic");
-    
-    // Pausar partículas existentes
-    PauseAllParticles(true);
-}
-
-public static void UnpauseGame()
-{
-    GameUnpaused?.Invoke();
-    isPaused = false;
-    Time.timeScale = 1;
-    
-    // Manejo de audio
-    AudioManager.Instance.Play("Unpause");
-    AudioManager.Instance.Unpause("GameMusic");
-    
-    // Reanudar partículas
-    PauseAllParticles(false);
-}
-
-private static void PauseAllParticles(bool pause)
-{
-    // Obtener todas las partículas en la escena
-    ParticleSystem[] allParticles = GameObject.FindObjectsOfType<ParticleSystem>();
-    
-    foreach (ParticleSystem ps in allParticles)
-    {
-        if (ps == null) continue;
-        
-        // Opción 1: Pausar/Reanudar el sistema (mantiene el estado)
-        if (pause)
+        public static void PlayGame()
         {
-            if (ps.isPlaying) ps.Pause();
+            if (PlayerManager.isUnlocked)
+            {
+                GameStart?.Invoke();
+                isPaused = false;
+                AudioManager.Instance.Play("GameMusic");
+                AudioManager.Instance.Stop("MenuMusic");
+                AudioManager.Instance.Play("StartGame");
+            }
+            else
+            {
+                PlayerManager.DeletedData();
+                GameStart?.Invoke();
+                isPaused = false;
+                AudioManager.Instance.Play("GameMusic");
+                AudioManager.Instance.Stop("MenuMusic");
+                AudioManager.Instance.Play("StartGame");
+            }
         }
-        else
+
+        public static void PauseGame()
         {
-            if (ps.isPaused) ps.Play();
+            GamePaused?.Invoke();
+            isPaused = true;
+            Time.timeScale = 0;
+
+            // Manejo de audio
+            AudioManager.Instance.Play("Pause");
+            AudioManager.Instance.Pause("GameMusic");
+
+            // Pausar partículas existentes
+            PauseAllParticles(true);
         }
-    }
-}
+
+        public static void UnpauseGame()
+        {
+            GameUnpaused?.Invoke();
+            isPaused = false;
+            Time.timeScale = 1;
+
+            // Manejo de audio
+            AudioManager.Instance.Play("Unpause");
+            AudioManager.Instance.Unpause("GameMusic");
+
+            // Reanudar partículas
+            PauseAllParticles(false);
+        }
+
+        private static void PauseAllParticles(bool pause)
+        {
+            // Obtener todas las partículas en la escena
+            ParticleSystem[] allParticles = GameObject.FindObjectsByType<ParticleSystem>(FindObjectsSortMode.None);
+
+            foreach (ParticleSystem ps in allParticles)
+            {
+                if (ps == null) continue;
+
+                // Opción 1: Pausar/Reanudar el sistema (mantiene el estado)
+                if (pause)
+                {
+                    if (ps.isPlaying) ps.Pause();
+                }
+                else
+                {
+                    if (ps.isPaused) ps.Play();
+                }
+            }
+        }
         public static void EndGame()
         {
             GameEnd?.Invoke();
