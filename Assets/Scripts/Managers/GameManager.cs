@@ -18,6 +18,9 @@ namespace Managers
 
         [Header("Frame Settings")]
         public static float TargetFrameRate = 60.0f;
+        
+        private List<IPausable> pausableObjects = new List<IPausable>();
+
         private void Awake()
         {
             if (Instance == null)
@@ -39,6 +42,22 @@ namespace Managers
             }
         }
 
+        public void RegisterPausable(IPausable pausable)
+        {
+            if (!pausableObjects.Contains(pausable))
+            {
+                pausableObjects.Add(pausable);
+            }
+        }
+
+        public void UnregisterPausable(IPausable pausable)
+        {
+            if (pausableObjects.Contains(pausable))
+            {
+                pausableObjects.Remove(pausable);
+            }
+        }
+
         private void Start()
         {
             MenuGame();
@@ -51,7 +70,6 @@ namespace Managers
             isPaused = false;
             AudioManager.Instance.Play("MenuMusic");
             AudioManager.Instance.Stop("GameMusic");
-
         }
 
         public static void PlayGame()
@@ -79,13 +97,12 @@ namespace Managers
         {
             GamePaused?.Invoke();
             isPaused = true;
-            Time.timeScale = 0;
-
-            // Manejo de audio
+            
+            Instance.PauseAllRegisteredObjects();
+            
             AudioManager.Instance.Play("Pause");
             AudioManager.Instance.Pause("GameMusic");
 
-            // Pausar partículas existentes
             PauseAllParticles(true);
         }
 
@@ -93,26 +110,39 @@ namespace Managers
         {
             GameUnpaused?.Invoke();
             isPaused = false;
-            Time.timeScale = 1;
-
-            // Manejo de audio
+            
+            Instance.ResumeAllRegisteredObjects();
+            
             AudioManager.Instance.Play("Unpause");
             AudioManager.Instance.Unpause("GameMusic");
 
-            // Reanudar partículas
             PauseAllParticles(false);
+        }
+
+        private void PauseAllRegisteredObjects()
+        {
+            foreach (var pausable in pausableObjects)
+            {
+                pausable?.OnPause();
+            }
+        }
+
+        private void ResumeAllRegisteredObjects()
+        {
+            foreach (var pausable in pausableObjects)
+            {
+                pausable?.OnResume();
+            }
         }
 
         private static void PauseAllParticles(bool pause)
         {
-            // Obtener todas las partículas en la escena
             ParticleSystem[] allParticles = GameObject.FindObjectsByType<ParticleSystem>(FindObjectsSortMode.None);
 
             foreach (ParticleSystem ps in allParticles)
             {
                 if (ps == null) continue;
 
-                // Opción 1: Pausar/Reanudar el sistema (mantiene el estado)
                 if (pause)
                 {
                     if (ps.isPlaying) ps.Pause();
@@ -123,13 +153,13 @@ namespace Managers
                 }
             }
         }
+
         public static void EndGame()
         {
             GameEnd?.Invoke();
             isPaused = false;
             AudioManager.Instance.Play("GameOver");
             AudioManager.Instance.Stop("GameMusic");
-
         }
 
         public static void Store()
@@ -137,7 +167,6 @@ namespace Managers
             StoreGame.Invoke();
             isPaused = false;
             AudioManager.Instance.Play("StoreOpen");
-
         }
 
         public static void ReloadScene()
@@ -172,6 +201,12 @@ namespace Managers
             ScoreManager.highScore = 0;
         }
     }
+
+    public interface IPausable
+    {
+        void OnPause();
+        void OnResume();
+    }
 }
 
 [Serializable]
@@ -182,4 +217,3 @@ public class SaveData
     public int highScore;
     public bool tutorialCompleted;
 }
-
