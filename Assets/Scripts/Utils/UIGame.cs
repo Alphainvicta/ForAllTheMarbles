@@ -9,4 +9,5 @@ public class UIGame : MonoBehaviour
     public TextMeshProUGUI countDownText;
     public TextMeshProUGUI unlockText;
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI highScoreText;
 }

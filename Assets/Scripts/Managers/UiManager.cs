@@ -33,6 +33,8 @@ namespace Managers
             if (uiMenuInstance == null)
             {
                 uiMenuInstance = Instantiate(uiMenuPrefab, Vector3.zero, Quaternion.identity);
+                uiMenuInstance.SetActive(true);
+
                 uiMenuScript = uiMenuInstance.GetComponent<UIMenu>();
 
                 playerManager = FindFirstObjectByType<PlayerManager>();
@@ -43,6 +45,8 @@ namespace Managers
             if (uiGameInstance == null)
             {
                 uiGameInstance = Instantiate(uiGamePrefab, Vector3.zero, Quaternion.identity);
+                uiGameInstance.SetActive(false);
+
                 uiGameScript = uiGameInstance.GetComponent<UIGame>();
 
                 AssignGameButtons();
@@ -50,6 +54,8 @@ namespace Managers
             if (uiPausedInstance == null)
             {
                 uiPausedInstance = Instantiate(uiPausedPrefab, Vector3.zero, Quaternion.identity);
+                uiPausedInstance.SetActive(false);
+
                 uiPauseScript = uiPausedInstance.GetComponent<UIPause>();
 
                 AssignPauseButtons();
@@ -57,6 +63,8 @@ namespace Managers
             if (uiEndInstance == null)
             {
                 uiEndInstance = Instantiate(uiEndPrefab, Vector3.zero, Quaternion.identity);
+                uiEndInstance.SetActive(false);
+
                 uiEndGameScript = uiEndInstance.GetComponent<UIEndGame>();
 
                 AssignEndButtons();
@@ -64,6 +72,8 @@ namespace Managers
             if (uiConfigInstance == null)
             {
                 uiConfigInstance = Instantiate(uiConfigPrefab, Vector3.zero, Quaternion.identity);
+                uiConfigInstance.SetActive(false);
+
                 uiConfigScript = uiConfigInstance.GetComponent<UIConfig>();
 
                 AssignConfigMenuButtons();
@@ -191,7 +201,7 @@ namespace Managers
             uiPauseScript.configButton.onClick.AddListener(() => EnableConfigPause());
 
             uiPauseScript.confirmRestartButton.onClick.AddListener(() => RestartGame());
-            uiPauseScript.cancelRestartButton.onClick.AddListener(() => EnablePauseMenuPanel());
+            uiPauseScript.cancelRestartButton.onClick.AddListener(() => EnablePauseRestartPanel());
 
             uiPauseScript.confirmMenuButton.onClick.AddListener(() => BackToMenu());
             uiPauseScript.cancelMenuButton.onClick.AddListener(() => EnablePauseMenuPanel());

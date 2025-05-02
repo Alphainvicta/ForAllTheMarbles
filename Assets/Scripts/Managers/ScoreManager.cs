@@ -49,6 +49,7 @@ namespace Managers
         private void OnGameStart()
         {
             score = 0;
+            UiManager.uiGameScript.highScoreText.text = highScore.ToString();
             if (scoreCoroutine != null)
             {
                 StopCoroutine(scoreCoroutine);
@@ -101,6 +102,10 @@ namespace Managers
                 yield return new WaitUntil(() => !GameManager.isPaused && !UiManager.uiTransition);
                 score += 1;
                 UiManager.uiGameScript.scoreText.text = score.ToString().PadLeft(7, '0');
+                if (score > highScore)
+                {
+                    UiManager.uiGameScript.highScoreText.text = score.ToString();
+                }
                 yield return new WaitForSeconds(scoreUpdateInterval);
             }
         }
