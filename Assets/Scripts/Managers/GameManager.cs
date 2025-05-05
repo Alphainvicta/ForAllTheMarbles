@@ -40,10 +40,13 @@ namespace Managers
 
             isPaused = false;
 
+            PlayerManager playerManager = gameObject.GetComponent<PlayerManager>();
+            playerManager.SetPlayerMarbles();
+
             string filePath = Application.persistentDataPath + "/Save.json";
             if (!System.IO.File.Exists(filePath))
             {
-                SaveNewData();
+                SaveNewData(true);
             }
 
             string json = System.IO.File.ReadAllText(filePath);
@@ -106,7 +109,7 @@ namespace Managers
             }
             else
             {
-                PlayerManager.DeletedData();
+                PlayerManager.RefreshData();
                 GameStart?.Invoke();
                 isPaused = false;
                 AudioManager.Instance.Play("GameMusic");
@@ -197,7 +200,7 @@ namespace Managers
             SceneManager.LoadScene(currentScene);
         }
 
-        public static void SaveNewData()
+        public static void SaveNewData(bool newFile)
         {
             string filePath = Application.persistentDataPath + "/Save.json";
             List<bool> unlockedStatuses = new();
@@ -213,7 +216,7 @@ namespace Managers
                 selectedMarbleIndex = 0,
                 unlockedStatuses = unlockedStatuses,
                 highScore = 0,
-                tutorialCompleted = false,
+                tutorialCompleted = !newFile,
             };
 
             string json = JsonUtility.ToJson(saveData, true);

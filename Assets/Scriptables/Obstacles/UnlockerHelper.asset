@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 737a2923d9dc7f24a85c1c19db1db956, type: 3}
   m_Name: UnlockerHelper
   m_EditorClassIdentifier: 
-  obstaclePrefab: {fileID: 4703266735615505597, guid: b1edbb1a998d9f341b43f6c6268b6323, type: 3}
+  obstaclePrefab: {fileID: 285383803693402837, guid: c54a661a286b10842addd00f3abfc2cf, type: 3}
   obstacleWidth: 2
-  ObstacleLength: 0
+  ObstacleLength: 1
   obstaclePosition: 2
-  needFloor: 0
+  needFloor: 1

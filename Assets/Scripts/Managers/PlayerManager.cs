@@ -17,9 +17,13 @@ namespace Managers
         public static Sprite marbleLockedSpriteStatic;
         [SerializeField] private Sprite marbleLockedSprite;
 
-        public void PlayerScriptStart()
+        public void SetPlayerMarbles()
         {
             playerMarbles = playerMarblesScriptableObject;
+        }
+
+        public void PlayerScriptStart()
+        {
             marbleLockedSpriteStatic = marbleLockedSprite;
             marbleIndex = playerMarbles.LoadPlayerMarbles();
             if (playerInstance == null)
@@ -165,7 +169,7 @@ namespace Managers
             playerInstance.GetComponent<PlayerInput>().enabled = false;
         }
 
-        public static void DeletedData()
+        public static void RefreshData()
         {
             marbleIndex = playerMarbles.LoadPlayerMarbles();
             SetNewPlayer();

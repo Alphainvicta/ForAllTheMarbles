@@ -330,7 +330,7 @@ namespace Managers
 
                             if (j == levelList[i].baseLevelLength - 1)
                             {
-                                Transform pooledObstacle = CallFromPool(levelList[0].obstacles[2], levelList[0].levelFloor);
+                                Transform pooledObstacle = CallFromPool(levelList[0].obstacles[2], levelList[i].levelFloor);
                                 if (pooledObstacle != null)
                                 {
                                     StartCoroutine(TransformObstacle(pooledObstacle, i, true));
@@ -339,7 +339,7 @@ namespace Managers
                                 {
                                     StartCoroutine(
                                         TransformObstacle(
-                                        ObstacleGenerator(levelList[0].obstacles[2], levelList[0].levelFloor), i, true
+                                        ObstacleGenerator(levelList[0].obstacles[2], levelList[i].levelFloor), i, true
                                         )
                                         );
                                 }
@@ -360,12 +360,13 @@ namespace Managers
                                         );
                             }
                         }
+                        levelSpeed *= 1.1f;
                     }
 
                     looped = true;
                 }
 
-                else
+                if (looped)
                 {
                     yield return new WaitUntil(() => canPlace);
                     canPlace = false;
@@ -398,13 +399,13 @@ namespace Managers
 
                 if (isUnlockable)
                 {
-                    if (obstacle.position.z <= 0f)
+                    if (obstacle.position.z + 2 <= 0f)
                     {
-                        if (i - 2 < PlayerManager.playerMarbles.marbles.Count - 1)
+                        if (i - 2 <= PlayerManager.playerMarbles.marbles.Count - 1)
                         {
                             if (!PlayerManager.playerMarbles.marbles[i - 2].isUnlocked)
                             {
-                                UiManager uiManager = FindFirstObjectByType<UiManager>();
+                                UiManager uiManager = gameObject.GetComponent<UiManager>();
                                 StartCoroutine(uiManager.SkinUnlocked());
                                 PlayerManager.playerMarbles.marbles[i - 2].isUnlocked = true;
                                 PlayerManager.playerMarbles.SavePlayerMarbles(PlayerManager.marbleIndex);
@@ -428,6 +429,7 @@ namespace Managers
 
                 yield return null;
             }
+
             ReturnToDisablePool(obstacle, levelList[i].levelFloor);
 
             yield return null;

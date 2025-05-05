@@ -46,7 +46,7 @@ namespace Managers
 
                 uiMenuScript = uiMenuInstance.GetComponent<UIMenu>();
 
-                playerManager = FindFirstObjectByType<PlayerManager>();
+                playerManager = gameObject.GetComponent<PlayerManager>();
 
                 AssignMenuButtons();
             }
@@ -381,7 +381,7 @@ namespace Managers
         private void CloseSkinMenu()
         {
             EnableSkinMenu();
-            PlayerManager.DeletedData();
+            PlayerManager.RefreshData();
         }
 
         private void BackToMenu()
@@ -405,10 +405,10 @@ namespace Managers
 
         private void DeleteData()
         {
-            GameManager.SaveNewData();
+            GameManager.SaveNewData(false);
             EnableConfigConfirmMenu();
             EnableConfigMenu();
-            PlayerManager.DeletedData();
+            PlayerManager.RefreshData();
         }
         private IEnumerator BeginLevelCountDown()
         {
