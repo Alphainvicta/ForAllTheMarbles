@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ObstacleTest6JLimon
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 486493485450631956, guid: f16fa823d60e8d44d963496fe3ec0054, type: 3}
-  obstacleWidth: 1
-  ObstacleLength: 1
+  obstacleWidth: 0
+  ObstacleLength: 4
   obstaclePosition: 1
   needFloor: 1

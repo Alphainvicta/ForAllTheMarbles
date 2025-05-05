@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 917087116610527857, guid: 42ac68c92b452cc4da253b89fc070df1, type: 3}
   obstacleWidth: 0
-  ObstacleLength: 1
+  ObstacleLength: 2
   obstaclePosition: 2
   needFloor: 0
