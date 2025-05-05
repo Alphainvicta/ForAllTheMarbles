@@ -34,7 +34,7 @@ namespace Managers
         private Coroutine beginLevelCountDownCoroutine;
         PlayerManager playerManager;
 
-        private void Start()
+        public void UiScriptStart()
         {
             if (uiMenuInstance == null)
             {

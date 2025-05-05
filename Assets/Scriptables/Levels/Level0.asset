@@ -15,5 +15,6 @@ MonoBehaviour:
   obstacles:
   - {fileID: 11400000, guid: 588199bd5ef91654e8f0fd616e7978ee, type: 2}
   - {fileID: 11400000, guid: 500dbfe447349a1488c60757361b0906, type: 2}
+  - {fileID: 11400000, guid: 69de6fe866cad7b47aa3690e18767de4, type: 2}
   baseLevelLength: 1
   levelFloor: {fileID: 8788611324321882272, guid: 56f93dc6da7f11147bbf0da1f98909d6, type: 3}

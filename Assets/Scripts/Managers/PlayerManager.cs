@@ -17,7 +17,7 @@ namespace Managers
         public static Sprite marbleLockedSpriteStatic;
         [SerializeField] private Sprite marbleLockedSprite;
 
-        private void Start()
+        public void PlayerScriptStart()
         {
             playerMarbles = playerMarblesScriptableObject;
             marbleLockedSpriteStatic = marbleLockedSprite;

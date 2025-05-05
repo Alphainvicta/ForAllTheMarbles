@@ -75,6 +75,13 @@ namespace Managers
 
         private void Start()
         {
+            UiManager uiManager = gameObject.GetComponent<UiManager>();
+            LevelManager levelManager = gameObject.GetComponent<LevelManager>();
+            PlayerManager playerManager = gameObject.GetComponent<PlayerManager>();
+
+            levelManager.LevelScriptStart();
+            uiManager.UiScriptStart();
+            playerManager.PlayerScriptStart();
             MenuGame();
             AudioManager.Instance.Play("MenuMusic");
         }

@@ -25,7 +25,7 @@ namespace Managers
         private bool tutorialSpawned;
         private bool tutorialFirstTime;
 
-        private void Start()
+        public void LevelScriptStart()
         {
             if (levelPoolInstance == null)
             {
@@ -328,26 +328,30 @@ namespace Managers
                             yield return new WaitUntil(() => canPlace);
                             canPlace = false;
 
-                            int randomObstacle = Random.Range(0, levelList[i].obstacles.Length);
-
-                            Transform pooledObstacle = CallFromPool(levelList[i].obstacles[randomObstacle], levelList[i].levelFloor);
-                            if (pooledObstacle != null)
+                            if (j == levelList[i].baseLevelLength - 1)
                             {
-                                if (j == levelList[i].baseLevelLength - 1)
+                                Transform pooledObstacle = CallFromPool(levelList[0].obstacles[2], levelList[0].levelFloor);
+                                if (pooledObstacle != null)
+                                {
                                     StartCoroutine(TransformObstacle(pooledObstacle, i, true));
-
+                                }
                                 else
-                                    StartCoroutine(TransformObstacle(pooledObstacle, i));
-                            }
-
-                            else
-                            {
-                                if (j == levelList[i].baseLevelLength - 1)
+                                {
                                     StartCoroutine(
                                         TransformObstacle(
-                                        ObstacleGenerator(levelList[i].obstacles[randomObstacle], levelList[i].levelFloor), i, true
+                                        ObstacleGenerator(levelList[0].obstacles[2], levelList[0].levelFloor), i, true
                                         )
                                         );
+                                }
+                            }
+                            else
+                            {
+                                int randomObstacle = Random.Range(0, levelList[i].obstacles.Length);
+
+                                Transform pooledObstacle = CallFromPool(levelList[i].obstacles[randomObstacle], levelList[i].levelFloor);
+                                if (pooledObstacle != null)
+                                    StartCoroutine(TransformObstacle(pooledObstacle, i));
+
                                 else
                                     StartCoroutine(
                                         TransformObstacle(
@@ -396,7 +400,7 @@ namespace Managers
                 {
                     if (obstacle.position.z <= 0f)
                     {
-                        if (i - 2 < PlayerManager.playerMarbles.marbles.Count)
+                        if (i - 2 < PlayerManager.playerMarbles.marbles.Count - 1)
                         {
                             if (!PlayerManager.playerMarbles.marbles[i - 2].isUnlocked)
                             {
