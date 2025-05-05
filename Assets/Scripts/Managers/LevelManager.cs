@@ -396,13 +396,13 @@ namespace Managers
                 {
                     if (obstacle.position.z <= 0f)
                     {
-                        if (i < PlayerManager.playerMarbles.marbles.Count)
+                        if (i - 2 < PlayerManager.playerMarbles.marbles.Count)
                         {
-                            if (!PlayerManager.playerMarbles.marbles[i].isUnlocked)
+                            if (!PlayerManager.playerMarbles.marbles[i - 2].isUnlocked)
                             {
                                 UiManager uiManager = FindFirstObjectByType<UiManager>();
                                 StartCoroutine(uiManager.SkinUnlocked());
-                                PlayerManager.playerMarbles.marbles[i].isUnlocked = true;
+                                PlayerManager.playerMarbles.marbles[i - 2].isUnlocked = true;
                                 PlayerManager.playerMarbles.SavePlayerMarbles(PlayerManager.marbleIndex);
                             }
                         }
