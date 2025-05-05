@@ -360,9 +360,9 @@ namespace Managers
                                         );
                             }
                         }
-                        levelSpeed *= 1.1f;
+                        levelSpeed *= 1.2f;
                     }
-
+                    levelSpeed *= 1.2f;
                     looped = true;
                 }
 
