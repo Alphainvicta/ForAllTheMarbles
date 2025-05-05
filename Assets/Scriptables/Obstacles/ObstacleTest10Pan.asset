@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ObstacleTest10Pan
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 1376465622453790592, guid: 51e6721e5de67e54480198af1e402f90, type: 3}
-  obstacleWidth: 1
+  obstacleWidth: 2
   ObstacleLength: 5
   obstaclePosition: 1
   needFloor: 1

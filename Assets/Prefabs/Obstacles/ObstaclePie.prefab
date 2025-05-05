@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 3370898869411257630}
   - component: {fileID: 2733324856718281450}
   - component: {fileID: 2635362604125108018}
-  - component: {fileID: 3550215414331334084}
+  - component: {fileID: 7834597314411183866}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Obstacle
@@ -61,8 +61,8 @@ Transform:
   m_GameObject: {fileID: 7288710772660715991}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 0.25, z: 0.5}
-  m_LocalScale: {x: 2, y: 1.5, z: 1}
+  m_LocalPosition: {x: 1, y: -0.259, z: 0.5}
+  m_LocalScale: {x: 2, y: 0.65625, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8361002429088505003}
@@ -120,7 +120,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3550215414331334084
+--- !u!65 &7834597314411183866
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -139,8 +139,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.6803088, y: 0.3871932, z: 1.8531557}
-  m_Center: {x: -0.7319212, y: -0.30640373, z: 0.108894646}
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &5074334503209647231
 PrefabInstance:
   m_ObjectHideFlags: 0
