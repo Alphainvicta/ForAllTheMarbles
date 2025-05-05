@@ -56,6 +56,8 @@ namespace Managers
             {
                 StopCoroutine(cameraTransitionCoroutine);
             }
+
+
             cameraTransitionCoroutine = StartCoroutine(CameraTransition(new Vector3(0f, 5f, -10f), Quaternion.Euler(5f, 0f, 0f), cameraGameStartTransitionDuration));
         }
 

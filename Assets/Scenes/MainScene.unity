@@ -296,10 +296,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiMenuPrefab: {fileID: 7779539431570411673, guid: c861317f7ea35ab46ba15e7b437417d8, type: 3}
+  uiMenuTutorialPrefab: {fileID: 7779539431570411673, guid: 710416cb70a3208458fbc65fee7728e3, type: 3}
   uiGamePrefab: {fileID: 7993514963127085252, guid: ba6cadd7c4ddf4141852f145834c40ac, type: 3}
   uiPausedPrefab: {fileID: 7993514963127085252, guid: ea5b4724fcdaf98439a507a5070cc158, type: 3}
   uiEndPrefab: {fileID: 7993514963127085252, guid: be1cc565877a35a49ae615542bb819b6, type: 3}
   uiConfigPrefab: {fileID: 7779539431570411673, guid: 995cf57d4fd2b7a4abb0516a3bc97a44, type: 3}
+  uiTutorialPrefab: {fileID: 7993514963127085252, guid: 4be5940c21f20d7459405f37e7f91906, type: 3}
 --- !u!114 &348282108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -329,6 +331,8 @@ MonoBehaviour:
   levelPool: {fileID: 3770237367778822584, guid: f6358e3157447b94bb4216285825ed3c, type: 3}
   levelList:
   - {fileID: 11400000, guid: 621ca362d25fe794a93ed2e9a4c126ad, type: 2}
+  - {fileID: 11400000, guid: 0e5717bd031e8ce47a4679abd670ceb3, type: 2}
+  - {fileID: 11400000, guid: 04b95eb1af26a3e4cb1bd833a7899a84, type: 2}
   - {fileID: 11400000, guid: 297cbc5e7bb7b0b4db680715d7a04083, type: 2}
   - {fileID: 11400000, guid: 93fa63ec275db964c8d6ac036d970dfc, type: 2}
   - {fileID: 11400000, guid: 5f339d39fd7df0649a4e9756dfcb4338, type: 2}

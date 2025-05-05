@@ -48,14 +48,17 @@ namespace Managers
 
         private void OnGameStart()
         {
-            score = 0;
-            UiManager.uiGameScript.highScoreText.text = highScore.ToString();
-            if (scoreCoroutine != null)
+            if (!GameManager.tutorialActive)
             {
-                StopCoroutine(scoreCoroutine);
-            }
+                score = 0;
+                UiManager.uiGameScript.highScoreText.text = highScore.ToString();
+                if (scoreCoroutine != null)
+                {
+                    StopCoroutine(scoreCoroutine);
+                }
 
-            scoreCoroutine = StartCoroutine(ScoreDirector());
+                scoreCoroutine = StartCoroutine(ScoreDirector());
+            }
         }
 
         private void OnGamePaused()

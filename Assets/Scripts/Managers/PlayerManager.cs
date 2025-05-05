@@ -65,7 +65,9 @@ namespace Managers
             isObstacleHitted = false;
             playerInstance.GetComponent<Collider>().enabled = true;
             playerInstance.GetComponent<Rigidbody>().isKinematic = false;
-            StartCoroutine(EnablePlayerInputAfterDelay());
+
+            if (!GameManager.tutorialActive)
+                StartCoroutine(EnablePlayerInputAfterDelay());
         }
 
         private IEnumerator EnablePlayerInputAfterDelay()
@@ -167,6 +169,11 @@ namespace Managers
         {
             marbleIndex = playerMarbles.LoadPlayerMarbles();
             SetNewPlayer();
+        }
+
+        public static void SetPlayerInput(bool enabled)
+        {
+            playerInstance.GetComponent<PlayerInput>().enabled = enabled;
         }
     }
 }
