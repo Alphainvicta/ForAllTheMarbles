@@ -11,7 +11,7 @@ namespace Managers
         [SerializeField] private float levelSpeed;
         [SerializeField] private GameObject levelOrigin;
         [SerializeField] private GameObject levelPosition;
-        private float disablePosition = -20f;
+        private float disablePosition = -30f;
         private float generatePosition = 50f;
         private bool canPlace = true;
         private GameObject levelPoolInstance;
@@ -22,6 +22,8 @@ namespace Managers
         public static bool levelEnding;
         private List<Coroutine> activeCoroutines = new();
         private Dictionary<string, List<Transform>> obstaclePool = new();
+        private bool tutorialSpawned;
+        private bool tutorialFirstTime;
 
         private void Start()
         {
@@ -36,7 +38,19 @@ namespace Managers
             if (levelPositionInstance == null)
             {
                 levelPositionInstance = Instantiate(levelPosition, levelOrigin.transform.position, Quaternion.identity);
-                ObstacleGenerator(levelList[0].obstacles[0], levelList[0].levelFloor);
+                if (GameManager.tutorialActive)
+                {
+                    tutorialFirstTime = true;
+                    tutorialSpawned = false;
+                    ObstacleGenerator(levelList[1].obstacles[0], levelList[1].levelFloor);
+                }
+                else
+                {
+                    tutorialFirstTime = false;
+                    tutorialSpawned = true;
+                    ObstacleGenerator(levelList[0].obstacles[0], levelList[0].levelFloor);
+                }
+
             }
         }
 
@@ -85,26 +99,66 @@ namespace Managers
                 }
             }
 
-            CallFromPool(levelList[0].obstacles[0], levelList[0].levelFloor);
+            if (GameManager.tutorialActive)
+                CallFromPool(levelList[1].obstacles[0], levelList[1].levelFloor);
+            else
+            {
+                Transform pooledObstacle = null;
+                pooledObstacle = CallFromPool(levelList[0].obstacles[0], levelList[0].levelFloor);
+
+                if (pooledObstacle == null)
+                {
+                    ObstacleGenerator(levelList[0].obstacles[0], levelList[0].levelFloor);
+                }
+            }
         }
 
         private void OnGameStart()
         {
             levelEnding = false;
 
-            StopAllActiveCoroutines();
+            if (!tutorialFirstTime)
+                StopAllActiveCoroutines();
+            else
+            {
+                gameflag = false;
+            }
             StartCoroutine(StartLevelAfterDelay());
         }
 
         private IEnumerator StartLevelAfterDelay()
         {
-            Transform levelStart = levelPoolInstance.transform.Find(levelList[0].obstacles[0].name);
-            StartCoroutine(TransformObstacle(levelStart, 0));
-            StartCoroutine(TransformLevelPosition(levelPositionInstance.transform));
-            StartCoroutine(LevelDirector());
+            if (GameManager.tutorialActive)
+            {
+                levelSpeed *= 0.8f;
+                Transform levelStart = levelPoolInstance.transform.Find(levelList[1].obstacles[0].name);
+                StartCoroutine(TransformObstacle(levelStart, 1));
+                StartCoroutine(TransformLevelPosition(levelPositionInstance.transform));
+                StartCoroutine(LevelDirector());
 
-            yield return new WaitUntil(() => !UiManager.uiTransition);
-            gameflag = true;
+                yield return new WaitForSeconds(3);
+
+                gameflag = true;
+            }
+            else
+            {
+                if (GameManager.tutorialCompleted && !tutorialFirstTime)
+                {
+                    Transform levelStart = levelPoolInstance.transform.Find(levelList[0].obstacles[0].name);
+                    StartCoroutine(TransformObstacle(levelStart, 0));
+                    StartCoroutine(TransformLevelPosition(levelPositionInstance.transform));
+                    StartCoroutine(LevelDirector());
+                }
+
+                if (tutorialFirstTime)
+                {
+                    levelSpeed /= 0.8f;
+                    tutorialFirstTime = false;
+                }
+
+                yield return new WaitUntil(() => !UiManager.uiTransition);
+                gameflag = true;
+            }
         }
 
         private void OnGamePaused()
@@ -229,9 +283,45 @@ namespace Managers
             looped = false;
             while (true)
             {
-                if (!looped)
+                if (!tutorialSpawned)
                 {
-                    for (int i = 1; i < levelList.Length; i++)
+                    for (int i = 0; i < levelList[2].baseLevelLength; i++)
+                    {
+                        yield return new WaitUntil(() => canPlace);
+                        canPlace = false;
+
+                        Transform pooledObstacle = CallFromPool(levelList[2].obstacles[i], levelList[2].levelFloor);
+                        if (pooledObstacle != null)
+                        {
+                            if (i == levelList[2].baseLevelLength - 1)
+                                StartCoroutine(TransformObstacle(pooledObstacle, 2, false, tutorialFirstTime));
+
+                            else
+                                StartCoroutine(TransformObstacle(pooledObstacle, 2));
+                        }
+
+                        else
+                        {
+                            if (i == levelList[2].baseLevelLength - 1)
+                                StartCoroutine(
+                                    TransformObstacle(
+                                    ObstacleGenerator(levelList[2].obstacles[i], levelList[2].levelFloor), 2, false, tutorialFirstTime
+                                    )
+                                    );
+                            else
+                                StartCoroutine(
+                                    TransformObstacle(
+                                    ObstacleGenerator(levelList[2].obstacles[i], levelList[2].levelFloor), 2
+                                    )
+                                    );
+                        }
+                    }
+                    tutorialSpawned = true;
+                }
+
+                if (!looped && tutorialSpawned)
+                {
+                    for (int i = 3; i < levelList.Length; i++)
                     {
                         for (int j = 0; j < levelList[i].baseLevelLength; j++)
                         {
@@ -276,7 +366,7 @@ namespace Managers
                     yield return new WaitUntil(() => canPlace);
                     canPlace = false;
 
-                    int randomLevel = Random.Range(1, levelList.Length);
+                    int randomLevel = Random.Range(3, levelList.Length);
                     int randomObstacle = Random.Range(0, levelList[randomLevel].obstacles.Length);
 
                     Transform pooledObstacle = CallFromPool(levelList[randomLevel].obstacles[randomObstacle], levelList[randomLevel].levelFloor);
@@ -295,7 +385,7 @@ namespace Managers
             }
         }
 
-        private IEnumerator TransformObstacle(Transform obstacle, int i, bool isUnlockable = false)
+        private IEnumerator TransformObstacle(Transform obstacle, int i, bool isUnlockable = false, bool tutorialFirstTime = false)
         {
             while (obstacle.position.z > disablePosition)
             {
@@ -319,6 +409,19 @@ namespace Managers
                         isUnlockable = false;
                     }
                 }
+
+                if (tutorialFirstTime)
+                {
+                    if (GameManager.tutorialActive)
+                    {
+                        if (obstacle.position.z <= 0f)
+                        {
+                            GameManager.TutorialisCompleted();
+                            GameManager.PlayGame();
+                        }
+                    }
+                }
+
                 yield return null;
             }
             ReturnToDisablePool(obstacle, levelList[i].levelFloor);
@@ -361,14 +464,6 @@ namespace Managers
             obstacle.SetParent(disablePool.transform);
             obstacle.gameObject.SetActive(false);
             obstaclePool[obstacleKey].Add(obstacle);
-        }
-        private void MoveToNewParent(Transform oldParent, Transform newParent)
-        {
-            while (oldParent.childCount > 0)
-            {
-                Transform child = oldParent.GetChild(0);
-                child.SetParent(newParent);
-            }
         }
     }
 }

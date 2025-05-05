@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace Managers
 {
@@ -18,9 +19,13 @@ namespace Managers
 
         [Header("Frame Settings")]
         public static float TargetFrameRate = 60.0f;
-        
+
         private List<IPausable> pausableObjects = new List<IPausable>();
 
+        public static bool tutorialActive;
+        public static bool tutorialCompleted;
+        public static int tutorialStep;
+        public static Coroutine tutorialCoroutine;
         private void Awake()
         {
             if (Instance == null)
@@ -40,6 +45,16 @@ namespace Managers
             {
                 SaveNewData();
             }
+
+            string json = System.IO.File.ReadAllText(filePath);
+            SaveData saveData = JsonUtility.FromJson<SaveData>(json);
+
+            tutorialCompleted = saveData.tutorialCompleted;
+
+            if (tutorialCompleted)
+                tutorialActive = false;
+            else
+                tutorialActive = true;
         }
 
         public void RegisterPausable(IPausable pausable)
@@ -97,9 +112,9 @@ namespace Managers
         {
             GamePaused?.Invoke();
             isPaused = true;
-            
+
             Instance.PauseAllRegisteredObjects();
-            
+
             AudioManager.Instance.Play("Pause");
             AudioManager.Instance.Pause("GameMusic");
 
@@ -110,9 +125,9 @@ namespace Managers
         {
             GameUnpaused?.Invoke();
             isPaused = false;
-            
+
             Instance.ResumeAllRegisteredObjects();
-            
+
             AudioManager.Instance.Play("Unpause");
             AudioManager.Instance.Unpause("GameMusic");
 
@@ -199,6 +214,59 @@ namespace Managers
             Debug.Log("Data saved to: " + filePath);
 
             ScoreManager.highScore = 0;
+        }
+
+        public static void TutorialisCompleted()
+        {
+            string filePath = Application.persistentDataPath + "/Save.json";
+
+            string json = System.IO.File.ReadAllText(filePath);
+            SaveData saveData = JsonUtility.FromJson<SaveData>(json);
+
+            saveData.tutorialCompleted = true;
+
+            string updatedJson = JsonUtility.ToJson(saveData, true);
+            System.IO.File.WriteAllText(filePath, updatedJson);
+
+            tutorialCompleted = true;
+            tutorialActive = false;
+        }
+
+        public static IEnumerator TutorialAction(int step)
+        {
+
+            isPaused = true;
+            PlayerManager.SetPlayerInput(true);
+            UiManager.uiTutorialInstance.SetActive(true);
+
+            switch (step)
+            {
+                case 1:
+                    tutorialStep = 1;
+                    UiManager.uiTutorialScript.tutorialPanel1.SetActive(true);
+                    yield return new WaitUntil(() => !isPaused);
+                    UiManager.uiTutorialScript.tutorialPanel1.SetActive(false);
+                    break;
+                case 2:
+                    tutorialStep = 2;
+                    UiManager.uiTutorialScript.tutorialPanel2.SetActive(true);
+                    yield return new WaitUntil(() => !isPaused);
+                    UiManager.uiTutorialScript.tutorialPanel2.SetActive(false);
+                    break;
+                case 3:
+                    tutorialStep = 3;
+                    UiManager.uiTutorialScript.tutorialPanel3.SetActive(true);
+                    yield return new WaitUntil(() => !isPaused);
+                    UiManager.uiTutorialScript.tutorialPanel3.SetActive(false);
+                    break;
+                default:
+                    break;
+            }
+
+            PlayerManager.SetPlayerInput(false);
+            UiManager.uiTutorialInstance.SetActive(false);
+            tutorialCoroutine = null;
+            yield return null;
         }
     }
 

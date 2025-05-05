@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 737a2923d9dc7f24a85c1c19db1db956, type: 3}
-  m_Name: LevelStart
+  m_Name: Tutorial2
   m_EditorClassIdentifier: 
-  obstaclePrefab: {fileID: 4703266735615505597, guid: b1edbb1a998d9f341b43f6c6268b6323, type: 3}
+  obstaclePrefab: {fileID: 3371298475173136962, guid: 1ac4b31b407633e46a3d417691290cd6, type: 3}
   obstacleWidth: 2
-  ObstacleLength: 8
+  ObstacleLength: 10
   obstaclePosition: 2
   needFloor: 1

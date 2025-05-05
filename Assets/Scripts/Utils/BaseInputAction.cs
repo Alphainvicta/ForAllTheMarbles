@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Managers;
 using System.Collections;
+using Unity.VisualScripting;
 
 public abstract class BaseInputAction : MonoBehaviour
 {
@@ -139,6 +140,22 @@ public abstract class BaseInputAction : MonoBehaviour
             ScoreManager.score += 10000;
         }
 
+    }
+
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.CompareTag("Tutorial1") && GameManager.tutorialCoroutine == null)
+        {
+            GameManager.tutorialCoroutine = StartCoroutine(GameManager.TutorialAction(1));
+        }
+        if (collider.gameObject.CompareTag("Tutorial2") && GameManager.tutorialCoroutine == null)
+        {
+            GameManager.tutorialCoroutine = StartCoroutine(GameManager.TutorialAction(2));
+        }
+        if (collider.gameObject.CompareTag("Tutorial3") && GameManager.tutorialCoroutine == null)
+        {
+            GameManager.tutorialCoroutine = StartCoroutine(GameManager.TutorialAction(3));
+        }
     }
 
     public IEnumerator MarbleXTransition(float goalPosition, float duration)

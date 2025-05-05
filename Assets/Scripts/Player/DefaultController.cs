@@ -38,7 +38,6 @@ public class DefaultController : BaseInputAction
     private void SetMarblePosition()
     {
         marbleXPosition = 0;
-
     }
 
     private void StopCoroutines()
@@ -63,7 +62,15 @@ public class DefaultController : BaseInputAction
         }
         else
         {
-            MoveAction();
+            if (GameManager.tutorialActive)
+            {
+                MoveActionTutorial();
+            }
+            else
+            {
+                MoveAction();
+            }
+
             PressedAction();
         }
     }
@@ -156,6 +163,109 @@ public class DefaultController : BaseInputAction
                     canMove = false;
                 }
             }
+        }
+    }
+
+    public void MoveActionTutorial()
+    {
+        if (isTransitioning || !canMove) return;
+
+        if (!pivotIsSet)
+        {
+            centerPivot = moveValue;
+            pivotIsSet = true;
+        }
+
+        Vector2 movementDirection = moveValue - centerPivot;
+        float angle = Vector2.SignedAngle(Vector2.right, movementDirection);
+
+        switch (GameManager.tutorialStep)
+        {
+            case 1:
+                if (Vector2.Distance(centerPivot, moveValue) > threshold)
+                {
+                    if (angle >= 45f && angle < 135f) // Up
+                    {
+                        if (jumpAvailable)
+                        {
+                            playerRigidbody.AddForce(Vector3.up * jumpHeight, ForceMode.Impulse);
+
+                            if (AudioManager.Instance != null)
+                            {
+                                AudioManager.Instance.Play("Jump");
+                            }
+
+                            canMove = false;
+                            GameManager.isPaused = false;
+                        }
+                    }
+                }
+                break;
+            case 2:
+                if (Vector2.Distance(centerPivot, moveValue) > threshold)
+                {
+                    if (angle >= -45f && angle < 45f) // Right
+                    {
+                        if (marbleXPosition < 1)
+                        {
+                            marbleXPosition++;
+
+                            if (CameraManager.cameraTransitionCoroutine != null)
+                            {
+                                StopCoroutine(CameraManager.cameraTransitionCoroutine);
+                            }
+
+                            if (playerTransitionCoroutine != null)
+                            {
+                                StopCoroutine(playerTransitionCoroutine);
+                            }
+
+                            playerTransitionCoroutine = StartCoroutine(MarbleXTransition(+2f, 0.1f));
+
+                            CameraManager.cameraTransitionCoroutine = StartCoroutine(cameraManager.CameraTransition(
+                                CameraManager.mainCameraInstance.transform.position + new Vector3(0.5f, 0f, 0f),
+                                CameraManager.mainCameraInstance.transform.rotation,
+                                0.1f));
+                            canMove = false;
+                            GameManager.isPaused = false;
+                        }
+                    }
+                }
+                break;
+            case 3:
+                if (Vector2.Distance(centerPivot, moveValue) > threshold)
+                {
+                    if (angle >= 135f || angle < -135f) // Left
+                    {
+                        if (marbleXPosition > -1)
+                        {
+                            marbleXPosition--;
+
+                            if (CameraManager.cameraTransitionCoroutine != null)
+                            {
+                                StopCoroutine(CameraManager.cameraTransitionCoroutine);
+                            }
+
+                            if (playerTransitionCoroutine != null)
+                            {
+                                StopCoroutine(playerTransitionCoroutine);
+                            }
+
+                            playerTransitionCoroutine = StartCoroutine(MarbleXTransition(-2f, 0.1f));
+
+                            CameraManager.cameraTransitionCoroutine = StartCoroutine(cameraManager.CameraTransition(
+                                CameraManager.mainCameraInstance.transform.position + new Vector3(-0.5f, 0f, 0f),
+                                CameraManager.mainCameraInstance.transform.rotation,
+                                0.1f));
+                            canMove = false;
+
+                            GameManager.isPaused = false;
+                        }
+                    }
+                }
+                break;
+            default:
+                break;
         }
     }
 

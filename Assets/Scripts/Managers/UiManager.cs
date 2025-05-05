@@ -8,21 +8,27 @@ namespace Managers
     public class UiManager : MonoBehaviour
     {
         [SerializeField] private GameObject uiMenuPrefab;
+        [SerializeField] private GameObject uiMenuTutorialPrefab;
         [SerializeField] private GameObject uiGamePrefab;
         [SerializeField] private GameObject uiPausedPrefab;
         [SerializeField] private GameObject uiEndPrefab;
         [SerializeField] private GameObject uiConfigPrefab;
+        [SerializeField] private GameObject uiTutorialPrefab;
 
         private GameObject uiMenuInstance;
-        static public UIMenu uiMenuScript;
+        public static UIMenu uiMenuScript;
+        private GameObject uiMenuTutorialInstance;
+        public static UIMenuTutorial uiMenuTutorialScript;
         private GameObject uiGameInstance;
-        static public UIGame uiGameScript;
+        public static UIGame uiGameScript;
         private GameObject uiPausedInstance;
-        static public UIPause uiPauseScript;
+        public static UIPause uiPauseScript;
         private GameObject uiEndInstance;
-        static public UIEndGame uiEndGameScript;
+        public static UIEndGame uiEndGameScript;
         private GameObject uiConfigInstance;
-        static public UIConfig uiConfigScript;
+        public static UIConfig uiConfigScript;
+        public static GameObject uiTutorialInstance;
+        public static UITutorial uiTutorialScript;
 
         public static bool uiTransition;
         private Coroutine beginLevelCountDownCoroutine;
@@ -33,13 +39,29 @@ namespace Managers
             if (uiMenuInstance == null)
             {
                 uiMenuInstance = Instantiate(uiMenuPrefab, Vector3.zero, Quaternion.identity);
-                uiMenuInstance.SetActive(true);
+                if (GameManager.tutorialActive)
+                    uiMenuInstance.SetActive(false);
+                else
+                    uiMenuInstance.SetActive(true);
 
                 uiMenuScript = uiMenuInstance.GetComponent<UIMenu>();
 
                 playerManager = FindFirstObjectByType<PlayerManager>();
 
                 AssignMenuButtons();
+            }
+
+            if (uiMenuTutorialInstance == null)
+            {
+                uiMenuTutorialInstance = Instantiate(uiMenuTutorialPrefab, Vector3.zero, Quaternion.identity);
+                if (GameManager.tutorialActive)
+                    uiMenuTutorialInstance.SetActive(true);
+                else
+                    uiMenuTutorialInstance.SetActive(false);
+
+                uiMenuTutorialScript = uiMenuTutorialInstance.GetComponent<UIMenuTutorial>();
+
+                AssignMenuTutorialButtons();
             }
 
             if (uiGameInstance == null)
@@ -78,6 +100,13 @@ namespace Managers
 
                 AssignConfigMenuButtons();
             }
+            if (uiTutorialInstance == null)
+            {
+                uiTutorialInstance = Instantiate(uiTutorialPrefab, Vector3.zero, Quaternion.identity);
+                uiTutorialInstance.SetActive(false);
+
+                uiTutorialScript = uiTutorialInstance.GetComponent<UITutorial>();
+            }
         }
 
         private void OnEnable()
@@ -101,7 +130,17 @@ namespace Managers
         }
         private void OnMenuGame()
         {
-            uiMenuInstance.SetActive(true);
+            if (GameManager.tutorialActive)
+            {
+                uiMenuInstance.SetActive(false);
+                uiMenuTutorialInstance.SetActive(true);
+            }
+            else
+            {
+                uiMenuInstance.SetActive(true);
+                uiMenuTutorialInstance.SetActive(false);
+            }
+
             uiGameInstance.SetActive(false);
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(false);
@@ -115,23 +154,33 @@ namespace Managers
 
         private void OnGameStart()
         {
-            uiMenuInstance.SetActive(false);
-            uiGameInstance.SetActive(true);
-            uiPausedInstance.SetActive(false);
-            uiEndInstance.SetActive(false);
-            uiConfigInstance.SetActive(false);
-
             if (beginLevelCountDownCoroutine != null)
             {
                 StopCoroutine(beginLevelCountDownCoroutine);
             }
 
-            beginLevelCountDownCoroutine = StartCoroutine(BeginLevelCountDown());
+            uiMenuInstance.SetActive(false);
+            uiMenuTutorialInstance.SetActive(false);
+
+            if (GameManager.tutorialActive)
+            {
+                uiGameInstance.SetActive(false);
+            }
+            else
+            {
+                uiGameInstance.SetActive(true);
+                beginLevelCountDownCoroutine = StartCoroutine(BeginLevelCountDown());
+            }
+
+            uiPausedInstance.SetActive(false);
+            uiEndInstance.SetActive(false);
+            uiConfigInstance.SetActive(false);
         }
 
         private void OnGamePaused()
         {
             uiMenuInstance.SetActive(false);
+            uiMenuTutorialInstance.SetActive(false);
             uiGameInstance.SetActive(false);
             uiPausedInstance.SetActive(true);
             uiEndInstance.SetActive(false);
@@ -141,6 +190,7 @@ namespace Managers
         private void OnGameUnpaused()
         {
             uiMenuInstance.SetActive(false);
+            uiMenuTutorialInstance.SetActive(false);
             uiGameInstance.SetActive(true);
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(false);
@@ -150,6 +200,7 @@ namespace Managers
         private void OnGameEnd()
         {
             uiMenuInstance.SetActive(false);
+            uiMenuTutorialInstance.SetActive(false);
             uiGameInstance.SetActive(false);
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(true);
@@ -164,6 +215,7 @@ namespace Managers
         private void OnStoreGame()
         {
             uiMenuInstance.SetActive(false);
+            uiMenuTutorialInstance.SetActive(false);
             uiGameInstance.SetActive(false);
             uiPausedInstance.SetActive(false);
             uiEndInstance.SetActive(false);
@@ -184,6 +236,11 @@ namespace Managers
             uiMenuScript.rightButton.onClick.AddListener(() => playerManager.NextPlayerMarble(true));
             uiMenuScript.leftButton.onClick.AddListener(() => playerManager.NextPlayerMarble(false));
             uiMenuScript.menuButton.onClick.AddListener(() => CloseSkinMenu());
+        }
+
+        private void AssignMenuTutorialButtons()
+        {
+            uiMenuTutorialScript.playButton.onClick.AddListener(() => GameManager.PlayGame());
         }
 
         private void AssignGameButtons()
