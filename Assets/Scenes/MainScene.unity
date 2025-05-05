@@ -217,6 +217,60 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &211453966
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 211453968}
+  - component: {fileID: 211453969}
+  m_Layer: 0
+  m_Name: DecorSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &211453968
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211453966}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.054494124, y: 0.24366, z: 6.883312}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &211453969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211453966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b04edd8c48ca284284da47ff2aba9c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  decorPrefab: {fileID: 6105263877354756217, guid: 4a1c7e98f8e526f42a56a10e1ec5a0b9, type: 3}
+  initialPoolSize: 8
+  spawnRate: 8
+  decorSpeed: 20
+  spawnZDistance: 150
+  destroyZPosition: -150
+  fixedXPosition: 10
+  fixedYPosition: 0
+  fixedScale: 1
+  destructionDelay: 1.5
 --- !u!1 &342601083
 GameObject:
   m_ObjectHideFlags: 0
@@ -683,3 +737,4 @@ SceneRoots:
   - {fileID: 348282112}
   - {fileID: 19879240}
   - {fileID: 342601085}
+  - {fileID: 211453968}

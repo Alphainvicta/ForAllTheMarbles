@@ -10,6 +10,7 @@ TagManager:
   - Tutorial1
   - Tutorial3
   - Tutorial2
+  - Decor
   layers:
   - Default
   - TransparentFX
