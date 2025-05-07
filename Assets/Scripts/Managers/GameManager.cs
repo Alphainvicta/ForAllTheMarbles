@@ -99,19 +99,14 @@ namespace Managers
 
         public static void PlayGame()
         {
-            if (PlayerManager.isUnlocked)
-            {
-                GameStart?.Invoke();
-                isPaused = false;
-                AudioManager.Instance.Play("GameMusic");
-                AudioManager.Instance.Stop("MenuMusic");
-                AudioManager.Instance.Play("StartGame");
-            }
-            else
-            {
+            if (!PlayerManager.isUnlocked)
                 PlayerManager.RefreshData();
-                GameStart?.Invoke();
-                isPaused = false;
+
+            GameStart?.Invoke();
+            isPaused = false;
+
+            if (tutorialCompleted)
+            {
                 AudioManager.Instance.Play("GameMusic");
                 AudioManager.Instance.Stop("MenuMusic");
                 AudioManager.Instance.Play("StartGame");

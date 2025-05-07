@@ -23,7 +23,7 @@ namespace Managers
         private List<Coroutine> activeCoroutines = new();
         private Dictionary<string, List<Transform>> obstaclePool = new();
         private bool tutorialSpawned;
-        private bool tutorialFirstTime;
+        public static bool tutorialFirstTime;
         private float currentLevelSpeed;
 
         public void LevelScriptStart()

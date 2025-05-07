@@ -98,17 +98,7 @@ namespace Managers
 
                 uiConfigScript = uiConfigInstance.GetComponent<UIConfig>();
 
-                string filePath = Application.persistentDataPath + "/Save.json";
-                string json = System.IO.File.ReadAllText(filePath);
-                SaveData saveData = JsonUtility.FromJson<SaveData>(json);
-
-                uiConfigScript.masterVolumeSlider.value = saveData.masterVolume;
-                uiConfigScript.musicVolumeSlider.value = saveData.musicVolume;
-
-                AudioManager audioManager = gameObject.GetComponent<AudioManager>();
-
-                audioManager.SetMasterVolume(uiConfigScript.masterVolumeSlider.value);
-                audioManager.SetMusicVolume(uiConfigScript.musicVolumeSlider.value);
+                UpdateVolumeSlider();
 
                 AssignConfigMenuButtons();
             }
@@ -170,6 +160,8 @@ namespace Managers
             {
                 StopCoroutine(beginLevelCountDownCoroutine);
             }
+
+            uiGameScript.unlockText.gameObject.SetActive(false);
 
             uiMenuInstance.SetActive(false);
             uiMenuTutorialInstance.SetActive(false);
@@ -453,9 +445,25 @@ namespace Managers
         private void DeleteData()
         {
             GameManager.SaveNewData(false);
+            UpdateVolumeSlider();
             EnableConfigConfirmMenu();
             EnableConfigMenu();
             PlayerManager.RefreshData();
+        }
+
+        private void UpdateVolumeSlider()
+        {
+            string filePath = Application.persistentDataPath + "/Save.json";
+            string json = System.IO.File.ReadAllText(filePath);
+            SaveData saveData = JsonUtility.FromJson<SaveData>(json);
+
+            uiConfigScript.masterVolumeSlider.value = saveData.masterVolume;
+            uiConfigScript.musicVolumeSlider.value = saveData.musicVolume;
+
+            AudioManager audioManager = gameObject.GetComponent<AudioManager>();
+
+            audioManager.SetMasterVolume(uiConfigScript.masterVolumeSlider.value);
+            audioManager.SetMusicVolume(uiConfigScript.musicVolumeSlider.value);
         }
         private IEnumerator BeginLevelCountDown()
         {
@@ -482,7 +490,16 @@ namespace Managers
         public IEnumerator SkinUnlocked()
         {
             uiGameScript.unlockText.gameObject.SetActive(true);
-            yield return new WaitForSeconds(1f);
+
+            float countDown = 1f;
+            float timeElapsed = 0f;
+
+            while (timeElapsed < countDown)
+            {
+                yield return new WaitUntil(() => !GameManager.isPaused);
+                timeElapsed += Time.deltaTime;
+            }
+
             uiGameScript.unlockText.gameObject.SetActive(false);
             yield return null;
         }
