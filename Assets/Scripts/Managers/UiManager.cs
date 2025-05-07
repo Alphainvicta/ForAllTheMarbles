@@ -98,6 +98,18 @@ namespace Managers
 
                 uiConfigScript = uiConfigInstance.GetComponent<UIConfig>();
 
+                string filePath = Application.persistentDataPath + "/Save.json";
+                string json = System.IO.File.ReadAllText(filePath);
+                SaveData saveData = JsonUtility.FromJson<SaveData>(json);
+
+                uiConfigScript.masterVolumeSlider.value = saveData.masterVolume;
+                uiConfigScript.musicVolumeSlider.value = saveData.musicVolume;
+
+                AudioManager audioManager = gameObject.GetComponent<AudioManager>();
+
+                audioManager.SetMasterVolume(uiConfigScript.masterVolumeSlider.value);
+                audioManager.SetMusicVolume(uiConfigScript.musicVolumeSlider.value);
+
                 AssignConfigMenuButtons();
             }
             if (uiTutorialInstance == null)
@@ -268,6 +280,9 @@ namespace Managers
         private void AssignConfigMenuButtons()
         {
             uiConfigScript.menuButton.onClick.AddListener(() => EnableConfigMenu());
+            uiConfigScript.masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeSliderChange);
+            uiConfigScript.musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeSlider);
+
             uiConfigScript.deleteButton.onClick.AddListener(() => EnableConfigConfirmMenu());
 
             uiConfigScript.cancelButton.onClick.AddListener(() => EnableConfigConfirmMenu());
@@ -316,6 +331,38 @@ namespace Managers
                 uiMenuScript.menuPanel.SetActive(false);
                 uiConfigInstance.SetActive(true);
             }
+        }
+
+        private void OnMasterVolumeSliderChange(float value)
+        {
+            string filePath = Application.persistentDataPath + "/Save.json";
+
+            string json = System.IO.File.ReadAllText(filePath);
+            SaveData saveData = JsonUtility.FromJson<SaveData>(json);
+
+            saveData.masterVolume = value;
+
+            string updatedJson = JsonUtility.ToJson(saveData, true);
+            System.IO.File.WriteAllText(filePath, updatedJson);
+
+            AudioManager audioManager = gameObject.GetComponent<AudioManager>();
+            audioManager.SetMasterVolume(uiConfigScript.masterVolumeSlider.value);
+        }
+
+        private void OnMusicVolumeSlider(float value)
+        {
+            string filePath = Application.persistentDataPath + "/Save.json";
+
+            string json = System.IO.File.ReadAllText(filePath);
+            SaveData saveData = JsonUtility.FromJson<SaveData>(json);
+
+            saveData.musicVolume = value;
+
+            string updatedJson = JsonUtility.ToJson(saveData, true);
+            System.IO.File.WriteAllText(filePath, updatedJson);
+
+            AudioManager audioManager = gameObject.GetComponent<AudioManager>();
+            audioManager.SetMusicVolume(uiConfigScript.musicVolumeSlider.value);
         }
 
         private void EnableConfigConfirmMenu()

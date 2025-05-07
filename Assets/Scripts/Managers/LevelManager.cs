@@ -24,6 +24,7 @@ namespace Managers
         private Dictionary<string, List<Transform>> obstaclePool = new();
         private bool tutorialSpawned;
         private bool tutorialFirstTime;
+        private float currentLevelSpeed;
 
         public void LevelScriptStart()
         {
@@ -80,6 +81,7 @@ namespace Managers
             gameflag = false;
             levelEnding = false;
             levelPositionInstance.transform.position = levelOrigin.transform.position;
+            currentLevelSpeed = levelSpeed;
 
             List<Transform> children = new List<Transform>();
             foreach (Transform child in levelPoolInstance.transform)
@@ -130,7 +132,7 @@ namespace Managers
         {
             if (GameManager.tutorialActive)
             {
-                levelSpeed *= 0.8f;
+                currentLevelSpeed *= 0.8f;
                 Transform levelStart = levelPoolInstance.transform.Find(levelList[1].obstacles[0].name);
                 StartCoroutine(TransformObstacle(levelStart, 1));
                 StartCoroutine(TransformLevelPosition(levelPositionInstance.transform));
@@ -152,7 +154,7 @@ namespace Managers
 
                 if (tutorialFirstTime)
                 {
-                    levelSpeed /= 0.8f;
+                    currentLevelSpeed /= 0.8f;
                     tutorialFirstTime = false;
                 }
 
@@ -360,9 +362,7 @@ namespace Managers
                                         );
                             }
                         }
-                        levelSpeed *= 1.2f;
                     }
-                    levelSpeed *= 1.2f;
                     looped = true;
                 }
 
@@ -395,7 +395,7 @@ namespace Managers
             while (obstacle.position.z > disablePosition)
             {
                 yield return new WaitUntil(() => !GameManager.isPaused && gameflag);
-                obstacle.position += Vector3.back * levelSpeed * Time.deltaTime;
+                obstacle.position += Vector3.back * currentLevelSpeed * Time.deltaTime;
 
                 if (isUnlockable)
                 {
@@ -412,6 +412,7 @@ namespace Managers
                             }
                         }
                         isUnlockable = false;
+                        StartCoroutine(IncrementSpeed());
                     }
                 }
 
@@ -470,6 +471,26 @@ namespace Managers
             obstacle.SetParent(disablePool.transform);
             obstacle.gameObject.SetActive(false);
             obstaclePool[obstacleKey].Add(obstacle);
+        }
+
+        private IEnumerator IncrementSpeed()
+        {
+            float timeElapsed = 0f;
+            float duration = 3f;
+            float initialSpeed = currentLevelSpeed;
+            float targetSpeed = initialSpeed + (levelSpeed * 0.2f);
+
+            while (timeElapsed < duration)
+            {
+                yield return new WaitUntil(() => !GameManager.isPaused);
+                float t = timeElapsed / duration;
+                currentLevelSpeed = Mathf.Lerp(initialSpeed, targetSpeed, t);
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            currentLevelSpeed = targetSpeed;
+            yield return null;
         }
     }
 }

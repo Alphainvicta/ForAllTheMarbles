@@ -216,6 +216,8 @@ namespace Managers
                 selectedMarbleIndex = 0,
                 unlockedStatuses = unlockedStatuses,
                 highScore = 0,
+                masterVolume = 1f,
+                musicVolume = 1f,
                 tutorialCompleted = !newFile,
             };
 
@@ -259,8 +261,19 @@ namespace Managers
                     break;
                 case 2:
                     tutorialStep = 2;
+
+                    Vector3 savedAngularVelocity = PlayerManager.playerInstance.GetComponent<Rigidbody>().angularVelocity;
+                    PlayerManager.playerInstance.GetComponent<Rigidbody>().isKinematic = true;
+
                     UiManager.uiTutorialScript.tutorialPanel2.SetActive(true);
                     yield return new WaitUntil(() => !isPaused);
+
+                    PlayerManager.playerInstance.GetComponent<Rigidbody>().isKinematic = false;
+                    PlayerManager.playerInstance.GetComponent<Rigidbody>().angularVelocity = savedAngularVelocity;
+
+                    PlayerManager.playerInstance.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+                    PlayerManager.playerInstance.GetComponent<Rigidbody>().AddForce(Vector3.down * 9f * 2, ForceMode.Impulse);
+
                     UiManager.uiTutorialScript.tutorialPanel2.SetActive(false);
                     break;
                 case 3:
@@ -268,6 +281,12 @@ namespace Managers
                     UiManager.uiTutorialScript.tutorialPanel3.SetActive(true);
                     yield return new WaitUntil(() => !isPaused);
                     UiManager.uiTutorialScript.tutorialPanel3.SetActive(false);
+                    break;
+                case 4:
+                    tutorialStep = 4;
+                    UiManager.uiTutorialScript.tutorialPanel4.SetActive(true);
+                    yield return new WaitUntil(() => !isPaused);
+                    UiManager.uiTutorialScript.tutorialPanel4.SetActive(false);
                     break;
                 default:
                     break;
@@ -293,5 +312,7 @@ public class SaveData
     public int selectedMarbleIndex;
     public List<bool> unlockedStatuses;
     public int highScore;
+    public float masterVolume;
+    public float musicVolume;
     public bool tutorialCompleted;
 }

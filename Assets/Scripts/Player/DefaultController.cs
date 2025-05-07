@@ -204,6 +204,19 @@ public class DefaultController : BaseInputAction
             case 2:
                 if (Vector2.Distance(centerPivot, moveValue) > threshold)
                 {
+                    if (angle >= -135f && angle < -45f) // Down
+                    {
+                        if (!jumpAvailable)
+                        {
+                            canMove = false;
+                            GameManager.isPaused = false;
+                        }
+                    }
+                }
+                break;
+            case 3:
+                if (Vector2.Distance(centerPivot, moveValue) > threshold)
+                {
                     if (angle >= -45f && angle < 45f) // Right
                     {
                         if (marbleXPosition < 1)
@@ -232,7 +245,7 @@ public class DefaultController : BaseInputAction
                     }
                 }
                 break;
-            case 3:
+            case 4:
                 if (Vector2.Distance(centerPivot, moveValue) > threshold)
                 {
                     if (angle >= 135f || angle < -135f) // Left

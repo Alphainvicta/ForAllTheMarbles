@@ -148,13 +148,17 @@ public abstract class BaseInputAction : MonoBehaviour
         {
             GameManager.tutorialCoroutine = StartCoroutine(GameManager.TutorialAction(1));
         }
-        if (collider.gameObject.CompareTag("Tutorial2") && GameManager.tutorialCoroutine == null)
+        if (collider.gameObject.CompareTag("Tutorial2") && GameManager.tutorialCoroutine == null && GameManager.tutorialStep != 2)
         {
             GameManager.tutorialCoroutine = StartCoroutine(GameManager.TutorialAction(2));
         }
         if (collider.gameObject.CompareTag("Tutorial3") && GameManager.tutorialCoroutine == null)
         {
             GameManager.tutorialCoroutine = StartCoroutine(GameManager.TutorialAction(3));
+        }
+        if (collider.gameObject.CompareTag("Tutorial4") && GameManager.tutorialCoroutine == null)
+        {
+            GameManager.tutorialCoroutine = StartCoroutine(GameManager.TutorialAction(4));
         }
     }
 
