@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Managers;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class DecorPool : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class DecorPool : MonoBehaviour
     [Header("Basic Settings")]
     public GameObject decorPrefab;
     public int initialPoolSize = 20;
+    public int preSpawnCount = 3;
     public float spawnRate = 1.5f;
 
     [Header("Movement")]
@@ -32,6 +34,8 @@ public class DecorPool : MonoBehaviour
     private bool isPaused = false;
     private bool gameRunning = false;
 
+    private List<GameObject> preSpawnedDecor = new List<GameObject>();
+
     private void Awake()
     {
         if (Instance == null)
@@ -40,6 +44,7 @@ public class DecorPool : MonoBehaviour
             InitializePool();
             SubscribeToGameEvents();
             DontDestroyOnLoad(gameObject);
+            PreSpawnDecorElements(preSpawnCount, true); // Pre-spawn for menu
         }
         else
         {
@@ -72,9 +77,17 @@ public class DecorPool : MonoBehaviour
 
     private void OnGameStart()
     {
+        isPaused = true;
         gameRunning = true;
-        isPaused = false;
         nextSpawnTime = Time.time + spawnRate;
+        StartCoroutine(DelayedStart(3f));
+    }
+
+    private IEnumerator DelayedStart(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        isPaused = false;
+        PauseAllDecorElements(false);
     }
 
     private void OnGamePaused()
@@ -92,14 +105,37 @@ public class DecorPool : MonoBehaviour
 
     private void OnGameEnd()
     {
-        gameRunning = false;
-        ReturnAllToPool();
+        isPaused = true;  // Pausar movimiento
+        gameRunning = true; // Seguir visibles
+        PauseAllDecorElements(true); // Solo pausar movimiento
     }
 
     private void OnMenuGame()
     {
-        gameRunning = false;
-        ReturnAllToPool();
+        isPaused = true;
+        gameRunning = true;
+        ResetDecor();
+        PreSpawnDecorElements(preSpawnCount, true);
+        PauseAllDecorElements(true);
+    }
+
+    private void ResetDecor()
+    {
+        foreach (var decor in preSpawnedDecor)
+        {
+            if (decor != null)
+                ReturnDecorToPool(decor);
+        }
+        preSpawnedDecor.Clear();
+
+        DecorElement[] allDecor = FindObjectsByType<DecorElement>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var decor in allDecor)
+        {
+            if (decor != null && decor.gameObject.activeInHierarchy)
+            {
+                ReturnDecorToPool(decor.gameObject);
+            }
+        }
     }
 
     private void Update()
@@ -121,6 +157,31 @@ public class DecorPool : MonoBehaviour
         }
     }
 
+    private void PreSpawnDecorElements(int count, bool pauseOnSpawn)
+    {
+        float spacing = 5f;
+        for (int i = 0; i < count; i++)
+        {
+            GameObject decor = GetDecorElement();
+            if (decor == null) continue;
+
+            float zOffset = spawnZDistance - (spacing * i);
+            decor.transform.position = new Vector3(fixedXPosition, fixedYPosition, zOffset);
+            decor.transform.localScale = Vector3.one * fixedScale;
+            decor.transform.rotation = Quaternion.identity;
+
+            DecorElement element = decor.GetComponent<DecorElement>();
+            if (element != null)
+            {
+                element.ResetElement();
+                element.SetPaused(pauseOnSpawn);
+            }
+
+            decor.SetActive(true);
+            preSpawnedDecor.Add(decor);
+        }
+    }
+
     private void AddNewDecorToPool()
     {
         if (decorPrefab == null)
@@ -131,41 +192,26 @@ public class DecorPool : MonoBehaviour
 
         GameObject decor = Instantiate(decorPrefab);
         decor.SetActive(false);
-        
+
         DecorElement decorElement = decor.GetComponent<DecorElement>();
         if (decorElement == null)
         {
             decorElement = decor.AddComponent<DecorElement>();
         }
-        
+
         decorElement.Initialize(this, decorSpeed, destructionDelay, destroyZPosition);
         decorPool.Enqueue(decor);
     }
 
     private void PauseAllDecorElements(bool pause)
     {
-        foreach (GameObject decor in decorPool)
-        {
-            if (decor != null && decor.activeInHierarchy)
-            {
-                DecorElement element = decor.GetComponent<DecorElement>();
-                if (element != null)
-                {
-                    element.SetPaused(pause);
-                }
-            }
-        }
-    }
+        DecorElement[] elements = FindObjectsByType<DecorElement>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
-    private void ReturnAllToPool()
-    {
-        DecorElement[] activeElements = FindObjectsByType<DecorElement>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-        
-        foreach (DecorElement element in activeElements)
+        foreach (DecorElement element in elements)
         {
             if (element != null && element.gameObject.activeInHierarchy)
             {
-                ReturnDecorToPool(element.gameObject);
+                element.SetPaused(pause);
             }
         }
     }
@@ -185,7 +231,7 @@ public class DecorPool : MonoBehaviour
     {
         GameObject decor = GetDecorElement();
         if (decor == null) return;
-        
+
         decor.transform.position = new Vector3(
             fixedXPosition,
             fixedYPosition,
@@ -194,13 +240,14 @@ public class DecorPool : MonoBehaviour
 
         decor.transform.localScale = Vector3.one * fixedScale;
         decor.transform.rotation = Quaternion.identity;
-        
+
         DecorElement element = decor.GetComponent<DecorElement>();
         if (element != null)
         {
             element.ResetElement();
+            element.SetPaused(false);
         }
-        
+
         decor.SetActive(true);
     }
 
