@@ -672,16 +672,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   decorPrefab: {fileID: 9214368412949597742, guid: 51e0f7a323575a540823f059017167fe, type: 3}
-  initialPoolSize: 10
+  initialPoolSize: 15
   preSpawnCount: 1
-  spawnRate: 21
+  spawnRate: 24
   decorSpeed: 8
-  spawnZDistance: 35
-  destroyZPosition: -125
+  spawnZDistance: 40
+  destroyZPosition: -150
   fixedXPosition: 0
   fixedYPosition: 0
   fixedScale: 1
-  destructionDelay: 2
+  destructionDelay: 1
 --- !u!4 &1963845609
 Transform:
   m_ObjectHideFlags: 0
