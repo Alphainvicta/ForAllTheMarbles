@@ -29,6 +29,10 @@ public class DecorPool : MonoBehaviour
     [Header("Delayed Destruction")]
     public float destructionDelay = 1.5f;
 
+    [Header("Spacing")]
+    [Tooltip("Longitud en Z para separar cada prefab, ajusta según el tamaño real de tu decor.")]
+    public float decorLength = 10f;
+
     private Queue<GameObject> decorPool = new Queue<GameObject>();
     private float nextSpawnTime;
     private bool isPaused = false;
@@ -105,9 +109,9 @@ public class DecorPool : MonoBehaviour
 
     private void OnGameEnd()
     {
-        isPaused = true;  // Pausar movimiento
-        gameRunning = true; // Seguir visibles
-        PauseAllDecorElements(true); // Solo pausar movimiento
+        isPaused = true;
+        gameRunning = true;
+        PauseAllDecorElements(true);
     }
 
     private void OnMenuGame()
@@ -159,14 +163,13 @@ public class DecorPool : MonoBehaviour
 
     private void PreSpawnDecorElements(int count, bool pauseOnSpawn)
     {
-        float spacing = 5f;
         for (int i = 0; i < count; i++)
         {
             GameObject decor = GetDecorElement();
             if (decor == null) continue;
 
-            float zOffset = spawnZDistance - (spacing * i);
-            decor.transform.position = new Vector3(fixedXPosition, fixedYPosition, zOffset);
+            float zPos = i * decorLength;
+            decor.transform.position = new Vector3(fixedXPosition, fixedYPosition, zPos);
             decor.transform.localScale = Vector3.one * fixedScale;
             decor.transform.rotation = Quaternion.identity;
 
@@ -232,12 +235,18 @@ public class DecorPool : MonoBehaviour
         GameObject decor = GetDecorElement();
         if (decor == null) return;
 
-        decor.transform.position = new Vector3(
-            fixedXPosition,
-            fixedYPosition,
-            spawnZDistance
-        );
+        float newZ;
+        if (preSpawnedDecor.Count > 0)
+        {
+            GameObject lastDecor = preSpawnedDecor[preSpawnedDecor.Count - 1];
+            newZ = lastDecor.transform.position.z + decorLength;
+        }
+        else
+        {
+            newZ = spawnZDistance;
+        }
 
+        decor.transform.position = new Vector3(fixedXPosition, fixedYPosition, newZ);
         decor.transform.localScale = Vector3.one * fixedScale;
         decor.transform.rotation = Quaternion.identity;
 
@@ -249,6 +258,7 @@ public class DecorPool : MonoBehaviour
         }
 
         decor.SetActive(true);
+        preSpawnedDecor.Add(decor);
     }
 
     public void ReturnDecorToPool(GameObject decorElement)
@@ -263,6 +273,9 @@ public class DecorPool : MonoBehaviour
 
         decorElement.SetActive(false);
         decorPool.Enqueue(decorElement);
+
+        // También remover de la lista preSpawned para evitar acumulación
+        preSpawnedDecor.Remove(decorElement);
     }
 
     public void UpdateFixedPosition(float newX, float newY)
@@ -290,5 +303,20 @@ public class DecorPool : MonoBehaviour
                 }
             }
         }
+    }
+
+    // 🔴 NUEVO MÉTODO para soporte de visualización de conexiones
+    public bool TryGetNextDecor(GameObject current, out GameObject next)
+    {
+        next = null;
+
+        int index = preSpawnedDecor.IndexOf(current);
+        if (index >= 0 && index + 1 < preSpawnedDecor.Count)
+        {
+            next = preSpawnedDecor[index + 1];
+            return true;
+        }
+
+        return false;
     }
 }

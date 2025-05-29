@@ -6,6 +6,7 @@ public class DecorElement : MonoBehaviour
     private float destroyZ;
     private float delay;
     private bool paused = false;
+    private bool initialized = false;
     private DecorPool pool;
 
     public void Initialize(DecorPool pool, float speed, float delay, float destroyZ)
@@ -14,6 +15,7 @@ public class DecorElement : MonoBehaviour
         this.speed = speed;
         this.delay = delay;
         this.destroyZ = destroyZ;
+        initialized = true;
     }
 
     public void ResetElement()
@@ -33,7 +35,7 @@ public class DecorElement : MonoBehaviour
 
     private void Update()
     {
-        if (paused) return;
+        if (!initialized || paused) return;
 
         transform.Translate(Vector3.back * speed * Time.deltaTime);
 
