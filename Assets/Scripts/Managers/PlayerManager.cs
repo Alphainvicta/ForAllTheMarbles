@@ -61,6 +61,8 @@ namespace Managers
             playerInstance.GetComponent<Collider>().enabled = true;
             playerInstance.GetComponent<Rigidbody>().isKinematic = false;
 
+            playerInstance.GetComponent<Animator>().speed = 0f;
+
             RestoreMarbleValues();
         }
 
@@ -78,6 +80,7 @@ namespace Managers
         {
             yield return new WaitUntil(() => !UiManager.uiTransition);
             playerInstance.GetComponent<PlayerInput>().enabled = true;
+            playerInstance.GetComponent<Animator>().speed = 1f;
         }
 
         private void OnGamePaused()
@@ -88,6 +91,8 @@ namespace Managers
             savedVelocity = playerInstance.GetComponent<Rigidbody>().linearVelocity;
             savedAngularVelocity = playerInstance.GetComponent<Rigidbody>().angularVelocity;
             playerInstance.GetComponent<Rigidbody>().isKinematic = true;
+
+            playerInstance.GetComponent<Animator>().speed = 0f;
         }
 
         private void OnGameUnpaused()
@@ -98,6 +103,8 @@ namespace Managers
             playerInstance.GetComponent<Rigidbody>().isKinematic = false;
             playerInstance.GetComponent<Rigidbody>().linearVelocity = savedVelocity;
             playerInstance.GetComponent<Rigidbody>().angularVelocity = savedAngularVelocity;
+
+            playerInstance.GetComponent<Animator>().speed = 1f;
         }
 
         private void OnGameEnd()
@@ -106,6 +113,8 @@ namespace Managers
             playerInstance.GetComponent<PlayerInput>().enabled = false;
             playerInstance.GetComponent<Collider>().enabled = false;
             playerInstance.GetComponent<Rigidbody>().isKinematic = true;
+
+            playerInstance.GetComponent<Animator>().speed = 0f;
 
         }
 

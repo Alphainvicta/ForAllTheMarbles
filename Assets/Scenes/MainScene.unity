@@ -218,7 +218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerMarblesScriptableObject: {fileID: 11400000, guid: 09b3e72fbdd967b40a58ca8926787927, type: 2}
-  marbleLockedSprite: {fileID: 992612688, guid: 12994e8c53ac17b469a0fb9d823b4ff9, type: 3}
+  marbleLockedSprite: {fileID: 545912203, guid: 2336a15c32a28b74b90ab32507b27dbd, type: 3}
 --- !u!114 &348282109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -484,13 +484,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.61280084, y: -0.20006454, z: 0.16419944, w: 0.7466512}
-  m_LocalPosition: {x: 0.009714447, y: 3.0231545, z: -0.016825918}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 78.754, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &410087042
 MonoBehaviour:
   m_ObjectHideFlags: 0
