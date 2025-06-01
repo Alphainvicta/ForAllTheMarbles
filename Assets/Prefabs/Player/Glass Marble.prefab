@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 351530369481372617}
   - component: {fileID: 6569308147025867485}
   - component: {fileID: 8028961057845597894}
+  - component: {fileID: 3415484845027421717}
   m_Layer: 0
   m_Name: Glass Marble
   m_TagString: Untagged
@@ -204,3 +205,16 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3415484845027421717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6070790412006551918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9960d6c69cd624a4e8ef443a75f541bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particlePrefab: {fileID: 5112030485359489401, guid: 0bbf921b687f8cd46815a2797d2525e6, type: 3}

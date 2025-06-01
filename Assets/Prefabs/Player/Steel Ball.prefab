@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 813766151579715432}
   - component: {fileID: 3634736496764470077}
   - component: {fileID: 7834542552032096404}
+  - component: {fileID: 1376346997702338706}
   m_Layer: 0
   m_Name: Steel Ball
   m_TagString: Untagged
@@ -204,3 +205,16 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1376346997702338706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111276287503260205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9960d6c69cd624a4e8ef443a75f541bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particlePrefab: {fileID: 5112030485359489401, guid: 0bbf921b687f8cd46815a2797d2525e6, type: 3}
