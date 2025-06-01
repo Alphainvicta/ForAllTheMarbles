@@ -26,6 +26,7 @@ namespace Managers
         public static bool tutorialCompleted;
         public static int tutorialStep;
         public static Coroutine tutorialCoroutine;
+
         private void Awake()
         {
             if (Instance == null)
@@ -85,7 +86,7 @@ namespace Managers
             levelManager.LevelScriptStart();
             uiManager.UiScriptStart();
             playerManager.PlayerScriptStart();
-            MenuGame();
+            MenuGame?.Invoke();
             AudioManager.Instance.Play("MenuMusic");
         }
 
@@ -95,6 +96,9 @@ namespace Managers
             isPaused = false;
             AudioManager.Instance.Play("MenuMusic");
             AudioManager.Instance.Stop("GameMusic");
+
+            // Asegurar que partículas estén reanudadas al ir al menú
+            PauseAllParticles(false);
         }
 
         public static void PlayGame()
@@ -105,12 +109,12 @@ namespace Managers
             GameStart?.Invoke();
             isPaused = false;
 
-            if (tutorialCompleted)
-            {
-                AudioManager.Instance.Play("GameMusic");
-                AudioManager.Instance.Stop("MenuMusic");
-                AudioManager.Instance.Play("StartGame");
-            }
+            AudioManager.Instance.Play("GameMusic");
+            AudioManager.Instance.Stop("MenuMusic");
+            AudioManager.Instance.Play("StartGame");
+
+            // Asegurar partículas reanudadas al iniciar juego
+            PauseAllParticles(false);
         }
 
         public static void PauseGame()
@@ -165,11 +169,11 @@ namespace Managers
 
                 if (pause)
                 {
-                    if (ps.isPlaying) ps.Pause();
+                    if (ps.isPlaying) ps.Pause(true);
                 }
                 else
                 {
-                    if (ps.isPaused) ps.Play();
+                    if (ps.isPaused) ps.Play(true);
                 }
             }
         }
@@ -180,19 +184,28 @@ namespace Managers
             isPaused = false;
             AudioManager.Instance.Play("GameOver");
             AudioManager.Instance.Stop("GameMusic");
+
+            // Reanudar partículas al finalizar juego para evitar que queden pausadas
+            PauseAllParticles(false);
         }
 
         public static void Store()
         {
-            StoreGame.Invoke();
+            StoreGame?.Invoke();
             isPaused = false;
             AudioManager.Instance.Play("StoreOpen");
+
+            // Reanudar partículas en la tienda también
+            PauseAllParticles(false);
         }
 
         public static void ReloadScene()
         {
             int currentScene = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadScene(currentScene);
+
+            // En caso de que las partículas queden pausadas tras reload, reanudarlas
+            PauseAllParticles(false);
         }
 
         public static void SaveNewData(bool newFile)
@@ -241,7 +254,6 @@ namespace Managers
 
         public static IEnumerator TutorialAction(int step)
         {
-
             isPaused = true;
             PlayerManager.SetPlayerInput(true);
             UiManager.uiTutorialInstance.SetActive(true);
@@ -257,17 +269,18 @@ namespace Managers
                 case 2:
                     tutorialStep = 2;
 
-                    Vector3 savedAngularVelocity = PlayerManager.playerInstance.GetComponent<Rigidbody>().angularVelocity;
-                    PlayerManager.playerInstance.GetComponent<Rigidbody>().isKinematic = true;
+                    Rigidbody playerRb = PlayerManager.playerInstance.GetComponent<Rigidbody>();
+                    Vector3 savedAngularVelocity = playerRb.angularVelocity;
+                    playerRb.isKinematic = true;
 
                     UiManager.uiTutorialScript.tutorialPanel2.SetActive(true);
                     yield return new WaitUntil(() => !isPaused);
 
-                    PlayerManager.playerInstance.GetComponent<Rigidbody>().isKinematic = false;
-                    PlayerManager.playerInstance.GetComponent<Rigidbody>().angularVelocity = savedAngularVelocity;
+                    playerRb.isKinematic = false;
+                    playerRb.angularVelocity = savedAngularVelocity;
 
-                    PlayerManager.playerInstance.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
-                    PlayerManager.playerInstance.GetComponent<Rigidbody>().AddForce(Vector3.down * 9f * 2, ForceMode.Impulse);
+                    playerRb.linearVelocity = Vector3.zero; // Cambio por la propiedad no obsoleta
+                    playerRb.AddForce(Vector3.down * 9f * 2, ForceMode.Impulse);
 
                     UiManager.uiTutorialScript.tutorialPanel2.SetActive(false);
                     break;
